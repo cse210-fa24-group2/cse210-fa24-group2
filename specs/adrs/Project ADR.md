@@ -50,11 +50,15 @@ We chose **Option 2**: developing a dashboard for computer science students. Thi
      - **Development Complexity**: Integrating multiple features increases the challenge.
      - **Resource Demand**: Requires more time and personnel.
 
-## Related Research and User Journey
+## Related Research
 
-In our research, we referred to the design and implementation of academic progress dashboards. For instance, the learning progress dashboard developed by Graz University of Technology for computer science students provides insights into academic performance and course progression, supporting students in managing their studies [source](https://link.springer.com/chapter/10.1007/978-3-030-81222-5_19).
+In our research, we referred to the design and implementation of academic progress dashboards. For instance, the learning progress dashboard developed by Graz University of Technology for computer science students provides insights into academic performance and course progression, supporting students in managing their studies. [source1](https://link.springer.com/chapter/10.1007/978-3-030-81222-5_19)
 
 Additionally, we analyzed the user journey of students in academic and career planning, identifying key needs in course management, internship tracking, and personal project management. These insights guided the design and prioritization of our project features.
+
+We found that Notion templates like "Developer OS," designed for developers and students, integrate task management, project tracking, and resource organization. However, they lack specialized features needed by computer science students, such as internship tracking and course planning. Users often need to manually adapt these templates to fit academic needs, resulting in a fragmented experience. This is exactly the gap my project aims to fill. [source2](https://www.notion.so/templates/developer-os)
+
+Wrike is a project management tool that provides team dashboards for task scheduling, progress tracking, and collaboration, making it suitable for managing complex workflows. While its features can be adapted for individual task management, it lacks customization for academic planning or internship tracking—key needs for computer science students. Students might use Wrike to organize courses and internships as separate projects, assigning deadlines, tracking progress, and even sharing updates with peers. However, since Wrike is primarily designed for general project management, it lacks the flexibility to meet students' specific academic requirements. This gap underscores the need for a more personalized dashboard tailored to the unique academic and career demands of computer science students. [source3](https://www.wrike.com/templates/software-template/)
 
 ## Conclusion
 
