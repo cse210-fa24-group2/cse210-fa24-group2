@@ -202,4 +202,4 @@ By choosing:
 - **Database**: PostgreSQL for robust data management.
 - **Deployment Platform**: Render, for easy deployment and management.
 
-We align our tech stack with the project's requirements, scopa and the team's capabilities. This tech stack and deployment choice enable us to develop a functional, user-friendly dashboard.
+We align our tech stack with the project's requirements, scope and the team's capabilities. This tech stack and deployment choice enable us to develop a functional, user-friendly dashboard.
