@@ -1,0 +1,59 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      # Python checks (only if Python files exist)
+      - name: Set up Python
+        if: hashFiles('**/*.py') != ''
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+          
+      - name: Python Lint
+        if: hashFiles('**/*.py') != ''
+        run: |
+          pip install flake8
+          flake8 . --count --max-line-length=100 --statistics
+          
+      # JavaScript checks (only if JS files exist)
+      - name: Set up Node
+        if: hashFiles('**/*.js') != ''
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          
+      - name: JS Lint
+        if: hashFiles('**/*.js') != ''
+        run: |
+          npm install eslint --save-dev
+          npx eslint "**/*.js" || true
+          
+      # HTML/CSS checks (only if files exist)
+      - name: HTML/CSS Lint
+        if: hashFiles('**/*.{html,css}') != ''
+        run: |
+          npm install prettier --save-dev
+          npx prettier --check "**/*.{html,css}" || true
+          
+      # Run tests if test files exist
+      - name: Run Tests
+        if: hashFiles('**/test_*.py') != '' || hashFiles('**/*.test.js') != ''
+        run: |
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+            pytest
+          fi
+          if [ -f "package.json" ]; then
+            npm install
+            npm test
+          fi
