@@ -107,7 +107,7 @@ To ensure that our code looks like it was written by one person, we shall do our
     - File-Level Documentation: Describe the file’s overall purpose, any dependencies, and important classes or functions it contains
     - Class-Level Documentation: Explain what the class does, its intended use cases, and any major components (properties, methods)
     - Function-Level Documentation: Document each function’s purpose, input parameters, return types, and any side effects. If the function is complex, briefly explain its logic
-- **Adopt a Standard Format for Function Documentation((
+- **Adopt a Standard Format for Function Documentation**
     - Use a format like docstrings (Python) or JSDoc (JavaScript) to provide structured details for each function
 - **Provide Context with Inline Comments**
     - Use inline comments for complex logic, like nested loops, intricate algorithms, or when calling specific APIs
