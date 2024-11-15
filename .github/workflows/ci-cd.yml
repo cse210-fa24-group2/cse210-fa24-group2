@@ -2,58 +2,101 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  validate:
+  setup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
-      # Python checks (only if Python files exist)
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Set up Python
-        if: hashFiles('**/*.py') != ''
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
-          
-      - name: Python Lint
-        if: hashFiles('**/*.py') != ''
+          python-version: '3.8'
+
+      - name: Install Dependencies
         run: |
-          pip install flake8
-          flake8 . --count --max-line-length=100 --statistics
-          
-      # JavaScript checks (only if JS files exist)
-      - name: Set up Node
-        if: hashFiles('**/*.js') != ''
-        uses: actions/setup-node@v3
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install black flake8 pylint coverage
+          npm install -g jest jsdoc cypress
+
+  linting_and_code_quality:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Lint Python Code
+        run: |
+          black --check .
+          flake8 .
+          pylint $(find . -name "*.py")
+
+  testing:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run Python Unit Tests
+        run: coverage run -m unittest discover -s tests
+      - name: Jest for JavaScript Unit Testing
+        run: jest --coverage
+      - name: Cypress End-to-End Testing
+        run: cypress run
+      - name: Upload Coverage Reports
+        uses: actions/upload-artifact@v3
         with:
-          node-version: '16'
+          name: coverage-report
+          path: coverage/
+
+  documentation:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Generate Documentation
+        run: jsdoc -c jsdoc.json -r .
+
+  # Need to setup the render_api_key when available
+  # deployment:
+  #   runs-on: ubuntu-latest
+  #   needs: [linting_and_code_quality, testing]
+  #   if: github.ref == 'refs/heads/main'
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3
+  #     - name: Deploy to Render
+  #       env:
+  #         RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+  #       run: |
+  #         curl -X POST \
+  #         -H "Authorization: Bearer $RENDER_API_KEY" \
+  #         -H "Content-Type: application/json" \
+  #         --data '{"serviceId": "YOUR_RENDER_SERVICE_ID"}' \
+  #         "https://api.render.com/v1/services/YOUR_SERVICE_ID/deploys"
           
-      - name: JS Lint
-        if: hashFiles('**/*.js') != ''
+  optimization:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Minify CSS and JavaScript
         run: |
-          npm install eslint --save-dev
-          npx eslint "**/*.js" || true
-          
-      # HTML/CSS checks (only if files exist)
-      - name: HTML/CSS Lint
-        if: hashFiles('**/*.{html,css}') != ''
-        run: |
-          npm install prettier --save-dev
-          npx prettier --check "**/*.{html,css}" || true
-          
-      # Run tests if test files exist
-      - name: Run Tests
-        if: hashFiles('**/test_*.py') != '' || hashFiles('**/*.test.js') != ''
-        run: |
-          if [ -f "requirements.txt" ]; then
-            pip install -r requirements.txt
-            pytest
-          fi
-          if [ -f "package.json" ]; then
-            npm install
-            npm test
-          fi
+          npm install -g terser clean-css-cli
+          find static/css -name "*.css" -exec cleancss -o {} {} \;
+          find static/js -name "*.js" -exec terser -o {} -- {} \;
+      - name: Upload Optimized Files
+        uses: actions/upload-artifact@v3
+        with:
+          name: optimized-files
+          path: static/
