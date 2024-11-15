@@ -28,6 +28,18 @@ jobs:
           pip install black flake8 pylint coverage
           npm install -g jest jsdoc cypress
 
+      - name: Set Environment Variables
+        env:
+          FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
+        run: |
+          echo "FLASK_SECRET_KEY=${FLASK_SECRET_KEY}" >> $GITHUB_ENV
+          echo "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}" >> $GITHUB_ENV
+          echo "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}" >> $GITHUB_ENV
+          echo "REDIRECT_URI=${REDIRECT_URI}" >> $GITHUB_ENV
+
   linting_and_code_quality:
     runs-on: ubuntu-latest
     needs: setup
