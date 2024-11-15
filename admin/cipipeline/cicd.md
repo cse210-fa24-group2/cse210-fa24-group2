@@ -70,6 +70,9 @@ START
   │
 END
 ```
+---
+
+![CI/CD Pipeline](./cicd.png)
 
 ---
 
