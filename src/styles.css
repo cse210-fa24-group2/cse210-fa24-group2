@@ -81,16 +81,6 @@ nav ul li:hover {
         align-items: flex-start;
     }
 
-    .menu {
-        position: absolute;
-        right: 0;
-        margin-right: 10%;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 11px;
-        z-index: 3;
-    }
-
     .menu-button {
         display: block;
         cursor: pointer;
@@ -104,12 +94,13 @@ nav ul li:hover {
         display: none;
         flex-direction: column;
         align-items: center;
-        gap: 13px;
-        border-radius: 10px;
+        gap: 1rem;
+        border-radius: 1rem;
         background: rgb(25, 55, 109);
         background: linear-gradient(0deg, rgba(25, 55, 109, 0.2) 0%, rgba(24, 55, 109, 1) 100%);
-        padding: 24px 33px;
-        box-shadow: 0 0 4px 0 rgba(0, 0, 0 , 0.25%)
+        padding: 1rem 1rem;
+        margin: 1rem 0.5rem;
+        box-shadow: 0 0 1rem 0 rgba(0, 0, 0 , 0.25%)
     }
 
     #menu-toggle:checked ~ ul {
