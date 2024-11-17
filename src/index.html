@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preload" href="../assets/computer.jpg" as="image">
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -13,25 +12,36 @@
             <h1>Your Command Center</h1>
         </header>
         <nav>
+            <!-- Hidden checkbox to toggle menu -->
+            <input type="checkbox" id="menu-toggle" />
+            <!-- Menu Button -->
+            <label for="menu-toggle" class="menu-button">
+                <img src="../assets/navbar/menu.svg" alt="menu" class="menu-icon" />
+            </label>
+            <!-- Navigation Items -->
             <ul>
-                <li class="tooltip"><img src="../assets/icons/home.svg" class="icon">
+                <li class="tooltip">
+                    <img src="../assets/icons/home.svg" class="icon" alt="Home">
                     &nbsp; Overview
                     <span class="tooltiptext">A quick summary view of all subpages</span>
                 </li>
-                <li class="tooltip"><img src="../assets/icons/gradcap.svg" class="icon">
+                <li class="tooltip">
+                    <img src="../assets/icons/gradcap.svg" class="icon" alt="Courses">
                     &nbsp; Course Central
                     <span class="tooltiptext">Track your homework, assignments, and to-dos</span>
                 </li>
-                <li class="tooltip"><img src="../assets/icons/briefcase.svg" class="icon">
+                <li class="tooltip">
+                    <img src="../assets/icons/briefcase.svg" class="icon" alt="Career">
                     &nbsp; Career Compass
                     <span class="tooltiptext">Monitor internship applications and career growth tools</span>
                 </li>
-                <li class="tooltip"><img src="../assets/icons/beaker.svg" class="icon">
+                <li class="tooltip">
+                    <img src="../assets/icons/beaker.svg" class="icon" alt="Projects">
                     &nbsp; Project Board
                     <span class="tooltiptext">Organize personal projects and track next steps</span>
                 </li>
             </ul>
-        </nav>
+        </nav>        
     </hgroup>
     <main>
         <h2>Welcome to Your Dashboard</h2>
