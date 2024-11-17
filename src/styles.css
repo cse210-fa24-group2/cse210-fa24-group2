@@ -74,6 +74,7 @@ nav ul li:hover {
     display: none;
 }
 
+/* Responsive nav bar */
 @media screen and (max-width: 830px) {
     hgroup {
         flex-direction: column;
