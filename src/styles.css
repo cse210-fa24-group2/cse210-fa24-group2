@@ -1,0 +1,142 @@
+/* General styling for the page - includes header, navigation bar, and body text */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display:flex;
+    background-color: #f4f4f9;
+    color: #333;
+    flex-direction: column;
+    height: 100vh;
+}
+
+
+.header-container{
+    background-image: url('../assets/computer.jpg'); 
+    background-size: 150% auto;  
+    background-position: left 90% bottom 75%; 
+    background-attachment: fixed; /* Makes the background stay fixed while scrolling */
+    height:38vh;
+}
+
+header{
+    position: absolute;
+    bottom: 30em; 
+    font-size: 1em; 
+    font-weight: bold;
+    top: 17%; /* Distance from the top of the page */
+    left: 41%; /* Distance from the right edge of the page */
+    width: 35%; /* Adjust width to control how much space it takes */
+    height: 20%;
+    background: transparent;
+    color:white;
+    
+}
+
+
+nav {
+    position: absolute;
+    background: transparent;
+    color: white;
+    list-style: none;
+    top: 2%; 
+    right: 0%; 
+    width: 20%; 
+    height: 30%; 
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Navigation menu styling */
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+    background-color: transparent;
+    flex-direction: column;
+}
+
+nav ul li {
+    margin: 0 10px;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    position: relative; 
+    background: transparent;
+}
+
+ 
+
+nav ul li:hover {
+    background-color: rgba(97, 89, 89, 0.3);
+    transform:scale(1.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+
+/* Tooltip styling */
+.tooltip {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+}
+
+.tooltip .icon{
+    width: 2em;
+    height: 2em;
+    
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: rgb(148, 141, 124);
+    color: white;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+
+    position: absolute;
+    top:50%;
+    left: -215px;
+    transform: translateY(-50%);
+    z-index: 1;
+
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Show the tooltip on hover */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Tooltip arrow */
+.tooltiptext::after {
+    content: "";
+    position: absolute;
+    top:50%;
+    right: -10px;
+    transform: translateY(-50%) rotate(-90deg);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(148, 141, 124) transparent transparent transparent;
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    margin-top: 0%; /*Distance from the top of the page*/
+}
+
+footer {
+    background:transparent;
+    color: black;
+    text-align: center;
+    padding: 10px 0;
+}
