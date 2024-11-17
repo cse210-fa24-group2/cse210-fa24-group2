@@ -1,142 +1,129 @@
 /* General styling for the page - includes header, navigation bar, and body text */
+
+/* Global variables as defined in Frontend-System-Design.md */
+/* lm variables should be used in light mode */
+/* dm variables should be used in dark mode */
+:root {
+    --font-primary: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+    --background-primary-lm: #F7FAFC;
+    --background-secondary-lm: #E2E8F0;
+    --button-background-lm: #2B6CB0;
+    --button-hover-lm: #2C5282;
+    --text-primary-lm: #1A202C;
+    --button-text-lm: #F7FAFC;
+    --focus-outline-lm: #3182CE;
+
+    --background-primary-dm: #1A202C;
+    --background-secondary-dm: #2D3748;
+    --button-background-dm: #63B3ED;
+    --button-hover-dm: #4A9AD4;
+    --text-primary-dm: #F7FAFC;
+    --focus-outline-dm: #63B3ED;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-primary);
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display:flex;
-    background-color: #f4f4f9;
-    color: #333;
+    display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
+    background-color: var(--background-primary-lm);
+    color: var(--text-primary-lm);
 }
 
-
-header-container{
-    background-image: url('../assets/computer.jpg'); 
-    background-size: 150% auto;  
-    background-position: left 90% bottom 75%; 
-    background-attachment: fixed; /* Makes the background stay fixed while scrolling */
-    height:38vh;
+/* Header Section */
+hgroup {
+    background-color: var(--button-background-lm);
+    color: var(--button-text-lm);
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2rem; 
 }
 
-header{
-    position: absolute;
-    bottom: 30em; 
-    font-size: 1em; 
+header {
+    font-size: 1.25rem;
     font-weight: bold;
-    top: 17%; /* Distance from the top of the page */
-    left: 41%; /* Distance from the right edge of the page */
-    width: 35%; /* Adjust width to control how much space it takes */
-    height: 20%;
-    background: transparent;
-    color:white;
-    
 }
 
-
+/* Navigation Menu */
 nav {
-    position: absolute;
-    background: transparent;
-    color: white;
-    list-style: none;
-    top: 2%; 
-    right: 0%; 
-    width: 20%; 
-    height: 30%; 
     display: flex;
-    justify-content: space-around;
-}
-
-/* Navigation menu styling */
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: space-around;
-    background-color: transparent;
-    flex-direction: column;
-}
-
-nav ul li {
-    margin: 0 10px;
-    padding: 10px 20px;
-    color: white;
-    cursor: pointer;
-    position: relative; 
-    background: transparent;
-}
-
- 
-
-nav ul li:hover {
-    background-color: rgba(97, 89, 89, 0.3);
-    transform:scale(1.1);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-
-
-/* Tooltip styling */
-.tooltip {
-    position: relative;
-    display: flex;
-    cursor: pointer;
     align-items: center;
 }
 
-.tooltip .icon{
-    width: 2em;
-    height: 2em;
-    
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+nav ul li {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+nav ul li:hover {
+    background-color: var(--button-hover-lm);
+    color: var(--button-text-lm);
+    transform: scale(1.05);
+}
+
+/* Tooltip Styling */
+.tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.tooltip .icon {
+    width: 2rem;
+    height: 2rem;
 }
 
 .tooltiptext {
     visibility: hidden;
-    width: 200px;
-    background-color: rgb(148, 141, 124);
-    color: white;
-    text-align: center;
-    padding: 5px;
-    border-radius: 5px;
-
-    position: absolute;
-    top:50%;
-    left: -215px;
-    transform: translateY(-50%);
-    z-index: 1;
-
     opacity: 0;
-    transition: opacity 0.3s;
+    width: 12rem;
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 4px;
+    position: absolute;
+    top: 50%;
+    left: -14rem;
+    transform: translateY(-50%);
+    transition: visibility 0.3s, opacity 0.3s;
 }
 
-/* Show the tooltip on hover */
 .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
 }
 
-/* Tooltip arrow */
-.tooltiptext::after {
-    content: "";
-    position: absolute;
-    top:50%;
-    right: -10px;
-    transform: translateY(-50%) rotate(-90deg);
-    border-width: 5px;
-    border-style: solid;
-    border-color: rgb(148, 141, 124) transparent transparent transparent;
-}
-
+/* Main Content */
 main {
     flex: 1;
-    padding: 20px;
-    margin-top: 0%; /*Distance from the top of the page*/
+    padding: 1rem 2rem;
+    margin-top: 2rem;
 }
 
+/* Footer Section */
 footer {
-    background:transparent;
-    color: black;
     text-align: center;
-    padding: 10px 0;
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    padding: 1rem;
+    margin-top: auto;
 }
