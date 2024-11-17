@@ -11,7 +11,7 @@ body {
 }
 
 
-.header-container{
+header-container{
     background-image: url('../assets/computer.jpg'); 
     background-size: 150% auto;  
     background-position: left 90% bottom 75%; 
