@@ -46,7 +46,7 @@ REDIRECT_URI = os.environ.get(
 
 # Path to the client secrets JSON file downloaded from Google Cloud Console
 CLIENT_SECRETS_FILE = os.path.join(
-    pathlib.Path(__file__).parent, "client_secret.json"
+    pathlib.Path(__file__).parent, "/etc/secrets/client_secret.json"
 )
 
 # OAuth 2.0 scopes
