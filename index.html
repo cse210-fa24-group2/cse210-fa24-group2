@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Calendar</title>
+  <link rel="stylesheet" href="./assets/calendar.css">
+</head>
+<body>
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button id="prev-month">&lt; Prev</button>
+      <span id="current-month"></span>
+      <button id="next-month">Next &gt;</button>
+      <input type="number" id="year-input" min="1900" max="2100" placeholder="Year" />
+    </div>
+    <div class="calendar-grid" id="calendar-root"></div>
+  </div>
+
+  <div class="add-event">
+    <h3>Add Event</h3>
+    <form id="event-form">
+      <input type="text" id="event-title" placeholder="Event Title" required />
+      <input type="date" id="event-date" required />
+      <input type="time" id="event-time" required />
+      <button type="submit">Add Event</button>
+    </form>
+  </div>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>
