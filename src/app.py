@@ -2,14 +2,11 @@
 app.py
 
 This module implements the Flask application with Google OAuth 2.0
-authentication.
-
-The application allows users to log in using their Google account and access
-a protected dashboard. It demonstrates handling OAuth 2.0 flow,
-session management, and securing routes with a custom decorator.
+authentication and PostgreSQL database integration using SQLAlchemy.
 
 Attributes:
     app (Flask): The Flask application instance.
+    db (SQLAlchemy): SQLAlchemy database instance.
 """
 
 import functools
@@ -19,6 +16,7 @@ import pathlib
 import cachecontrol
 from dotenv import load_dotenv
 from flask import Flask, abort, redirect, request, session, url_for
+from flask_sqlalchemy import SQLAlchemy
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -34,6 +32,12 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+
+# Configure PostgreSQL database
+DATABASE_URL = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy(app)
 
 # Google OAuth 2.0 Client ID and Client Secret
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
@@ -55,6 +59,15 @@ SCOPES = [
     "https://www.googleapis.com/auth/userinfo.email",
     "openid",
 ]
+
+
+class User(db.Model):
+    """
+    User model to store user information.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    google_id = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
 
 
 def login_required(function):
@@ -146,6 +159,14 @@ def callback():
     # Store user information in the session
     session["id_google"] = id_info.get("sub")
     session["name"] = id_info.get("name")
+
+    # Add user to the database if not exists
+    user = User.query.filter_by(google_id=id_info.get("sub")).first()
+    if not user:
+        user = User(google_id=id_info.get("sub"), name=id_info.get("name"))
+        db.session.add(user)
+        db.session.commit()
+
     return redirect(url_for('dashboard', _external=True))
 
 
@@ -191,4 +212,7 @@ def dashboard():
 
 
 if __name__ == "__main__":
+    # Create tables in the database
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
