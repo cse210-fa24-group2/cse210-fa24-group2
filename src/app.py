@@ -206,7 +206,7 @@ def dashboard():
         str: HTML content welcoming the user.
     """
     return (
-        f"Welcome to the student dashboard, {session.get('name')}! "
+        f"Welcome to the Student Dashboard, {session.get('name')}! "
         "<a href='/logout'><button>Logout</button></a>"
     )
 
