@@ -25,4 +25,4 @@ Werkzeug==2.3.7
 SQLAlchemy
 psycopg2-binary
 cachecontrol
-dotenv
+python-dotenv
