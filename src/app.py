@@ -23,6 +23,8 @@ import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
+from calendarGoogle import calendarGoogle
+
 
 # Load environment variables from .env file
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -33,6 +35,7 @@ load_dotenv(os.path.join(basedir, ".env"))
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 app = Flask(__name__)
+app.register_blueprint(calendarGoogle, url_prefix="")
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 
 # Google OAuth 2.0 Client ID and Client Secret
@@ -40,20 +43,18 @@ GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 
 # Redirect URI
-REDIRECT_URI = os.environ.get(
-    "REDIRECT_URI", "http://127.0.0.1:5000/callback"
-)
+REDIRECT_URI = os.environ.get("REDIRECT_URI", "http://127.0.0.1:5000/callback")
 
 # Path to the client secrets JSON file downloaded from Google Cloud Console
-CLIENT_SECRETS_FILE = os.path.join(
-    pathlib.Path(__file__).parent, "/etc/secrets/client_secret.json"
-)
+CLIENT_SECRETS_FILE = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
 
-# OAuth 2.0 scopes
+# OAuth 2.0 scopes (including Calendar API scopes)
 SCOPES = [
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/userinfo.email",
     "openid",
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/calendar.events",
 ]
 
 
@@ -67,7 +68,7 @@ def login_required(function):
     Returns:
         Callable: The wrapped function that checks for user authentication.
     """
-
+    
     @functools.wraps(function)
     def wrapper(*args, **kwargs):
         if "id_google" not in session:
@@ -95,7 +96,7 @@ def login():
         redirect_uri=REDIRECT_URI,
     )
     # Generate the authorization URL and state token
-    authorization_url, state = flow.authorization_url()
+    authorization_url, state = flow.authorization_url(access_type='offline')
     # Store the state in the session to verify the callback
     session["state"] = state
     return redirect(authorization_url)
@@ -128,9 +129,7 @@ def callback():
     credentials = flow.credentials
     request_session = requests.session()
     cached_session = cachecontrol.CacheControl(request_session)
-    token_request = google.auth.transport.requests.Request(
-        session=cached_session
-    )
+    token_request = google.auth.transport.requests.Request(session=cached_session)
 
     # Verify the OAuth2 token
     try:
@@ -143,9 +142,12 @@ def callback():
         # Invalid token
         abort(401)
 
-    # Store user information in the session
+    # Store user information and credentials in the session
     session["id_google"] = id_info.get("sub")
     session["name"] = id_info.get("name")
+    session["access_token"] = credentials.token
+    session["refresh_token"] = credentials.refresh_token
+
     return redirect(url_for('dashboard', _external=True))
 
 
