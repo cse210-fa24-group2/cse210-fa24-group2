@@ -18,7 +18,7 @@ import pathlib
 
 import cachecontrol
 from dotenv import load_dotenv
-from flask import Flask, abort, redirect, request, session, url_for
+from flask import Flask, abort, redirect, request, session, url_for, render_template
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -34,7 +34,11 @@ load_dotenv(os.path.join(basedir, ".env"))
 # IMPORTANT: Remove this or set to '0' in production to enforce HTTPS
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder=os.path.join(basedir, "static"),
+    template_folder=basedir
+)
 app.register_blueprint(calendarGoogle, url_prefix="")
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 
@@ -68,7 +72,7 @@ def login_required(function):
     Returns:
         Callable: The wrapped function that checks for user authentication.
     """
-    
+
     @functools.wraps(function)
     def wrapper(*args, **kwargs):
         if "id_google" not in session:
@@ -184,12 +188,9 @@ def dashboard():
     Dashboard page, accessible only to logged-in users.
 
     Returns:
-        str: HTML content welcoming the user.
+        Response: Renders the index.html template.
     """
-    return (
-        f"Welcome to the student dashboard, {session.get('name')}! "
-        "<a href='/logout'><button>Logout</button></a>"
-    )
+    return render_template("index.html")
 
 
 if __name__ == "__main__":

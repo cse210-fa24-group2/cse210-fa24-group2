@@ -206,24 +206,32 @@ def create_event():
     try:
         event_data = request.json
 
-        # Ensure the incoming start and end are in correct ISO 8601 format
-        if not event_data.get('start') or not event_data.get('end'):
-            return jsonify({"error": "Start and End time are required"}), 400
-
-        # Get the time zone from the request, or use a consistent default
+        # Validate the input data
+        start = event_data.get('start')
+        end = event_data.get('end')
         time_zone = event_data.get('timeZone', 'UTC')
 
-        # Construct the event payload for Google Calendar API
+        if not start or not end:
+            return jsonify({"error": "Start and End time are required"}), 400
+
+        # Ensure proper formatting of dateTime
+        try:
+            datetime.fromisoformat(start.replace('Z', '+00:00'))
+            datetime.fromisoformat(end.replace('Z', '+00:00'))
+        except ValueError:
+            return jsonify({"error": "Invalid ISO format for start or end"}), 400
+
+        # Construct the event payload
         event = {
             'summary': event_data.get('summary', 'No Title'),
             'location': event_data.get('location', ''),
             'description': event_data.get('description', ''),
             'start': {
-                'dateTime': event_data['start'],  # Ensure this is in correct ISO format
+                'dateTime': start,
                 'timeZone': time_zone,
             },
             'end': {
-                'dateTime': event_data['end'],  # Ensure this is in correct ISO format
+                'dateTime': end,
                 'timeZone': time_zone,
             }
         }
@@ -233,8 +241,10 @@ def create_event():
         created_event = service.events().insert(calendarId='primary', body=event).execute()
 
         return jsonify(created_event), 201
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # API endpoint to update an existing calendar event
 @calendarGoogle.route('/api/calendar/events/<event_id>', methods=['PUT'])
