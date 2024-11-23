@@ -190,7 +190,7 @@ def dashboard():
     Returns:
         Response: Renders the index.html template.
     """
-    return render_template("index.html")
+    return render_template("calendar.html")
 
 
 if __name__ == "__main__":
