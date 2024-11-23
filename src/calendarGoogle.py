@@ -1,124 +1,3 @@
-# from flask import Blueprint, render_template
-# import datetime
-# import os.path
-# import pathlib
-
-# from google.auth.transport.requests import Request
-# from google.oauth2.credentials import Credentials
-# from google_auth_oauthlib.flow import InstalledAppFlow
-# from googleapiclient.discovery import build
-# from googleapiclient.errors import HttpError
-
-# calendarGoogle = Blueprint("calendarGoogle", __name__, static_folder="static")
-
-# SCOPES = ["https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/calendar.events"]
-
-# CLIENT_SECRETS_FILE = os.path.join(
-#     pathlib.Path(__file__).parent, "client_secret.json"
-# )
-
-# def main():
-#     creds = None
-
-#     if os.path.exists("token.json"):
-#         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-
-#     if not creds or not creds.valid:
-#         if creds and creds.expired and creds.refresh_token:
-#             creds.refresh(Request())
-#         else:
-#             flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
-#             creds = flow.run_local_server(port=8080)
-
-#         with open("token.json", "w") as token:
-#             token.write(creds.to_json())
-
-    
-#     try:
-#         # THIS CODE IS FOR GETTING THE EVENTS
-
-#         # service = build("calendar", "v3", credentials=creds)
-
-#         # now = datetime.datetime.utcnow().isoformat() + "Z"
-#         # print("Getting the upcoming 10 events")
-#         # events_result = service.events().list(calendarId="primary", timeMin=now, maxResults=10, singleEvents=True, orderBy="startTime").execute()
-#         # events = events_result.get("items", [])
-
-#         # if not events:
-#         #     print("No upcoming events found.")
-#         #     return
-
-#         # for event in events:
-#         #     start = event["start"].get("dateTime", event["start"].get("date"))
-#         #     print(start, event["summary"])
-
-#         # THIS CODE IS FOR CREATING AN EVENT
-
-#         service = build("calendar", "v3", credentials=creds)
-#         event = {
-#             'summary': 'Google I/O 2015',
-#             'location': '800 Howard St., San Francisco, CA 94103',
-#             'description': 'A chance to hear more about Google\'s developer products.',
-#             'start': {
-#                 'dateTime': '2015-05-16T09:00:00-07:00',
-#                 'timeZone': 'America/Los_Angeles',
-#             },
-#             'end': {
-#                 'dateTime': '2015-05-16T17:00:00-07:00',
-#                 'timeZone': 'America/Los_Angeles',
-#             },
-#             'recurrence': [
-#                 'RRULE:FREQ=DAILY;COUNT=2'
-#             ],
-#             'attendees': [
-#                 {'email': 'lpage@example.com'},
-#                 {'email': 'sbrin@example.com'},
-#             ],
-#             'reminders': {
-#                 'useDefault': False,
-#                 'overrides': [
-#                 {'method': 'email', 'minutes': 24 * 60},
-#                 {'method': 'popup', 'minutes': 10},
-#                 ],
-#             },
-#         }
-
-#         event = service.events().insert(calendarId="primary", body=event).execute()
-#         print (f"Event created: {event.get('htmlLink')}")
-
-#         eventID = event['id']
-
-#         # THIS CODE IS FOR UPDATING AN EVENT
-#         event = service.events().get(calendarId='primary', eventId=eventID).execute()
-
-#         event['summary'] = 'Appointment at Somewhere'
-
-#         updated_event = service.events().update(calendarId='primary', eventId=eventID, body=event).execute()
-
-#         # Print the updated date.
-#         print(updated_event['updated'])
-
-
-
-#         # THIS CODE IS FOR DELETING AN EVENT
-#         service.events().delete(calendarId='primary', eventId=eventID).execute()
-
-#     except HttpError as error:
-#         print("An error occured: ", error)
-
-# if __name__ == "__main__":
-#     main()
-
-
-# # @calendarGoogle.route("/home")
-# # def home():
-# #     return render_template("index.html")
-
-
-
-
-##################################### THE CODE BEGINS FROM THIS POINT ONWARDS
-
 """
 calendarGoogle.py
 
@@ -127,7 +6,8 @@ Users can create, read, update, and delete calendar events, assuming they
 have already authenticated via Google OAuth 2.0.
 
 Attributes:
-    calendarGoogle (Blueprint): A Flask blueprint for Google Calendar operations.
+    calendarGoogle (Blueprint): A Flask blueprint for
+    Google Calendar operations.
 """
 
 import os
@@ -141,6 +21,8 @@ from datetime import datetime
 calendarGoogle = Blueprint('calendarGoogle', __name__)
 
 # Function to build Google Calendar service using user credentials
+
+
 def get_calendar_service():
     """
     Create and return a Google Calendar API service instance.
@@ -174,6 +56,8 @@ def get_calendar_service():
     return service
 
 # API endpoint to get user's calendar events
+
+
 @calendarGoogle.route('/api/calendar/events', methods=['GET'])
 def get_events():
     """
@@ -194,6 +78,7 @@ def get_events():
         return jsonify(events), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @calendarGoogle.route('/api/calendar/events', methods=['POST'])
 def create_event():
@@ -219,7 +104,9 @@ def create_event():
             datetime.fromisoformat(start.replace('Z', '+00:00'))
             datetime.fromisoformat(end.replace('Z', '+00:00'))
         except ValueError:
-            return jsonify({"error": "Invalid ISO format for start or end"}), 400
+            return jsonify(
+                {"error": "Invalid ISO format for start or end"}
+                ), 400
 
         # Construct the event payload
         event = {
@@ -238,7 +125,8 @@ def create_event():
 
         # Get Google Calendar service and insert the event
         service = get_calendar_service()
-        created_event = service.events().insert(calendarId='primary', body=event).execute()
+        created_event = service.events().insert(
+            calendarId='primary', body=event).execute()
 
         return jsonify(created_event), 201
 
@@ -261,11 +149,14 @@ def update_event(event_id):
     try:
         event_data = request.json
         service = get_calendar_service()
-        event = service.events().get(calendarId='primary', eventId=event_id).execute()
+        event = service.events().get(
+            calendarId='primary', eventId=event_id).execute()
 
         event['summary'] = event_data.get('summary', event['summary'])
-        event['location'] = event_data.get('location', event.get('location', ''))
-        event['description'] = event_data.get('description', event.get('description', ''))
+        event['location'] = event_data.get(
+            'location', event.get('location', ''))
+        event['description'] = event_data.get(
+            'description', event.get('description', ''))
         event['start'] = {
             'dateTime': event_data.get('start', event['start']['dateTime']),
             'timeZone': event_data.get('timeZone', event['start']['timeZone']),
@@ -275,13 +166,16 @@ def update_event(event_id):
             'timeZone': event_data.get('timeZone', event['end']['timeZone']),
         }
 
-        updated_event = service.events().update(calendarId='primary', eventId=event_id, body=event).execute()
+        updated_event = service.events().update(
+            calendarId='primary', eventId=event_id, body=event).execute()
 
         return jsonify(updated_event), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 # API endpoint to delete an existing calendar event
+
+
 @calendarGoogle.route('/api/calendar/events/<event_id>', methods=['DELETE'])
 def delete_event(event_id):
     """
@@ -295,7 +189,8 @@ def delete_event(event_id):
     """
     try:
         service = get_calendar_service()
-        service.events().delete(calendarId='primary', eventId=event_id).execute()
+        service.events().delete(
+            calendarId='primary', eventId=event_id).execute()
 
         return jsonify({"message": "Event deleted successfully."}), 200
     except Exception as e:

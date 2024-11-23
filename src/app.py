@@ -18,7 +18,8 @@ import pathlib
 
 import cachecontrol
 from dotenv import load_dotenv
-from flask import Flask, abort, redirect, request, session, url_for, render_template
+from flask import Flask, abort, redirect, request, session
+from flask import url_for, render_template
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -50,7 +51,9 @@ GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 REDIRECT_URI = os.environ.get("REDIRECT_URI", "http://127.0.0.1:5000/callback")
 
 # Path to the client secrets JSON file downloaded from Google Cloud Console
-CLIENT_SECRETS_FILE = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
+CLIENT_SECRETS_FILE = os.path.join(
+    pathlib.Path(__file__).parent, "/etc/secrets/client_secret.json"
+    )
 
 # OAuth 2.0 scopes (including Calendar API scopes)
 SCOPES = [
@@ -133,7 +136,9 @@ def callback():
     credentials = flow.credentials
     request_session = requests.session()
     cached_session = cachecontrol.CacheControl(request_session)
-    token_request = google.auth.transport.requests.Request(session=cached_session)
+    token_request = google.auth.transport.requests.Request(
+        session=cached_session
+        )
 
     # Verify the OAuth2 token
     try:
