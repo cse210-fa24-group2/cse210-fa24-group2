@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Calendar</title>
-  <link rel="stylesheet" href="./assets/calendar.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
@@ -19,20 +19,25 @@
   </div>
 
   <div class="add-event">
-    <h3>Add Event</h3>
+    <h3>Add/Update Event</h3>
     <form id="event-form">
       <input type="text" id="event-title" placeholder="Event Title" required />
       <input type="date" id="event-date" required />
       <input type="time" id="event-start-time" required />
-      <input type="time" id="event-end-time" required /> <!-- Add end time -->
+      <input type="time" id="event-end-time" required />
       <input type="text" id="event-location" placeholder="Location" />
       <input type="text" id="event-description" placeholder="Description" />
-      <button type="submit">Add Event</button>
+      <button id="add-event" type="button">Add Event</button>
+      <button id="update-event" type="button" disabled>Update Event</button>
     </form>
   </div>
 
-  <!-- Include axios for HTTP requests to backend API -->
-  <script src="https://cdn.jsdelivr.net/npm/axios@latest/dist/axios.min.js"></script>
-  <script src="./app.js" type="module" defer></script>
+  <div class="logout-button">
+    <a href="/logout"><button>Logout</button></a>
+  </div>
+
+  <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script type="module" src="{{ url_for('static', filename='js/dateUtils.js') }}"></script>
+  <script type="module" src="{{ url_for('static', filename='js/Calendar.js') }}"></script>
 </body>
 </html>
