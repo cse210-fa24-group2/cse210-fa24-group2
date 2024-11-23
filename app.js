@@ -1,5 +1,6 @@
 import { getDaysInMonth, formatDate } from './components/utils/dateUtils.js';
-import axios from 'https://cdn.jsdelivr.net/npm/axios@latest/dist/axios.min.js';
+
+// Axios is available globally because you are importing it in the HTML file
 
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
