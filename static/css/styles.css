@@ -90,7 +90,7 @@ nav ul li:hover {
     }
 
     #menu-toggle:checked + .menu-button img.menu-icon {
-        content: url("../assets/navbar/exit.svg");
+        content: url("../../assets/navbar/menu.svg");
     }
 
     nav > ul {
