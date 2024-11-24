@@ -1,5 +1,4 @@
 blinker==1.8.2
-CacheControl==0.14.1
 cachetools==5.3.1
 certifi==2023.7.22
 charset-normalizer==3.2.0
@@ -36,3 +35,7 @@ sqlalchemy
 psycopg2-binary
 python3-sqlalchemy
 psycopg2-binary
+SQLAlchemy
+psycopg2-binary
+cachecontrol
+python-dotenv
