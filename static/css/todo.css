@@ -1,6 +1,6 @@
     /* Styling document for the to-do list*/
 
-    @import "../vars.css";
+    @import "../css/vars.css";
 
     .todo-container {
       padding: 10px;
@@ -114,7 +114,7 @@
     }
 
     .todo-add-btn:hover {
-      background-color: #45a049;
+      background-color: #2C5282;
     }
 
     .todo-item.completed span {
@@ -137,8 +137,8 @@
 
     /* Hover feedback */
     .todo-item.drag-over {
-        border: 2px dashed #4caf50;
-        background-color: #f1f8e9; /* Light green */
+        border: 2px dashed #2C5282;
+        background-color: #E2E8F0; 
         transition: background-color 0.2s ease, border-color 0.2s ease;
     }
     
