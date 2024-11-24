@@ -60,7 +60,6 @@ SCOPES = [
     "openid",
 ]
 
-
 class User(db.Model):
     """
     User model to store user information.
@@ -185,15 +184,36 @@ def logout():
 @app.route("/")
 def home():
     """
-    Home page, prompting the user to log in.
+    Home page with options for login and adding a dummy user.
 
     Returns:
-        str: HTML content with a login prompt.
+        str: HTML content with options.
     """
-    return (
-        "Please Login to access the dashboard "
-        "<a href='/login'><button>Login</button></a>"
-    )
+    return """
+    <h1>Welcome to the App</h1>
+    <a href='/login'><button>Login</button></a>
+    <form action="/add-dummy-user" method="POST" style="display:inline;">
+        <button type="submit">Add Dummy User</button>
+    </form>
+    """
+
+
+@app.route("/add-dummy-user", methods=["POST"])
+def add_dummy_user():
+    """
+    Add a dummy user to the database.
+
+    Returns:
+        str: Confirmation message.
+    """
+    try:
+        dummy_user = User(google_id="dummy_google_id", name="Dummy User")
+        db.session.add(dummy_user)
+        db.session.commit()
+        return "Dummy user added successfully!"
+    except Exception as e:
+        db.session.rollback()
+        return f"Failed to add dummy user: {str(e)}", 500
 
 
 @app.route("/dashboard")
