@@ -8,7 +8,14 @@ including authentication, session management, and access control.
 import unittest
 import os
 from unittest.mock import patch, MagicMock
-from src.app import app
+import sys
+
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../src"))
+    )
+
+from src.app import app  # noqa: E402
 
 # Set up environment variables needed for testing
 os.environ['FLASK_SECRET_KEY'] = 'test_secret_key'
@@ -18,16 +25,10 @@ os.environ['REDIRECT_URI'] = 'http://127.0.0.1:5000/callback'
 
 
 class FlaskAppTestCase(unittest.TestCase):
-    """Test case class for the Flask application.
-
-    This class contains unit tests for the Flask application
-    routes and functionality. It uses mocking to simulate
-    external dependencies like Google's OAuth flow.
-    """
+    """Test case class for the Flask application."""
 
     def setUp(self):
         """Set up the test client for each test."""
-        # Configure the app for testing
         app.config['TESTING'] = True
         self.app = app.test_client()
 
@@ -59,8 +60,7 @@ class FlaskAppTestCase(unittest.TestCase):
         response = self.app.get('/login')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
-            response.headers['Location'], 'http://mocked_auth_url'
-        )
+            response.headers['Location'], 'http://mocked_auth_url')
 
         with self.app.session_transaction() as sess:
             self.assertEqual(sess['state'], 'mocked_state')
@@ -75,7 +75,12 @@ class FlaskAppTestCase(unittest.TestCase):
             mock_flow_instance
         )
         mock_flow_instance.fetch_token.return_value = None
-        mock_flow_instance.credentials.id_token = 'mocked_id_token'
+
+        # Mock the credentials object
+        mock_credentials = MagicMock()
+        mock_credentials.token = "mocked_access_token"
+        mock_credentials.refresh_token = "mocked_refresh_token"
+        mock_flow_instance.credentials = mock_credentials
 
         # Mock id_token.verify_oauth2_token
         mock_id_token_module.verify_oauth2_token.return_value = {
@@ -87,20 +92,20 @@ class FlaskAppTestCase(unittest.TestCase):
             sess['state'] = 'mocked_state'
 
         response = self.app.get(
-            '/callback?state=mocked_state&code=mocked_code'
-        )
+            '/callback?state=mocked_state&code=mocked_code')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
-            response.headers['Location'], 'http://localhost/dashboard'
-        )
+            response.headers['Location'], 'http://localhost/dashboard')
 
+        # Check if session is updated correctly
         with self.app.session_transaction() as sess:
             self.assertEqual(sess['id_google'], 'mocked_sub_id')
             self.assertEqual(sess['name'], 'Mocked User')
+            self.assertEqual(sess['access_token'], 'mocked_access_token')
+            self.assertEqual(sess['refresh_token'], 'mocked_refresh_token')
 
     def test_logout_route(self):
         """Test that logging out clears the session and redirects to home."""
-        # Simulate a logged-in user
         with self.app.session_transaction() as sess:
             sess['id_google'] = 'mocked_sub_id'
             sess['name'] = 'Mocked User'
@@ -115,16 +120,14 @@ class FlaskAppTestCase(unittest.TestCase):
 
     def test_dashboard_route_logged_in(self):
         """Test accessing the dashboard when the user is logged in."""
-        # Simulate a logged-in user
         with self.app.session_transaction() as sess:
             sess['id_google'] = 'mocked_sub_id'
             sess['name'] = 'Mocked User'
 
         response = self.app.get('/dashboard')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(
-            b'Welcome to the student dashboard, Mocked User!', response.data
-        )
+        self.assertIn(b'<div class="calendar-container">', response.data)
+        self.assertIn(b'Add/Update Event', response.data)
 
 
 if __name__ == '__main__':

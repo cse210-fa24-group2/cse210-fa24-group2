@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Calendar</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button id="prev-month">&lt; Prev</button>
+      <span id="current-month"></span>
+      <button id="next-month">Next &gt;</button>
+      <input type="number" id="year-input" min="1900" max="2100" placeholder="Year" />
+    </div>
+    <div class="calendar-grid" id="calendar-root"></div>
+  </div>
+
+  <div class="add-event">
+    <h3>Add/Update Event</h3>
+    <form id="event-form">
+      <input type="text" id="event-title" placeholder="Event Title" required />
+      <input type="date" id="event-date" required />
+      <input type="time" id="event-start-time" required />
+      <input type="time" id="event-end-time" required />
+      <input type="text" id="event-location" placeholder="Location" />
+      <input type="text" id="event-description" placeholder="Description" />
+      <button id="add-event" type="button">Add Event</button>
+      <button id="update-event" type="button" disabled>Update Event</button>
+    </form>
+  </div>
+
+  <div class="logout-button">
+    <a href="/logout"><button>Logout</button></a>
+  </div>
+
+  <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script type="module" src="{{ url_for('static', filename='js/dateUtils.js') }}"></script>
+  <script type="module" src="{{ url_for('static', filename='js/Calendar.js') }}"></script>
+</body>
+</html>
