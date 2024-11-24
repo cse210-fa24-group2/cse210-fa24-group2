@@ -89,17 +89,17 @@ function loadTasks() {
         <button class="remove-btn">×</button>
         `;
         if (task.completed) {
-        li.classList.add('completed');
+            li.classList.add('completed');
         }
 
         li.querySelector('.remove-btn').addEventListener('click', () => {
-        column.removeChild(li);
-        saveTasks();
+            column.removeChild(li);
+            saveTasks();
         });
 
         li.querySelector('span').addEventListener('click', () => {
-        li.classList.toggle('completed');
-        saveTasks();
+            li.classList.toggle('completed');
+            saveTasks();
         });
 
         li.addEventListener('dragstart', handleDragStart);
@@ -107,6 +107,7 @@ function loadTasks() {
         li.addEventListener('drop', (e) => handleDrop(e, column.id));
         li.addEventListener('dragenter', handleDragEnter);
         li.addEventListener('dragleave', handleDragLeave);
+        li.addEventListener('dragend', handleDragEnd);
 
         column.appendChild(li);
     });
@@ -179,13 +180,26 @@ function handleDragLeave(e) {
     dragCounter--; // Decrement on every dragleave
 }
 
+function handleDragEnd() {
+    if (draggedItem) {
+        draggedItem.style.opacity = '1'; // Reset opacity
+        draggedItem.classList.remove('dragging'); // Remove class
+        draggedItem = null; // Clear reference
+    }
+    cleanupHoverStates(); // Ensure no "hover" effects remain
+}
+
+
+
 // Cleanup hover states when dragging ends
 function cleanupHoverStates() {
     const items = document.querySelectorAll('.todo-item');
     items.forEach((item) => {
-    item.classList.remove('drag-over');
+        item.classList.remove('drag-over');
     });
 }
+
+
 document.querySelectorAll('.todo-input').forEach((input) => {
     input.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
