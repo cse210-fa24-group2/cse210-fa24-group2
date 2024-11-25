@@ -34,6 +34,6 @@ pyparsing==2.4.7
 psycopg2-binary
 python3-sqlalchemy
 psycopg2-binary
-SQLAlchemy
 cachecontrol
 python-dotenv
+Flask-SQLAlchemy
