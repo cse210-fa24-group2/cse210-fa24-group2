@@ -1,5 +1,4 @@
 blinker==1.8.2
-CacheControl==0.14.1
 cachetools==5.3.1
 certifi==2023.7.22
 charset-normalizer==3.2.0
@@ -32,3 +31,8 @@ proto-plus==1.22.2
 protobuf==3.20.3
 uritemplate==4.1.1
 pyparsing==2.4.7
+psycopg2-binary
+psycopg2-binary
+cachecontrol
+python-dotenv
+Flask-SQLAlchemy
