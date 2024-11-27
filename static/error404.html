@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #ff6b6b;
+        }
+        p {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        .gif-container {
+            margin: 2rem 0;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 1rem;
+            border: 1px solid #007bff;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>404 - Page Not Found</h1>
+    </header>
+    <main>
+        <p>Oops! The page you’re looking for doesn’t exist. But here’s a surprise for you:</p>
+        <div class="gif-container">
+            <img src="https://media.giphy.com/media/dWesBcTLavkZuG35MI/giphy.gif" alt="Rickroll Gif" width="480" height="270">
+        </div>
+        <audio autoplay loop>
+            <source src="https://archive.org/download/britney-spears-oops-i-did-it-again/Britney%20Spears%20-%20Oops!...%20I%20Did%20It%20Again.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <a href="/">Return to Home</a>
+    </main>
+    <footer>
+        &copy; 2024 Team Two Good - UC San Diego. All rights reserved.
+    </footer>
+</body>
+</html>
