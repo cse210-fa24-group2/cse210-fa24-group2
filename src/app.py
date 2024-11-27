@@ -2,14 +2,11 @@
 app.py
 
 This module implements the Flask application with Google OAuth 2.0
-authentication.
-
-The application allows users to log in using their Google account and access
-a protected dashboard. It demonstrates handling OAuth 2.0 flow,
-session management, and securing routes with a custom decorator.
+authentication and PostgreSQL database integration using SQLAlchemy.
 
 Attributes:
     app (Flask): The Flask application instance.
+    db (SQLAlchemy): SQLAlchemy database instance.
 """
 
 import functools
@@ -18,8 +15,8 @@ import pathlib
 
 import cachecontrol
 from dotenv import load_dotenv
-from flask import Flask, abort, redirect, request, session
-from flask import url_for, render_template
+from flask import Flask, abort, redirect, request, session, url_for, render_template
+from flask_sqlalchemy import SQLAlchemy
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -43,6 +40,12 @@ app = Flask(
 app.register_blueprint(calendarGoogle, url_prefix="")
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 
+# Configure PostgreSQL database
+DATABASE_URL = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy(app)
+
 # Google OAuth 2.0 Client ID and Client Secret
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
@@ -63,6 +66,14 @@ SCOPES = [
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/calendar.events",
 ]
+
+class User(db.Model):
+    """
+    User model to store user information.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    google_id = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
 
 
 def login_required(function):
@@ -157,6 +168,13 @@ def callback():
     session["access_token"] = credentials.token
     session["refresh_token"] = credentials.refresh_token
 
+    # Add user to the database if not exists
+    user = User.query.filter_by(google_id=id_info.get("sub")).first()
+    if not user:
+        user = User(google_id=id_info.get("sub"), name=id_info.get("name"))
+        db.session.add(user)
+        db.session.commit()
+
     return redirect(url_for('dashboard', _external=True))
 
 
@@ -175,15 +193,15 @@ def logout():
 @app.route("/")
 def home():
     """
-    Home page, prompting the user to log in.
+    Home page with options for login.
 
     Returns:
-        str: HTML content with a login prompt.
+        str: HTML content with options.
     """
-    return (
-        "Please Login to access the dashboard "
-        "<a href='/login'><button>Login</button></a>"
-    )
+    return """
+    <h1>Welcome to the App</h1>
+    <a href='/login'><button>Login</button></a>
+    """
 
 
 @app.route("/dashboard")
@@ -199,4 +217,7 @@ def dashboard():
 
 
 if __name__ == "__main__":
+    # Create tables in the database
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
