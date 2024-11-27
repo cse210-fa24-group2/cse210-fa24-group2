@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install black flake8 pylint coverage
-          npm install -g jest jsdoc cypress
+          npm install -g jest jsdoc cypress eslint
 
       - name: Set Environment Variables
         env:
@@ -54,6 +54,36 @@ jobs:
           black --check .
           flake8 .
           pylint $(find . -name "*.py")
+
+      - name: Lint JavaScript Code
+        continue-on-error: true
+        run: |
+          eslint . --ext .js,.jsx,.ts,.tsx
+
+  static_analysis:
+    runs-on: ubuntu-latest
+    needs: setup
+    continue-on-error: true
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies for Static Analysis
+        run: |
+          npm install -g eslint eslint-plugin-security eslint-plugin-jsdoc
+
+      - name: Perform Static Analysis
+        run: |
+          # Run ESLint with additional plugins
+          eslint . --ext .js,.jsx,.ts,.tsx \
+            --plugin security \
+            --plugin jsdoc
+
+      - name: Upload Static Analysis Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: static-analysis-report
+          path: ./eslint-report/
 
   testing:
     runs-on: ubuntu-latest
@@ -89,6 +119,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
       - name: Generate Documentation
         continue-on-error: true
         run: jsdoc -c jsdoc.json -r .
