@@ -24,12 +24,36 @@ hgroup {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 2rem; 
+    padding: 0rem 1.25rem 2rem 1.25rem; 
 }
 
 header {
     font-size: 1.25rem;
     font-weight: bold;
+}
+
+/* Header Controls Section */
+basicControls {
+    background-color: var(--button-background-lm);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.logout-button {
+    background-color: var(--button-background-lm);
+    color: var(--button-text-lm);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-right: 1.5rem;
+}
+
+.logout-button:hover {
+    background-color: var(--button-hover-lm);
+    transform: scale(1.05);
 }
 
 /* Navigation Menu */
