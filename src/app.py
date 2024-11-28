@@ -21,7 +21,7 @@ import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
-from calendarGoogle import calendarGoogle
+from src.calendarGoogle import calendarGoogle
 
 
 # Load environment variables from .env file
@@ -75,7 +75,7 @@ class User(db.Model):
     google_id = db.Column(db.String(255), unique=True, nullable=False)
     name = db.Column(db.String(255), nullable=False)
 
-'''
+
 def login_required(function):
     """
     Decorator that requires the user to be logged in to access the route.
@@ -93,7 +93,7 @@ def login_required(function):
             return abort(401)  # Unauthorized
         return function(*args, **kwargs)
 
-    return wrapper'''
+    return wrapper
 
 
 @app.route("/login")
@@ -198,11 +198,11 @@ def home():
     Returns:
         str: HTML content with options.
     """
-    return render_template("index.html")
+    return render_template("signIn.html")
 
 
 @app.route("/dashboard")
-# @login_required
+@login_required
 def dashboard():
     """
     Dashboard page, accessible only to logged-in users.
