@@ -9,6 +9,11 @@
 
 <body>
     <basicControls>
+        <input type="checkbox" id="theme-toggle" />
+        <label for="theme-toggle" class="theme-button">
+            Toggle Theme
+            <img src="{{ url_for('static', filename='assets/icons/lightmode.svg') }}" alt="theme" class="theme-icon" />
+        </label>
         <button class="logout-btn">Sign out</button>
     </basicControls>
     <hgroup>
@@ -66,6 +71,8 @@
     <footer>
         &copy; 2024 Team Two Good - UC San Diego. All rights reserved.
     </footer>
+
+    <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
     
 </body>
 
