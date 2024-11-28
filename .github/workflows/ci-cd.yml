@@ -75,7 +75,7 @@ jobs:
       - name: Perform Static Analysis
         run: |
           # Run ESLint with additional plugins
-          eslint . --ext .js,.jsx,.ts,.tsx \
+          eslint . .js,.jsx,.ts,.tsx \
             --plugin security \
             --plugin jsdoc
 
