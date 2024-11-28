@@ -45,12 +45,13 @@ h1 {
 h3 {
     font-size: 1.5rem;
     font-weight: 500;
-    margin-bottom: 1.5rem;
 }
 
 p {
     font-size: 1rem;
     font-weight: 400;
+    margin-top: 1.5rem;
+
 }
 
 button {
@@ -95,4 +96,11 @@ footer {
     color: var(--text-primary-lm);
     padding: 1rem;
     margin-top: auto;
+}
+
+/* Responsive sign in card */
+@media screen and (max-width: 830px) {
+    returnCard {
+        width: 90%;
+    }
 }
