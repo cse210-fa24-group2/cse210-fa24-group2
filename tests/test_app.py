@@ -15,7 +15,7 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../src"))
     )
 
-from app import app  # noqa: E402
+from src.app import app  # noqa: E402
 
 # Set up environment variables needed for testing
 os.environ['FLASK_SECRET_KEY'] = 'test_secret_key'
@@ -44,7 +44,7 @@ class FlaskAppTestCase(unittest.TestCase):
         response = self.app.get('/dashboard')
         self.assertEqual(response.status_code, 401)
 
-    @patch('app.Flow')
+    @patch('src.app.Flow')
     def test_login_route(self, mock_flow_class):
         """Test the login route and ensure it redirects correctly."""
         # Mock the OAuth flow
@@ -64,8 +64,8 @@ class FlaskAppTestCase(unittest.TestCase):
         with self.app.session_transaction() as sess:
             self.assertEqual(sess['state'], 'mocked_state')
 
-    @patch('app.Flow')
-    @patch('app.id_token')
+    @patch('src.app.Flow')
+    @patch('src.app.id_token')
     def test_callback_route(self, mock_id_token_module, mock_flow_class):
         """Test the callback route and simulate successful authentication."""
         # Mock the OAuth flow
