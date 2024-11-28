@@ -39,7 +39,7 @@ basicControls {
     justify-content: flex-end;
 }
 
-.logout-button {
+.logout-btn {
     background-color: var(--button-background-lm);
     color: var(--button-text-lm);
     border: none;
@@ -51,7 +51,7 @@ basicControls {
     margin-right: 1.5rem;
 }
 
-.logout-button:hover {
+.logout-btn:hover {
     background-color: var(--button-hover-lm);
     transform: scale(1.05);
 }
