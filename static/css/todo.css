@@ -1,6 +1,6 @@
     /* Styling document for the to-do list*/
 
-    @import "../css/vars.css";
+    @import url("vars.css");
 
     .todo-container {
       padding: 10px;

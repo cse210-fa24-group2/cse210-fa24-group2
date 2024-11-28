@@ -21,98 +21,100 @@ let dragCounter = 0;
 *
 * @return - null. Calls saveTasks function to save any added tasks.
 */
-function addTask(listId, inputId) {
-    const taskList = document.getElementById(listId);
+async function addTask(listId, inputId) {
     const taskInput = document.getElementById(inputId);
     const taskText = taskInput.value.trim();
 
     if (taskText === '') return;
 
-    const li = document.createElement('li');
-    li.className = 'todo-item';
-    li.setAttribute('draggable', 'true');
-    li.innerHTML = `
-    <span>${taskText}</span>
-    <button class="remove-btn">×</button>
-    `;
+    const categoryMap = {
+        'todo-today': 'Today',
+        'todo-week': 'This Week',
+        'todo-month': 'This Month',
+        'todo-next-month': 'Next Month'
+    };
 
-    li.querySelector('.remove-btn').addEventListener('click', () => {
-    taskList.removeChild(li);
-    saveTasks();
-    });
+    try {
+        const response = await fetch('/api/todos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                category: categoryMap[listId],
+                task: taskText
+            })
+        });
 
-    li.querySelector('span').addEventListener('click', () => {
-    li.classList.toggle('completed');
-    saveTasks();
-    });
+        if (!response.ok) {
+            console.error('Failed to add task:', response.statusText);
+            return;
+        }
 
-    li.addEventListener('dragstart', handleDragStart);
-    li.addEventListener('dragover', handleDragOver);
-    li.addEventListener('drop', (e) => handleDrop(e, listId));
-    li.addEventListener('dragenter', handleDragEnter);
-    li.addEventListener('dragleave', handleDragLeave);
-
-    taskList.appendChild(li);
-    taskInput.value = '';
-    saveTasks(); 
+        const data = await response.json();
+        const taskList = document.getElementById(listId);
+        const li = createTodoElement(data.id, taskText);
+        taskList.appendChild(li);
+        taskInput.value = '';
+    } catch (error) {
+        console.error('Error adding task:', error);
+    }
 }
+
 
 /*
 * Function: saveTasks
 * Saves tasks to local storage. 
 */
-function saveTasks() {
-    const columns = document.querySelectorAll('.todo-list');
-    columns.forEach((column) => {
-    const tasks = Array.from(column.children).map((li) => ({
-        text: li.querySelector('span').textContent,
-        completed: li.classList.contains('completed'),
-    }));
-    localStorage.setItem(column.id, JSON.stringify(tasks));
-    });
-}
+// function saveTasks() {
+//     const columns = document.querySelectorAll('.todo-list');
+//     columns.forEach((column) => {
+//     const tasks = Array.from(column.children).map((li) => ({
+//         text: li.querySelector('span').textContent,
+//         completed: li.classList.contains('completed'),
+//     }));
+//     localStorage.setItem(column.id, JSON.stringify(tasks));
+//     });
+// }
 
 /*
 * Function: loadTasks
 * Loads tasks from local storage while the page is loading.
 */
-function loadTasks() {
-    const columns = document.querySelectorAll('.todo-list');
-    columns.forEach((column) => {
-    const tasks = JSON.parse(localStorage.getItem(column.id)) || [];
-    tasks.forEach((task) => {
-        const li = document.createElement('li');
-        li.className = 'todo-item';
-        li.setAttribute('draggable', 'true');
-        li.innerHTML = `
-        <span>${task.text}</span>
-        <button class="remove-btn">×</button>
-        `;
-        if (task.completed) {
-            li.classList.add('completed');
+async function loadTasks() {
+    try {
+        const response = await fetch('/api/todos');
+        if (!response.ok) {
+            console.error('Failed to fetch tasks:', response.statusText);
+            return;
         }
 
-        li.querySelector('.remove-btn').addEventListener('click', () => {
-            column.removeChild(li);
-            saveTasks();
+        const data = await response.json();
+        const todos = data.todos;
+
+        // Define valid categories and their corresponding list IDs
+        const categoryMap = {
+            'Today': 'todo-today',
+            'This Week': 'todo-week',
+            'This Month': 'todo-month',
+            'Next Month': 'todo-next-month'
+        };
+
+        todos.forEach(todo => {
+            const listId = categoryMap[todo.category.trim()];
+            if (listId) {
+                const list = document.getElementById(listId);
+                if (list) {
+                    const li = createTodoElement(todo.id, todo.task);
+                    list.appendChild(li);
+                }
+            } else {
+                console.warn(`No matching list for category: ${todo.category}`);
+            }
         });
-
-        li.querySelector('span').addEventListener('click', () => {
-            li.classList.toggle('completed');
-            saveTasks();
-        });
-
-        li.addEventListener('dragstart', handleDragStart);
-        li.addEventListener('dragover', handleDragOver);
-        li.addEventListener('drop', (e) => handleDrop(e, column.id));
-        li.addEventListener('dragenter', handleDragEnter);
-        li.addEventListener('dragleave', handleDragLeave);
-        li.addEventListener('dragend', handleDragEnd);
-
-        column.appendChild(li);
-    });
-    });
+    } catch (error) {
+        console.error('Error fetching todos:', error);
+    }
 }
+
 
 //------------------------------------------------------------------------
 /* Drag-and-drop functions
@@ -125,6 +127,39 @@ function loadTasks() {
 *       - save the inputted cells on reloads, etc. (save the data)
 */
 
+function createTodoElement(id, taskText) {
+    const li = document.createElement('li');
+    li.className = 'todo-item';
+    li.setAttribute('data-id', id);
+    li.setAttribute('draggable', 'true');
+    li.innerHTML = `
+        <span>${taskText}</span>
+        <button class="remove-btn">×</button>
+    `;
+
+    li.querySelector('.remove-btn').addEventListener('click', () => {
+        deleteTask(id, li);
+    });
+
+    li.addEventListener('dragstart', handleDragStart);
+    li.addEventListener('dragend', handleDragEnd);
+    li.addEventListener('dragover', handleDragOver);
+    li.addEventListener('dragenter', handleDragEnter);
+    li.addEventListener('dragleave', handleDragLeave);
+    li.addEventListener('drop', (e) => handleDrop(e, li.closest('.todo-list').id));
+
+    return li;
+}
+
+
+async function deleteTask(id, taskElement) {
+    try {
+        await fetch(`/api/todos/${id}`, { method: 'DELETE' });
+        taskElement.remove();
+    } catch (error) {
+        console.error('Error deleting task:', error);
+    }
+}
 
 function handleDragStart(e) {
     draggedItem = e.target;
