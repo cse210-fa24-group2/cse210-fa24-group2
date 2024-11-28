@@ -17,27 +17,27 @@
             <input type="checkbox" id="menu-toggle" />
             <!-- Menu Button -->
             <label for="menu-toggle" class="menu-button">
-                <img src="../assets/navbar/menu.svg" alt="menu" class="menu-icon" />
+                <img src="{{ url_for('static', filename='assets/navbar/menu.svg') }} alt="menu" class="menu-icon" />
             </label>
             <!-- Navigation Items -->
             <ul>
                 <li class="tooltip">
-                    <img src="../assets/icons/home.svg" class="icon" alt="Home">
+                    <img src="{{ url_for('static', filename='assets/icons/home.svg') }}" class="icon" alt="Home">
                     <span class="text">Overview</span>
                     <span class="tooltiptext">A quick summary view of all subpages</span>
                 </li>
                 <li class="tooltip">
-                    <img src="../assets/icons/gradcap.svg" class="icon" alt="Courses">
+                    <img src="{{ url_for('static', filename='assets/icons/gradcap.svg') }}" class="icon" alt="Courses">
                     <span class="text">Course Central</span>
                     <span class="tooltiptext">Track your homework, assignments, and to-dos</span>
                 </li>
                 <li class="tooltip">
-                    <img src="../assets/icons/briefcase.svg" class="icon" alt="Career">
+                    <img src="{{ url_for('static', filename='assets/icons/briefcase.svg') }}" class="icon" alt="Career">
                     <span class="text">Career Compass</span>
                     <span class="tooltiptext">Monitor internship applications and career growth tools</span>
                 </li>
                 <li class="tooltip">
-                    <img src="../assets/icons/beaker.svg" class="icon" alt="Projects">
+                    <img src="{{ url_for('static', filename='assets/icons/beaker.svg') }}" class="icon" alt="Projects">
                     <span class="text">Project Board</span>
                     <span class="tooltiptext">Organize personal projects and track next steps</span>
                 </li>
