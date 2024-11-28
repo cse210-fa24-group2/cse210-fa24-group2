@@ -58,7 +58,7 @@ jobs:
       - name: Lint JavaScript Code
         continue-on-error: true
         run: |
-          eslint . --ext .js,.jsx,.ts,.tsx
+          eslint . .js,.jsx,.ts,.tsx
 
   static_analysis:
     runs-on: ubuntu-latest
