@@ -1,0 +1,91 @@
+@import "vars.css";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-primary);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--background-primary-lm);
+    color: var(--text-primary-lm);
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 3rem;
+}
+
+returnCard {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-secondary-lm);
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 40%;
+    height: 40%;
+    margin-top: 5%;
+}
+
+h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+p {
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+}
+
+.google-signin-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--button-background-lm);
+    color: var(--button-text-lm);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.google-signin-btn:hover {
+    background-color: var(--button-hover-lm); /* Hover State */
+}
+
+.google-signin-btn:focus {
+    outline: 0.5rem solid var(--focus-outline-lm); /* Focus State */
+    outline-offset: 0.5rem;
+}
+
+.google-icon {
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-right: 0.75rem;
+    background-color: var(--background-primary-lm);
+    padding: 0.05rem;
+    border-radius: 50%;
+}
+
+/* Footer Section */
+footer {
+    text-align: center;
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    padding: 1rem;
+    margin-top: auto;
+}
