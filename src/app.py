@@ -35,7 +35,7 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 app = Flask(
     __name__,
     static_folder=os.path.join(basedir, "static"),
-    template_folder=basedir
+    template_folder=os.path.join(basedir, "templates")
 )
 app.register_blueprint(calendarGoogle, url_prefix="")
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
@@ -198,10 +198,7 @@ def home():
     Returns:
         str: HTML content with options.
     """
-    return """
-    <h1>Welcome to the App</h1>
-    <a href='/login'><button>Login</button></a>
-    """
+    return render_template("signIn.html")
 
 
 @app.route("/dashboard")
@@ -213,7 +210,7 @@ def dashboard():
     Returns:
         Response: Renders the index.html template.
     """
-    return render_template("calendar.html")
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
