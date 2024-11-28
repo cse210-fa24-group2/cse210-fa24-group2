@@ -48,7 +48,7 @@ p {
     margin-bottom: 2rem;
 }
 
-.google-signin-btn {
+.signin-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -63,11 +63,11 @@ p {
     transition: background-color 0.3s ease;
 }
 
-.google-signin-btn:hover {
+.signin-btn:hover {
     background-color: var(--button-hover-lm); /* Hover State */
 }
 
-.google-signin-btn:focus {
+.signin-btn:focus {
     outline: 0.5rem solid var(--focus-outline-lm); /* Focus State */
     outline-offset: 0.5rem;
 }
