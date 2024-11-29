@@ -6,10 +6,29 @@
     <title>404 - Page Not Found</title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <style>
+        :root {
+            --font-primary: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    
+            --background-primary-lm: #F7FAFC;
+            --background-secondary-lm: #E2E8F0;
+            --button-background-lm: #2B6CB0;
+            --button-hover-lm: #2C5282;
+            --text-primary-lm: #1A202C;
+            --button-text-lm: #F7FAFC;
+            --focus-outline-lm: #3182CE;
+    
+            --background-primary-dm: #1A202C;
+            --background-secondary-dm: #2D3748;
+            --button-background-dm: #63B3ED;
+            --button-hover-dm: #4A9AD4;
+            --text-primary-dm: #F7FAFC;
+            --focus-outline-dm: #63B3ED;
+        }
+    
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
+            font-family: var(--font-primary);
+            background-color: var(--background-primary-lm);
+            color: var(--text-primary-lm);
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -18,48 +37,72 @@
             height: 100vh;
             margin: 0;
         }
+    
         h1 {
             font-size: 3rem;
-            color: #ff6b6b;
+            color: var(--button-background-lm);
         }
+    
         p {
             font-size: 1.2rem;
             margin: 1rem 0;
         }
+    
         .gif-container {
             margin: 2rem 0;
         }
+    
         a {
             text-decoration: none;
-            color: #007bff;
+            color: var(--button-text-lm);
             font-size: 1rem;
-            border: 1px solid #007bff;
+            border: 1px solid var(--button-background-lm);
+            background-color: var(--button-background-lm);
             padding: 0.5rem 1rem;
             border-radius: 5px;
             transition: all 0.3s ease;
         }
+    
         a:hover {
-            background-color: #007bff;
-            color: #fff;
+            background-color: var(--button-hover-lm);
+            color: var(--button-text-lm);
         }
-        audio {
-            display: none;
+    
+    
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--background-primary-dm);
+                color: var(--text-primary-dm);
+            }
+    
+            h1 {
+                color: var(--button-background-dm);
+            }
+    
+            a {
+                color: var(--background-primary-dm);
+                border-color: var(--button-background-dm);
+                background-color: var(--button-background-dm);
+            }
+    
+            a:hover {
+                background-color: var(--button-hover-dm);
+                color: var(--background-primary-dm);
+            }
         }
     </style>
+    
 </head>
 <body>
     <header>
         <h1>404 - Page Not Found</h1>
     </header>
     <main>
-        <p>Oops! The page you’re looking for doesn’t exist. But here’s a surprise for you:</p>
+        <p>Oops! The page you’re looking for doesn’t exist. </p>
         <div class="gif-container">
-            <img src="https://media.giphy.com/media/dWesBcTLavkZuG35MI/giphy.gif" alt="Rickroll Gif" width="480" height="270">
+            <img src="https://media.giphy.com/media/C21GGDOpKT6Z4VuXyn/giphy.gif" alt="Error 404 Gif" width="480" height="270">
         </div>
-        <audio autoplay loop>
-            <source src="https://archive.org/download/britney-spears-oops-i-did-it-again/Britney%20Spears%20-%20Oops!...%20I%20Did%20It%20Again.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
         <a href="/">Return to Home</a>
     </main>
     <footer>
