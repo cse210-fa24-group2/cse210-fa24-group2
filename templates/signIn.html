@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/signIn.css">
+    <title>Sign In</title>
+</head>
+
+<body>
+    <main>
+        <returnCard>
+            <h1>Welcome</h1>
+            <h3>To Your Student Command Center</h3>
+            <p>Everything you need to succeed in your computer science journey, all in one place. <b>Sign up or log in now to take control of your future.</b></p>
+            <button class="signin-btn">
+                <img src="{{ url_for('static', filename='assets/icons/google.svg') }}" alt="Google Logo">
+                Sign in with Google
+            </button>
+        </returnCard>
+    </main>
+    <footer>
+        &copy; 2024 Team Two Good - UC San Diego. All rights reserved.
+    </footer>
+
+    <script type="module" src="{{ url_for('static', filename='js/signIn.js') }}"></script>
+
+</body>
+
+</html>

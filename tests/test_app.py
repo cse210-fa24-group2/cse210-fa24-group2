@@ -36,9 +36,8 @@ class FlaskAppTestCase(unittest.TestCase):
         """Test that the home page loads correctly."""
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(
-            b'Please Login to access the dashboard', response.data
-        )
+        self.assertIn(b'<returnCard>', response.data)
+        self.assertIn(b'Welcome', response.data)
 
     def test_dashboard_requires_login(self):
         """Test that accessing the dashboard without login returns 401."""
@@ -126,8 +125,8 @@ class FlaskAppTestCase(unittest.TestCase):
 
         response = self.app.get('/dashboard')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'<div class="calendar-container">', response.data)
-        self.assertIn(b'Add/Update Event', response.data)
+        self.assertIn(b'<hgroup>', response.data)
+        self.assertIn(b'Your Command Center', response.data)
 
 
 if __name__ == '__main__':
