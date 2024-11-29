@@ -73,6 +73,13 @@
       overflow-y: auto;
       max-height: 250px;
       flex-grow: 1;
+      min-height: 50px; /* Ensures the list remains visible when empty */
+      border: 1px dashed #ccc; /* Provides a visual cue for drop zones */
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Aligns items to the top */
     }
 
     .todo-item {
@@ -137,17 +144,24 @@
 
     /* Hover feedback */
     .todo-item.drag-over {
-        border: 2px dashed #2C5282;
-        background-color: #E2E8F0; 
+      border: 2px dashed #e0f7fa;
+      background-color: #4fc3f7;
         transition: background-color 0.2s ease, border-color 0.2s ease;
     }
     
+    .todo-list.drag-over {
+    background-color: #e0f7fa; 
+    border-color: #4fc3f7; 
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+
     /* Ensure smooth opacity transition for dragged items */
     .todo-item {
         cursor: grab;
         transition: opacity 0.2s ease, background-color 0.2s ease;
     }
-    
+
     .todo-item:active {
         cursor: grabbing;
     }
@@ -159,7 +173,7 @@
         flex-direction: row;
         overflow-x: auto;
         padding: 10px;
-        width:calc(100%-50px)
+        width:calc(100%-50px);
     }
 
     .to-do-column {
@@ -176,15 +190,4 @@
         gap: 10px;
         width: 100%;
     }
-
-    .todo-list {
-        max-height: none;
-        margin-bottom: 20px;
-    }
-
-
 }
-
-  
-  
-  

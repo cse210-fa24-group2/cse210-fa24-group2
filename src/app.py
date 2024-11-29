@@ -15,13 +15,14 @@ import pathlib
 
 import cachecontrol
 from dotenv import load_dotenv
-from flask import Flask, abort, redirect, request, session, url_for, render_template
+from flask import Flask, abort, redirect, request, session
+from flask import url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
-from calendarGoogle import calendarGoogle
+from src.calendarGoogle import calendarGoogle
 
 
 # Load environment variables from .env file
@@ -55,7 +56,7 @@ REDIRECT_URI = os.environ.get("REDIRECT_URI", "http://127.0.0.1:5000/callback")
 
 # Path to the client secrets JSON file downloaded from Google Cloud Console
 CLIENT_SECRETS_FILE = os.path.join(
-    pathlib.Path(__file__).parent, "client_secret.json"
+    pathlib.Path(__file__).parent, "/etc/secrets/client_secret.json"
     )
 
 # OAuth 2.0 scopes (including Calendar API scopes)
@@ -66,6 +67,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/calendar.events",
 ]
+
 
 class User(db.Model):
     """
@@ -217,7 +219,6 @@ def dashboard():
     return render_template("todoList.html")
 
 
-
 class Todo(db.Model):
     """
     Todo model to store tasks for the to-do list.
@@ -251,6 +252,7 @@ def get_todos():
         ]
     }
 
+
 @app.route("/api/todos", methods=["POST"])
 @login_required
 def add_todo():
@@ -279,7 +281,10 @@ def add_todo():
         db.session.rollback()
         return {"error": f"Failed to add todo: {str(e)}"}, 500
 
-    return {"id": new_todo.id, "category": new_todo.category, "task": new_todo.task_text}
+    return {
+        "id": new_todo.id,
+        "category": new_todo.category,
+        "task": new_todo.task_text}
 
 
 @app.route("/api/todos/<int:todo_id>", methods=["DELETE"])
@@ -305,6 +310,33 @@ def delete_todo(todo_id):
 
     return {"message": "Todo deleted"}
 
+
+@app.route("/api/todos/<int:todo_id>/category", methods=["PATCH"])
+@login_required
+def update_todo_category(todo_id):
+    """
+    Update the category of a todo by ID for the logged-in user.
+    """
+    user = User.query.filter_by(google_id=session["id_google"]).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    todo = Todo.query.filter_by(id=todo_id, user_id=user.id).first()
+    if not todo:
+        return {"error": "Todo not found"}, 404
+
+    data = request.json
+    new_category = data.get("category")
+    if new_category not in ["Today", "This Week", "This Month", "Next Month"]:
+        return {"error": f"Invalid category: {new_category}"}, 400
+
+    try:
+        todo.category = new_category
+        db.session.commit()
+        return {"message": "Category updated successfully"}
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Failed to update category: {str(e)}"}, 500
 
 
 if __name__ == "__main__":

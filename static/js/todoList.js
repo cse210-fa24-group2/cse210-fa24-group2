@@ -9,12 +9,11 @@
 */
 
 let draggedItem = null;
-let dragCounter = 0;
 
 /*
 * Function: addTask
-* Adds a task to a specific todo list (either the today, tomorrow, this month or next month
-* to do list). 
+* Adds a task to a specific todo list (either the today, tomorrow, this month, or next month
+* to-do list).
 *
 * @param listId - the list it is adding to
 * @param inputId - the text it is going to add
@@ -31,7 +30,7 @@ async function addTask(listId, inputId) {
         'todo-today': 'Today',
         'todo-week': 'This Week',
         'todo-month': 'This Month',
-        'todo-next-month': 'Next Month'
+        'todo-next-month': 'Next Month',
     };
 
     try {
@@ -40,8 +39,8 @@ async function addTask(listId, inputId) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 category: categoryMap[listId],
-                task: taskText
-            })
+                task: taskText,
+            }),
         });
 
         if (!response.ok) {
@@ -58,26 +57,9 @@ async function addTask(listId, inputId) {
         console.error('Error adding task:', error);
     }
 }
-
-
-/*
-* Function: saveTasks
-* Saves tasks to local storage. 
-*/
-// function saveTasks() {
-//     const columns = document.querySelectorAll('.todo-list');
-//     columns.forEach((column) => {
-//     const tasks = Array.from(column.children).map((li) => ({
-//         text: li.querySelector('span').textContent,
-//         completed: li.classList.contains('completed'),
-//     }));
-//     localStorage.setItem(column.id, JSON.stringify(tasks));
-//     });
-// }
-
 /*
 * Function: loadTasks
-* Loads tasks from local storage while the page is loading.
+* Loads tasks from the database while the page is loading.
 */
 async function loadTasks() {
     try {
@@ -95,38 +77,26 @@ async function loadTasks() {
             'Today': 'todo-today',
             'This Week': 'todo-week',
             'This Month': 'todo-month',
-            'Next Month': 'todo-next-month'
+            'Next Month': 'todo-next-month',
         };
 
-        todos.forEach(todo => {
-            const listId = categoryMap[todo.category.trim()];
-            if (listId) {
-                const list = document.getElementById(listId);
-                if (list) {
+        Object.keys(categoryMap).forEach((category) => {
+            const list = document.getElementById(categoryMap[category]);
+            list.innerHTML = ''; // Clear list before loading
+
+            todos
+                .filter((todo) => todo.category === category)
+                .forEach((todo) => {
                     const li = createTodoElement(todo.id, todo.task);
                     list.appendChild(li);
-                }
-            } else {
-                console.warn(`No matching list for category: ${todo.category}`);
-            }
+                });
         });
     } catch (error) {
         console.error('Error fetching todos:', error);
     }
 }
 
-
-//------------------------------------------------------------------------
-/* Drag-and-drop functions
-* Desired functionality is to:
-*       - shade in cell when hovered over while dragging/dropping
-*       - remove shade-in when dragging/dropping is done
-*       - if cell1 is dragged over cell2, it replaces spot of cell2 and cell2 beyond shift downard by 1
-*       - strikethrough a cell when tapped/clicked
-*       - remove a cell when the 'x' is clicked
-*       - save the inputted cells on reloads, etc. (save the data)
-*/
-
+/* Drag-and-drop functions */
 function createTodoElement(id, taskText) {
     const li = document.createElement('li');
     li.className = 'todo-item';
@@ -143,14 +113,9 @@ function createTodoElement(id, taskText) {
 
     li.addEventListener('dragstart', handleDragStart);
     li.addEventListener('dragend', handleDragEnd);
-    li.addEventListener('dragover', handleDragOver);
-    li.addEventListener('dragenter', handleDragEnter);
-    li.addEventListener('dragleave', handleDragLeave);
-    li.addEventListener('drop', (e) => handleDrop(e, li.closest('.todo-list').id));
 
     return li;
 }
-
 
 async function deleteTask(id, taskElement) {
     try {
@@ -164,99 +129,104 @@ async function deleteTask(id, taskElement) {
 function handleDragStart(e) {
     draggedItem = e.target;
     draggedItem.style.opacity = '0.5';
-    draggedItem.classList.add('dragging');
-    dragCounter = 1; // Start tracking drag events
 }
 
 function handleDragOver(e) {
     e.preventDefault(); // Allow dropping
-    const item = e.target;
-
-    // Ensure the target is a valid item (only other list items)
-    if (item && item.classList.contains('todo-item') && item !== draggedItem) {
-    item.classList.add('drag-over');
-    }
-}
-
-function handleDrop(e, targetListId) {
-    e.preventDefault();
-    const targetList = document.getElementById(targetListId);
-    
-    if (draggedItem && targetList) {
-    // Insert the dragged item before the target item
-    const targetItem = e.target;
-    if (targetItem && targetItem.classList.contains('todo-item') && targetItem !== draggedItem) {
-        targetList.insertBefore(draggedItem, targetItem);
-    } else {
-        targetList.appendChild(draggedItem); // If dropped at the end of the list
-    }
-    draggedItem.style.opacity = '1';
-    draggedItem.classList.remove('dragging');
-    draggedItem = null;
-    dragCounter = 0; // Reset counter after drop
-    cleanupHoverStates();
-    saveTasks(); // Save tasks after moving them
-    }
-}
-
-function handleDragEnter(e) {
-    const item = e.target;
-    if (item && item.classList.contains('todo-item') && item !== draggedItem) {
-    item.classList.add('drag-over');
-    }
-    dragCounter++; // Increment on every dragenter
+    const targetList = e.currentTarget;
+    targetList.classList.add('drag-over');
 }
 
 function handleDragLeave(e) {
-    const item = e.target;
-    if (item && item.classList.contains('todo-item') && item !== draggedItem) {
-    item.classList.remove('drag-over');
+    e.currentTarget.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    const targetList = e.currentTarget;
+    const targetListId = targetList.id;
+
+    if (draggedItem && targetList) {
+        const taskId = draggedItem.getAttribute('data-id');
+        const categoryMap = {
+            'todo-today': 'Today',
+            'todo-week': 'This Week',
+            'todo-month': 'This Month',
+            'todo-next-month': 'Next Month',
+        };
+
+        const newCategory = categoryMap[targetListId];
+
+        if (newCategory) {
+            updateTaskCategory(taskId, newCategory);
+            targetList.appendChild(draggedItem);
+        }
     }
-    dragCounter--; // Decrement on every dragleave
+
+    targetList.classList.remove('drag-over');
+    draggedItem.style.opacity = '1';
+    draggedItem = null;
+}
+
+async function updateTaskCategory(taskId, newCategory) {
+    try {
+        const response = await fetch(`/api/todos/${taskId}/category`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category: newCategory }),
+        });
+
+        if (!response.ok) {
+            console.error('Failed to update task category:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error updating task category:', error);
+    }
 }
 
 function handleDragEnd() {
     if (draggedItem) {
         draggedItem.style.opacity = '1'; // Reset opacity
-        draggedItem.classList.remove('dragging'); // Remove class
-        draggedItem = null; // Clear reference
+        draggedItem = null;
     }
-    cleanupHoverStates(); // Ensure no "hover" effects remain
 }
 
+// Ensure that all necessary handlers are attached to the todo list container
+document.querySelectorAll(".todo-list").forEach((list) => {
+    // Allow dragging over even if the list is empty
+    list.addEventListener("dragover", (e) => {
+        e.preventDefault(); // Allow the drop
+        list.classList.add("drag-over"); // Add visual feedback for drop target
+    });
 
+    list.addEventListener("dragleave", (e) => {
+        list.classList.remove("drag-over"); // Remove visual feedback
+    });
+
+    list.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const targetListId = e.currentTarget.id; // Get the ID of the target list
+        handleDrop(e, targetListId);
+        list.classList.remove("drag-over"); // Remove visual feedback
+    });
+});
 
 // Cleanup hover states when dragging ends
 function cleanupHoverStates() {
-    const items = document.querySelectorAll('.todo-item');
-    items.forEach((item) => {
-        item.classList.remove('drag-over');
+    document.querySelectorAll(".todo-list").forEach((list) => {
+        list.classList.remove("drag-over");
     });
 }
 
 
 document.querySelectorAll('.todo-input').forEach((input) => {
     input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        const listId = input.closest('.to-do-column').querySelector('.todo-list').id;
-        addTask(listId, input.id);
-    }
+        if (e.key === 'Enter') {
+            const listId = input.closest('.to-do-column').querySelector('.todo-list').id;
+            addTask(listId, input.id);
+        }
     });
 });
-
-function toggleCompletion(taskElement) {
-    taskElement.classList.toggle('completed');
-}
-
-// Event listener to trigger the toggle when clicking a task
-const todoItems = document.querySelectorAll('.todo-item');
-
-todoItems.forEach(item => {
-    item.addEventListener('click', () => {
-        toggleCompletion(item);
-    });
-});
-
 
 // Load tasks when the page loads
 window.addEventListener('load', loadTasks);
