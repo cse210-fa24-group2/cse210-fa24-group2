@@ -73,7 +73,7 @@ We chose **Option 1**: Integrate Google Calendar via its API.
 ## Related Research  
 
 - **Google Calendar API Documentation**: Comprehensive guide on integrating Google Calendar with features like bi-directional sync and notifications. [source1](https://developers.google.com/calendar)  
-- **Case Study: Slack's Google Calendar Integration**: Explores how Google Calendar enhances scheduling capabilities in third-party apps integrated with Google SSO. [source3](https://slack.com/help/articles/206329808-Google-Calendar-for-Slack)  
+- **Case Study: Slack's Google Calendar Integration**: Explores how Google Calendar enhances scheduling capabilities in third-party apps integrated with Google SSO. [source2](https://slack.com/help/articles/206329808-Google-Calendar-for-Slack)  
 
 ## Conclusion  
 
