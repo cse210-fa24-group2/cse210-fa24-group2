@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/calendar.css">
+    <title>Command Center</title>
+</head>
+<body>
+    <hgroup>
+        <header>
+            <h1>Your Command Center</h1>
+        </header>
+        <nav>
+            <!-- Hidden checkbox to toggle menu -->
+            <input type="checkbox" id="menu-toggle" />
+            <label for="menu-toggle" class="menu-button">
+                <img src="{{ url_for('static', filename='assets/navbar/menu.svg') }}" alt="menu" class="menu-icon" />
+            </label>
+            <ul>
+                <li class="tooltip">
+                    <img src="{{ url_for('static', filename='assets/icons/home.svg') }}" class="icon" alt="Home">
+                    <span class="text">Overview</span>
+                    <span class="tooltiptext">A quick summary view of all subpages</span>
+                </li>
+                <li class="tooltip">
+                    <img src="{{ url_for('static', filename='assets/icons/gradcap.svg') }}" class="icon" alt="Courses">
+                    <span class="text">Course Central</span>
+                    <span class="tooltiptext">Track your homework, assignments, and to-dos</span>
+                </li>
+                <li class="tooltip">
+                    <img src="{{ url_for('static', filename='assets/icons/briefcase.svg') }}" class="icon" alt="Career">
+                    <span class="text">Career Compass</span>
+                    <span class="tooltiptext">Monitor internship applications and career growth tools</span>
+                </li>
+                <li class="tooltip">
+                    <img src="{{ url_for('static', filename='assets/icons/beaker.svg') }}" class="icon" alt="Projects">
+                    <span class="text">Project Board</span>
+                    <span class="tooltiptext">Organize personal projects and track next steps</span>
+                </li>
+            </ul>
+        </nav>
+    </hgroup>
+    <main>
+        <todo>
+            <h2>To-Do List</h2>
+        </todo>
+        <cal-group>
+            <calendar>
+                <h2>Calendar</h2>
+                <div id="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prev-month">&lt; Prev</button>
+                        <span id="current-month">Loading...</span>
+                        <button id="next-month">Next &gt;</button>
+                        <input type="number" id="year-input" min="1900" max="2100" placeholder="Year" />
+                    </div>
+                    <div class="calendar-grid" id="calendar-root"></div>
+                </div>
+                <div class="add-event">
+                    <h3>Add Event</h3>
+                    <form id="event-form">
+                        <input type="text" id="event-title" placeholder="Event Title" required />
+                        <input type="date" id="event-date" required />
+                        <input type="time" id="event-time" required />
+                        <button type="submit">Add Event</button>
+                    </form>
+                </div>
+            </calendar>
+            <deadlines>
+                <h2>Upcoming Deadlines</h2>
+            </deadlines>
+        </cal-group>
+        <career>
+            <h2>Career Tracker</h2>
+        </career>
+    </main>
+    <footer>
+        &copy; 2024 Team Two Good - UC San Diego. All rights reserved.
+    </footer>
+    <script src="../static/js/app.js" type="module"></script>
+</body>
+</html>
