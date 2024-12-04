@@ -1,0 +1,306 @@
+/* ============================================
+   General Table Styling
+   ============================================ */
+
+   @import "vars.css";
+
+   /* Typography */
+   * {
+       margin: 0;
+       padding: 0;
+       font-family: var(--font-primary);
+   }
+   
+   body {
+       color: var(--text-primary-lm);
+   }
+   
+   .datatable-wrapper thead th {
+    padding: 1rem;
+    white-space: nowrap;
+    min-width: fit-content;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+/* Ensure table container allows horizontal scroll if needed */
+.datatable-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Ensure table takes full width but respects content */
+.datatable-table {
+    width: 100%;
+    table-layout: auto;
+}
+/* Row Styling */
+.datatable-wrapper tbody tr {
+    height: 2.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.datatable-wrapper tbody td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--background-secondary-lm);
+}
+
+
+/* Links Styling */
+.datatable-wrapper a {
+    color: var(--button-background-lm);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.datatable-wrapper a:hover {
+    color: var(--button-hover-lm);
+    text-decoration: underline;
+}
+
+/* Status Dropdown */
+.status-dropdown {
+    width: 80%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--background-secondary-lm);
+    border-radius: 0.25rem;
+    background: transparent;
+    font-size: 0.875rem;
+}
+   
+   /* Row Styling */
+   .datatable-wrapper tbody tr:nth-child(even) {
+       background-color: var(--background-primary-lm);
+   }
+   
+   .datatable-wrapper tbody tr:nth-child(odd) {
+       background-color: var(--background-secondary-lm);
+   }
+   
+/* Hover States */
+.datatable-wrapper tbody tr:hover {
+    background-color: rgba(226, 232, 240, 0.5);
+    cursor: pointer;
+}
+
+/* ============================================
+   Skill Pills Styling
+   ============================================ */
+
+/* Pill styling for skills */
+.pill {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 1px; /* Add spacing between pills */
+    border-radius: 12px;
+    font-size: 0.9em;
+    color: white;
+}
+
+/* Skill column in table */
+.skills-column {
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   Status Dropdown Styling
+   ============================================ */
+
+/* Dropdown for status selection */
+.status-dropdown {
+    width: 80%; /* Adjust dropdown width */
+    padding: 5px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    color: inherit;
+    text-align: center;
+}
+
+/* ============================================
+   Notes Column Styling
+   ============================================ */
+
+/* Notes field in table */
+.notes {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: justify;
+}
+
+/* ============================================
+   Add Button Styling
+   ============================================ */
+
+/* Floating add button */
+.add-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--button-background-lm);
+    color: var(--button-text-lm);
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+}
+
+/* Add button hover effect */
+.add-button:hover {
+    transform: scale(1.1);
+    background-color: var(--button-hover-lm)
+}
+
+/* ============================================
+   Modal Styling
+   ============================================ */
+
+/* Modal background overlay */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow-y: scroll;
+}
+
+/* Modal content styling */
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 5px;
+}
+
+/* Modal close button */
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+/* Modal header */
+.modal-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Modal footer with action buttons */
+.modal-footer {
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    text-align: right;
+}
+
+/* Save button */
+.save-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Cancel button */
+.cancel-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* ============================================
+   Form Styling
+   ============================================ */
+
+/* Form row for layout */
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Inputs and textareas in the form */
+.form-row input,
+.form-row select,
+.form-row textarea {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Textarea adjustments */
+.form-row textarea {
+    min-height: 100px;
+}
+
+/* Input group with labels */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Labels inside input groups */
+.input-group label {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Date input fields */
+.input-group input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Checkbox group */
+.checkbox-group {
+    display: flex;
+    gap: 20px;
+}
+
+/* ============================================
+   Miscellaneous
+   ============================================ */
+
+/* Horizontal overflow for certain sections */
+.datatable-wrapper .datatable-top,
+.datatable-wrapper .datatable-container {
+    overflow-x: auto;
+}
+
+/* Cell alignment in table */
+.datatable-wrapper td,
+.datatable-wrapper th {
+    vertical-align: middle !important;
+    text-align: center;
+}
