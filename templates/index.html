@@ -8,6 +8,14 @@
 </head>
 
 <body>
+    <basicControls>
+        <input type="checkbox" id="theme-toggle" />
+        <label for="theme-toggle" class="theme-button">
+            Toggle Theme
+            <img src="{{ url_for('static', filename='assets/icons/lightmode.svg') }}" alt="theme" class="theme-icon" />
+        </label>
+        <button class="logout-btn">Sign out</button>
+    </basicControls>
     <hgroup>
         <header>
             <h1>Your Command Center</h1>
@@ -17,7 +25,7 @@
             <input type="checkbox" id="menu-toggle" />
             <!-- Menu Button -->
             <label for="menu-toggle" class="menu-button">
-                <img src="{{ url_for('static', filename='assets/navbar/menu.svg') }} alt="menu" class="menu-icon" />
+                <img src="{{ url_for('static', filename='assets/navbar/menu.svg') }}" alt="menu" class="menu-icon" />
             </label>
             <!-- Navigation Items -->
             <ul>
@@ -63,6 +71,8 @@
     <footer>
         &copy; 2024 Team Two Good - UC San Diego. All rights reserved.
     </footer>
+
+    <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
     
 </body>
 
