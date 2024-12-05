@@ -230,3 +230,9 @@ document.querySelectorAll('.todo-input').forEach((input) => {
 
 // Load tasks when the page loads
 window.addEventListener('load', loadTasks);
+
+module.exports = {
+    addTask,
+    loadTasks,
+    deleteTask,
+};
