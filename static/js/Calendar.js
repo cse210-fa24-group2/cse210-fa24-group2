@@ -1,20 +1,30 @@
-import { getDaysInMonth, formatDate } from './utils/dateUtils.js';
-import mockData from './utils/mockData.js';
+import { getDaysInMonth, formatDate } from './dateUtils.js';
 
-function Calendar() {
+async function Calendar() {
   const today = new Date();
   const days = getDaysInMonth(today.getFullYear(), today.getMonth());
 
-  const calendarHTML = days.map((day) => {
-    const formattedDate = formatDate(day);
-    const event = mockData.find(e => e.date === formattedDate);
-    return `
+  let events = [];
+  try {
+    const response = await axios.get('/api/calendar/events');
+    events = response.data;
+  } catch (error) {
+    console.error('Error fetching events:', error);
+  }
+
+  const calendarHTML = days
+    .map((day) => {
+      const formattedDate = formatDate(day);
+      const dayEvents = events.filter((e) => e.start.dateTime.startsWith(formattedDate));
+
+      return `
       <div class="calendar-cell">
         ${day.getDate()}
-        ${event ? `<div class="event">${event.title}</div>` : ''}
+        ${dayEvents.map((event) => `<div class="event">${event.summary}</div>`).join('')}
       </div>
     `;
-  }).join('');
+    })
+    .join('');
 
   return `<div class="calendar">${calendarHTML}</div>`;
 }
