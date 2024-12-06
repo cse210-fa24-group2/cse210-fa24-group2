@@ -271,7 +271,7 @@ def internship_tracker():
     Internship tracker page.
 
     Returns:
-        Response: Renders the InternshipTracker.html template.
+        Response: Renders the index.html template.
     """
     return render_template("InternshipTracker.html")
 
