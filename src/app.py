@@ -467,6 +467,17 @@ def delete_internship(internship_id):
         return jsonify({"error": f"Failed to delete internship: {str(e)}"}), 500
 
 
+@app.route("/internshipTracker")
+@login_required
+def internshipTracker():
+    """
+    Internship Tracker, accessible only to logged-in users.
+
+    Returns:
+        Response: Renders the InternshipTracker.html template.
+    """
+    return render_template("InternshipTracker.html")
+
 @app.errorhandler(404)
 def page_not_found(error):
     """
