@@ -18,18 +18,43 @@ body {
 
 /* Header Section */
 hgroup {
-    background-color: var(--button-background-lm);
-    color: var(--button-text-lm);
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
     height: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 2rem; 
+    padding: 0rem 1.25rem 2rem 1.25rem; 
 }
 
 header {
     font-size: 1.25rem;
     font-weight: bold;
+}
+
+/* Header Controls Section */
+basicControls {
+    background-color: var(--background-secondary-lm);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.logout-btn {
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    border: none;
+    padding: 0.5rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-right: 2rem;
+}
+
+.logout-btn:hover {
+    background-color: var(--button-hover-lm);
+    transform: scale(1.05);
 }
 
 /* Navigation Menu */
@@ -58,7 +83,43 @@ nav ul li:hover {
     transform: scale(1.05);
 }
 
+.icon, .menu-icon, .theme-icon {
+    filter: invert(9%) sepia(7%) saturate(3104%) hue-rotate(182deg) brightness(92%) contrast(90%);
+}
 
+/* Light Mode/Dark Mode Toggle */
+
+.theme-button {
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    border: none;
+    padding: 0.5rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.theme-button:hover {
+    background-color: var(--button-hover-lm);
+    transform: scale(1.05);
+}
+
+.theme-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+#theme-toggle {
+    display: none;
+}
+
+#theme-toggle:checked + .theme-button img.theme-icon {
+    content: url("../assets/icons/darkmode.svg");
+}
 
 /* Menu Button - can be used later for responsive screen sizing */
 .menu-button {
@@ -90,7 +151,7 @@ nav ul li:hover {
     }
 
     #menu-toggle:checked + .menu-button img.menu-icon {
-        content: url("../assets/navbar/menu.svg");
+        content: url("../assets/navbar/exit.svg");
     }
 
     nav > ul {
@@ -99,8 +160,6 @@ nav ul li:hover {
         align-items: left; /*allows left alignment of nav bar in mobile view*/
         gap: 1rem;
         border-radius: 1rem;
-        background: rgb(25, 55, 109);
-        background: linear-gradient(0deg, rgba(25, 55, 109, 0.2) 0%, rgba(24, 55, 109, 1) 100%);
         padding: 1rem 1rem;
         margin: 1rem 0.5rem;
         box-shadow: 0 0 1rem 0 rgba(0, 0, 0 , 0.25%)
@@ -112,6 +171,10 @@ nav ul li:hover {
     }
 
     .tooltiptext {
+        display: none;
+    }
+
+    .icon {
         display: none;
     }
 }
@@ -183,7 +246,7 @@ todo, calendar, deadlines, career {
     padding: 1.5rem;
 }
 
-todo, career {
+todo{
     width: 75rem;
     height: 20rem;
 }
@@ -201,6 +264,9 @@ deadlines {
 cal-group {
     display: flex;
     gap: 1.5rem;
+}
+career{
+    height: 30rem;
 }
 
 /* Footer Section */
