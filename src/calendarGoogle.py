@@ -195,3 +195,32 @@ def delete_event(event_id):
         return jsonify({"message": "Event deleted successfully."}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@calendarGoogle.route('/api/calendar/events/today', methods=['GET'])
+def get_todays_events():
+    """
+    Fetch Google Calendar events for the current day.
+
+    Returns:
+        Response: JSON response with event details.
+    """
+    try:
+        service = get_calendar_service()
+
+        # Get current time in UTC
+        now_utc = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0).isoformat() + 'Z'
+        end_of_day_utc = (datetime.utcnow().replace(hour=23, minute=59, second=59, microsecond=999999)).isoformat() + 'Z'
+
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=now_utc,
+            timeMax=end_of_day_utc,
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+
+        events = events_result.get('items', [])
+        return jsonify(events), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

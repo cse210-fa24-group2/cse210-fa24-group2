@@ -71,6 +71,9 @@
             </calendar>
             <deadlines id="deadlines">
                 <h2>Upcoming Deadlines</h2>
+                <ul id="upcoming-deadlines-list">
+                    <!-- Events due today will appear here -->
+                </ul>
             </deadlines>
         </calGroup>
         <career id="career">
@@ -85,6 +88,7 @@
     <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script type="module" src="/static/js/todoList.js"></script>
     <script type="module" src="/static/js/Calendar.js"></script>
+    <script src="../static/js/upcomingDeadlines.js"></script>
     
 </body>
 
