@@ -246,7 +246,7 @@ todo, calendar, deadlines, career {
     padding: 1.5rem;
 }
 
-todo, career {
+todo{
     width: 75rem;
     height: 20rem;
 }
@@ -264,6 +264,9 @@ deadlines {
 cal-group {
     display: flex;
     gap: 1.5rem;
+}
+career{
+    height: 30rem;
 }
 
 /* Footer Section */
