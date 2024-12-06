@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Tracker</title>
+
+    <!-- External Stylesheet for Simple Datatables -->
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+
+        <!-- Main Stylesheet -->
+        <!-- <link rel="stylesheet" href="/Users/maitree/Documents/CSE210/FinalProject/cse210-fa24-group2/static/css/styles.css" type="text/css"> -->
+
+    <!-- Custom Stylesheet for Internship Tracker -->
+    <link rel="stylesheet" href="../static/css/InternshipTreacker.css" type="text/css">
+
+    <!-- External Script for Simple Datatables -->
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+
+    <!-- Custom Script -->
+    <script src="../static/js/InternshipTracker.js"></script>
+</head>
+
+<body>
+
+    <!-- Internship Table Container -->
+    <div style="overflow: scroll;">
+        <!-- Table to Display Internships -->
+        <table id="InternshipTrackerTable" style="overflow: scroll; text-align: center; vertical-align: middle;">
+        </table>
+    </div>
+
+    <!-- Button to Add a New Internship -->
+    <button id="addRowBtn" class="add-button">+</button>
+
+    <!-- Modal for Adding a New Internship -->
+    <div id="addInternshipModal" class="modal">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h2>Add New Internship</h2>
+                <span class="close">&times;</span> <!-- Close Button -->
+            </div>
+
+            <!-- Modal Body with Form -->
+            <div class="modal-body">
+                <form id="internshipForm">
+                    <!-- Company and Position -->
+                    <div class="form-row">
+                        <input type="text" id="company_name" placeholder="Company Name" required>
+                        <input type="text" id="position_title" placeholder="Position Title" required>
+                    </div>
+
+                    <!-- Application Status and Link -->
+                    <div class="form-row">
+                        <select id="application_status">
+                            <option value="">Select Status</option>
+                            <option value="Applied">Applied</option>
+                            <option value="Interview">Interview</option>
+                            <option value="Offered">Offered</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                        <input type="url" id="application_link" placeholder="Application Link">
+                    </div>
+
+                    <!-- Dates Section -->
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="date_applied">Date Applied:</label>
+                            <input type="date" id="date_applied">
+                        </div>
+                        <div class="input-group">
+                            <label for="follow_up_date">Follow-up Date:</label>
+                            <input type="date" id="follow_up_date">
+                        </div>
+                    </div>
+
+                    <!-- Start Date and Offer Deadline -->
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date">
+                        </div>
+                        <div class="input-group">
+                            <label for="offer_deadline">Offer Deadline:</label>
+                            <input type="date" id="offer_deadline">
+                        </div>
+                    </div>
+
+                    <!-- Contact Info and Checkboxes -->
+                    <div class="form-row">
+                        <input type="email" id="contact_email" placeholder="Contact Email">
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="referral">
+                                Referral
+                            </label>
+                            <label>
+                                <input type="checkbox" id="offer_received">
+                                Offer Received
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Additional Details -->
+                    <div class="form-row">
+                        <input type="text" id="contact_person" placeholder="Contact Person">
+                        <input type="text" id="location" placeholder="Location">
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="salary" placeholder="Salary">
+                        <input type="text" id="internship_duration" placeholder="Duration">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="skills_required" placeholder="Skills (comma-separated)">
+                    </div>
+                    <div class="form-row">
+                        <textarea id="notes" placeholder="Notes"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer with Buttons -->
+            <div class="modal-footer">
+                <button type="button" class="cancel-btn">Cancel</button>
+                <button type="button" class="save-btn" id="saveInternship">Save</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

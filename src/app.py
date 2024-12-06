@@ -214,6 +214,15 @@ def dashboard():
     """
     return render_template("index.html")
 
+@app.errorhandler(404)
+def page_not_found(error):
+    """
+    Custom handler for 404 errors.
+
+    Returns:
+        Response: Renders the error404.html template with a 404 status code.
+    """
+    return render_template("error404.html"), 404
 
 class Todo(db.Model):
     """
