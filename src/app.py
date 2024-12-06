@@ -265,6 +265,17 @@ def dashboard():
     """
     return render_template("index.html")
 
+@app.route("/internshipTracker")
+@login_required
+def internshipTracker():
+    """
+    Internship Tracker, accessible only to logged-in users.
+
+    Returns:
+        Response: Renders the InternshipTracker.html template.
+    """
+    return render_template("InternshipTracker.html")
+
 
 @app.route('/calendar.html')
 def serve_calendar():
