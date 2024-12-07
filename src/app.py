@@ -198,7 +198,17 @@ def home():
     Returns:
         str: HTML content with options.
     """
-    return render_template("signIn.html")
+    if "id_google" not in session:
+        return render_template("signIn.html")
+    else:
+        return render_template("index.html")
+
+@app.route("/privacy")
+def privacy_policy():
+    """
+    Page containing privacy policy.
+    """
+    return render_template("privacy.html")
 
 
 @app.route("/dashboard")

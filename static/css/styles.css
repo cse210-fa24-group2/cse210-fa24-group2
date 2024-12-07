@@ -87,6 +87,15 @@ nav ul li:hover {
     filter: invert(9%) sepia(7%) saturate(3104%) hue-rotate(182deg) brightness(92%) contrast(90%);
 }
 
+.return {
+    color: var(--text-primary-lm);
+    text-decoration: none;
+}
+
+.return:hover {
+    color: var(--button-text-lm);
+}
+
 /* Light Mode/Dark Mode Toggle */
 
 .theme-button {
@@ -273,5 +282,11 @@ footer {
     color: var(--text-primary-lm);
     padding: 1rem;
     margin-top: auto;
+}
+
+.privacy {
+    display: block;
+    color: var(--text-primary-lm);
+    cursor: pointer;
 }
 
