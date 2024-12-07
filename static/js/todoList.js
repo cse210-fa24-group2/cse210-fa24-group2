@@ -1,30 +1,99 @@
-/*
-* This file is for defining script functions of the to-do list component.
-* Styling is based off of design spec. 
-* Functions include:
-*       - Adding tasks to list
-*       - Removing tasks from list
-*       - Moving tasks around in list (for better prioritization)
-*       - Striking tasks from list
-*/
+/**
+ * This file defines script functions for the to-do list component.
+ * Includes adding, removing, and organizing tasks.
+ */
 
 let draggedItem = null;
 
-/*
-* Function: addTask
-* Adds a task to a specific todo list (either the today, tomorrow, this month, or next month
-* to-do list).
-*
-* @param listId - the list it is adding to
-* @param inputId - the text it is going to add
-*
-* @return - null. Calls saveTasks function to save any added tasks.
-*/
+/**
+ * Ensure the To-Do List loads correctly into the container.
+ * @async
+ */
+async function loadTodoList() {
+    try {
+        const response = await fetch('/todoList.html');
+        if (!response.ok) {
+            console.error('Failed to fetch To-Do List HTML:', response.statusText);
+            return;
+        }
+
+        const todoHTML = await response.text();
+        const container = document.querySelector('#todo-container');
+        if (container) {
+            container.innerHTML = todoHTML;
+            await loadTasks();
+            attachDragAndDropHandlers();
+
+            // Attach "Enter" key handler to input fields
+            document.querySelectorAll('.todo-input').forEach((input) => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const listId = input.closest('.to-do-column').querySelector('.todo-list').id;
+                        addTask(listId, input.id);
+                    }
+                });
+            });
+        } else {
+            console.error('To-Do List container not found.');
+        }
+    } catch (error) {
+        console.error('Error loading To-Do List:', error);
+    }
+}
+
+/**
+ * Load tasks from the database and populate the respective lists.
+ * @async
+ */
+async function loadTasks() {
+    try {
+        const response = await fetch('/api/todos');
+        if (!response.ok) {
+            console.error('Failed to fetch tasks:', response.statusText);
+            return;
+        }
+
+        const data = await response.json();
+        const todos = data.todos;
+
+        // Define valid categories and their corresponding list IDs
+        const categoryMap = {
+            'Today': 'todo-today',
+            'This Week': 'todo-week',
+            'This Month': 'todo-month',
+            'Next Month': 'todo-next-month',
+        };
+
+        Object.keys(categoryMap).forEach((category) => {
+            const list = document.getElementById(categoryMap[category]);
+            if (list) {
+                list.innerHTML = ''; // Clear list before loading
+                todos
+                    .filter((todo) => todo.category === category)
+                    .forEach((todo) => {
+                        const li = createTodoElement(todo.id, todo.task);
+                        list.appendChild(li);
+                    });
+            } else {
+                console.error(`List container for category "${category}" not found.`);
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+    }
+}
+
+/**
+ * Add a task to a specific todo list (Today, This Week, etc.).
+ * @async
+ * @param {string} listId - The list's ID to which the task will be added.
+ * @param {string} inputId - The input field's ID for the task text.
+ */
 async function addTask(listId, inputId) {
     const taskInput = document.getElementById(inputId);
-    const taskText = taskInput.value.trim();
+    const taskText = taskInput?.value.trim();
 
-    if (taskText === '') return;
+    if (!taskText) return;
 
     const categoryMap = {
         'todo-today': 'Today',
@@ -50,53 +119,22 @@ async function addTask(listId, inputId) {
 
         const data = await response.json();
         const taskList = document.getElementById(listId);
-        const li = createTodoElement(data.id, taskText);
-        taskList.appendChild(li);
+        if (taskList) {
+            const li = createTodoElement(data.id, taskText);
+            taskList.appendChild(li);
+        }
         taskInput.value = '';
     } catch (error) {
         console.error('Error adding task:', error);
     }
 }
-/*
-* Function: loadTasks
-* Loads tasks from the database while the page is loading.
-*/
-async function loadTasks() {
-    try {
-        const response = await fetch('/api/todos');
-        if (!response.ok) {
-            console.error('Failed to fetch tasks:', response.statusText);
-            return;
-        }
 
-        const data = await response.json();
-        const todos = data.todos;
-
-        // Define valid categories and their corresponding list IDs
-        const categoryMap = {
-            'Today': 'todo-today',
-            'This Week': 'todo-week',
-            'This Month': 'todo-month',
-            'Next Month': 'todo-next-month',
-        };
-
-        Object.keys(categoryMap).forEach((category) => {
-            const list = document.getElementById(categoryMap[category]);
-            list.innerHTML = ''; // Clear list before loading
-
-            todos
-                .filter((todo) => todo.category === category)
-                .forEach((todo) => {
-                    const li = createTodoElement(todo.id, todo.task);
-                    list.appendChild(li);
-                });
-        });
-    } catch (error) {
-        console.error('Error fetching todos:', error);
-    }
-}
-
-/* Drag-and-drop functions */
+/**
+ * Create a new task element for the to-do list.
+ * @param {number} id - The task ID.
+ * @param {string} taskText - The task text.
+ * @returns {HTMLElement} - The created task element.
+ */
 function createTodoElement(id, taskText) {
     const li = document.createElement('li');
     li.className = 'todo-item';
@@ -117,35 +155,72 @@ function createTodoElement(id, taskText) {
     return li;
 }
 
+/**
+ * Delete a task from the to-do list.
+ * @async
+ * @param {number} id - The task ID.
+ * @param {HTMLElement} taskElement - The task element to be removed.
+ */
 async function deleteTask(id, taskElement) {
     try {
-        await fetch(`/api/todos/${id}`, { method: 'DELETE' });
+        const response = await fetch(`/api/todos/${id}`, { method: 'DELETE' });
+        if (!response.ok) {
+            throw new Error('Failed to delete task');
+        }
         taskElement.remove();
     } catch (error) {
         console.error('Error deleting task:', error);
     }
 }
 
+/**
+ * Handle the start of a drag-and-drop event.
+ * @param {Event} e - The drag event.
+ */
 function handleDragStart(e) {
     draggedItem = e.target;
     draggedItem.style.opacity = '0.5';
 }
 
-function handleDragOver(e) {
-    e.preventDefault(); // Allow dropping
-    const targetList = e.currentTarget;
-    targetList.classList.add('drag-over');
+/**
+ * Handle the end of a drag-and-drop event.
+ */
+function handleDragEnd() {
+    if (draggedItem) {
+        draggedItem.style.opacity = '1';
+        draggedItem = null;
+    }
 }
 
-function handleDragLeave(e) {
-    e.currentTarget.classList.remove('drag-over');
+/**
+ * Attach drag-and-drop handlers to all to-do list containers.
+ */
+function attachDragAndDropHandlers() {
+    document.querySelectorAll('.todo-list').forEach((list) => {
+        list.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            list.classList.add('drag-over');
+        });
+
+        list.addEventListener('dragleave', () => {
+            list.classList.remove('drag-over');
+        });
+
+        list.addEventListener('drop', (e) => {
+            e.preventDefault();
+            handleDrop(e, list.id);
+            list.classList.remove('drag-over');
+        });
+    });
 }
 
-function handleDrop(e) {
-    e.preventDefault();
-    const targetList = e.currentTarget;
-    const targetListId = targetList.id;
-
+/**
+ * Handle the drop event for drag-and-drop functionality.
+ * @param {Event} e - The drop event.
+ * @param {string} listId - The ID of the list where the task is dropped.
+ */
+function handleDrop(e, listId) {
+    const targetList = document.getElementById(listId);
     if (draggedItem && targetList) {
         const taskId = draggedItem.getAttribute('data-id');
         const categoryMap = {
@@ -155,19 +230,21 @@ function handleDrop(e) {
             'todo-next-month': 'Next Month',
         };
 
-        const newCategory = categoryMap[targetListId];
+        const newCategory = categoryMap[listId];
 
         if (newCategory) {
             updateTaskCategory(taskId, newCategory);
             targetList.appendChild(draggedItem);
         }
     }
-
-    targetList.classList.remove('drag-over');
-    draggedItem.style.opacity = '1';
-    draggedItem = null;
 }
 
+/**
+ * Update the category of a task when moved.
+ * @async
+ * @param {number} taskId - The task ID.
+ * @param {string} newCategory - The new category for the task.
+ */
 async function updateTaskCategory(taskId, newCategory) {
     try {
         const response = await fetch(`/api/todos/${taskId}/category`, {
@@ -184,55 +261,7 @@ async function updateTaskCategory(taskId, newCategory) {
     }
 }
 
-function handleDragEnd() {
-    if (draggedItem) {
-        draggedItem.style.opacity = '1'; // Reset opacity
-        draggedItem = null;
-    }
-}
+// Automatically load the To-Do List when the page loads
+window.addEventListener('load', loadTodoList);
 
-// Ensure that all necessary handlers are attached to the todo list container
-document.querySelectorAll(".todo-list").forEach((list) => {
-    // Allow dragging over even if the list is empty
-    list.addEventListener("dragover", (e) => {
-        e.preventDefault(); // Allow the drop
-        list.classList.add("drag-over"); // Add visual feedback for drop target
-    });
-
-    list.addEventListener("dragleave", (e) => {
-        list.classList.remove("drag-over"); // Remove visual feedback
-    });
-
-    list.addEventListener("drop", (e) => {
-        e.preventDefault();
-        const targetListId = e.currentTarget.id; // Get the ID of the target list
-        handleDrop(e, targetListId);
-        list.classList.remove("drag-over"); // Remove visual feedback
-    });
-});
-
-// Cleanup hover states when dragging ends
-function cleanupHoverStates() {
-    document.querySelectorAll(".todo-list").forEach((list) => {
-        list.classList.remove("drag-over");
-    });
-}
-
-
-document.querySelectorAll('.todo-input').forEach((input) => {
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const listId = input.closest('.to-do-column').querySelector('.todo-list').id;
-            addTask(listId, input.id);
-        }
-    });
-});
-
-// Load tasks when the page loads
-window.addEventListener('load', loadTasks);
-
-module.exports = {
-    addTask,
-    loadTasks,
-    deleteTask,
-};
+module.exports = { loadTodoList, addTask, loadTasks, deleteTask };
