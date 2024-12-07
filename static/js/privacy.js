@@ -1,4 +1,4 @@
 document.querySelector(".tooltip").addEventListener("click", function () {
-    // Redirect to the Flask index route
+    // Redirect to the Flask signIn route
     window.location.href = "/";
 });

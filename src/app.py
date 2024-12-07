@@ -21,7 +21,7 @@ import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
-from src.calendarGoogle import calendarGoogle
+from calendarGoogle import calendarGoogle
 
 
 # Load environment variables from .env file
@@ -55,7 +55,7 @@ REDIRECT_URI = os.environ.get("REDIRECT_URI", "http://127.0.0.1:5000/callback")
 
 # Path to the client secrets JSON file downloaded from Google Cloud Console
 CLIENT_SECRETS_FILE = os.path.join(
-    pathlib.Path(__file__).parent, "/etc/secrets/client_secret.json"
+    pathlib.Path(__file__).parent, "client_secret.json"
     )
 
 # OAuth 2.0 scopes (including Calendar API scopes)
@@ -198,15 +198,12 @@ def home():
     Returns:
         str: HTML content with options.
     """
-    return render_template("index.html")
+    return render_template("signIn.html")
 
 @app.route("/privacy")
 def privacy_policy():
     """
-    Home page with options for login.
-
-    Returns:
-        str: HTML content with options.
+    Page containing privacy policy.
     """
     return render_template("privacy.html")
 
