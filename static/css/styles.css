@@ -189,54 +189,23 @@ nav ul li:hover {
 }
 
 /* Tooltip Styling */
-.tooltip {
-    position: relative;
-    display: inline-flex;
+.navlink {
+    display: flex;
     align-items: center;
-    cursor: pointer;
 }
 
-.tooltip .text{
-    text-align: left;
+.navlink a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    font-size: 1rem;
 }
 
-.tooltip .icon {
+.icon {
     width: 2rem;
     height: 2rem;
     margin-right:10px;
-}
-
-.tooltiptext {
-    visibility: hidden;
-    opacity: 0;
-    width: 12rem;
-    background-color: var(--background-secondary-lm);
-    color: var(--text-primary-lm);
-    text-align: center;
-    padding: 0.5rem;
-    border-radius: 4px;
-    position: absolute;
-    top: 50%;
-    left: -13rem;
-    transform: translateY(-50%);
-    transition: visibility 0.3s, opacity 0.3s;
-}
-
-/* Tooltip arrow */
-.tooltiptext::after {
-    content: "";
-    position: absolute;
-    top:50%;
-    right: -.55rem;
-    transform: translateY(-50%) rotate(-90deg);
-    border-width: 5px;
-    border-style: solid;
-    border-color: var(--background-secondary-lm) transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
 }
 
 /* Content Sections Styling */

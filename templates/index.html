@@ -29,38 +29,46 @@
             </label>
             <!-- Navigation Items -->
             <ul>
-                <li class="tooltip">
-                    <img src="{{ url_for('static', filename='assets/icons/list.svg') }}" class="icon" alt="Home">
-                    <span class="text">To-Do List</span>
+                <li class="navlink">
+                    <a href="#todo">
+                        <img src="{{ url_for('static', filename='assets/icons/list.svg') }}" class="icon" alt="Home">
+                        To-Do List
+                    </a>
                 </li>
-                <li class="tooltip">
-                    <img src="{{ url_for('static', filename='assets/icons/calendar.svg') }}" class="icon" alt="Courses">
-                    <span class="text">Calendar</span>
+                <li class="navlink">
+                    <a href="#calendar">
+                        <img src="{{ url_for('static', filename='assets/icons/calendar.svg') }}" class="icon" alt="Courses">
+                        Calendar
+                    </a>
                 </li>
-                <li class="tooltip">
-                    <img src="{{ url_for('static', filename='assets/icons/alert.svg') }}" class="icon" alt="Career">
-                    <span class="text">Upcoming Deadlines</span>
+                <li class="navlink">
+                    <a href="#deadlines">
+                        <img src="{{ url_for('static', filename='assets/icons/alert.svg') }}" class="icon" alt="Career">
+                        Deadlines
+                    </a>
                 </li>
-                <li class="tooltip">
-                    <img src="{{ url_for('static', filename='assets/icons/briefcase.svg') }}" class="icon" alt="Projects">
-                    <span class="text">Career Tracker</span>
+                <li class="navlink">
+                    <a href="#career">
+                        <img src="{{ url_for('static', filename='assets/icons/briefcase.svg') }}" class="icon" alt="Projects">
+                        Career Tracker
+                    </a>
                 </li>
             </ul>
         </nav>        
     </hgroup>
     <main>
-        <todo>
+        <todo id="todo">
             <h2>To-Do List</h2>
         </todo>
         <cal-group>
-            <calendar>
+            <calendar id="calendar">
                 <h2>Calendar</h2>
             </calendar>
-            <deadlines>
+            <deadlines id="deadlines">
                 <h2>Upcoming Deadlines</h2>
             </deadlines>
         </cal-group>
-        <career>
+        <career id="career">
             <h2>Career Tracker</h2>
         </career>
     </main>
