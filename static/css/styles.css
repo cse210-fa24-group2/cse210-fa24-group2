@@ -275,3 +275,9 @@ footer {
     margin-top: auto;
 }
 
+privPolicy {
+    display: block;
+    text-decoration: underline;
+    cursor: pointer;
+}
+

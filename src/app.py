@@ -198,7 +198,17 @@ def home():
     Returns:
         str: HTML content with options.
     """
-    return render_template("signIn.html")
+    return render_template("index.html")
+
+@app.route("/privacy")
+def privacy_policy():
+    """
+    Home page with options for login.
+
+    Returns:
+        str: HTML content with options.
+    """
+    return render_template("privacy.html")
 
 
 @app.route("/dashboard")
