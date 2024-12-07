@@ -103,7 +103,7 @@ class Internship(db.Model):
     location = db.Column(db.String(255))
     salary = db.Column(db.Numeric(10, 2))
     internship_duration = db.Column(db.String(50))
-    skills_required = db.Column(db.JSONB)
+    skills_required = db.Column(MutableDict.as_mutable(JSONB))
 
     user = db.relationship('User', back_populates='internships')
 
