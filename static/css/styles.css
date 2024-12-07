@@ -246,7 +246,7 @@ todo, calendar, deadlines, career {
     padding: 1.5rem;
 }
 
-todo, career {
+todo {
     width: 75rem;
     height: 20rem;
 }
@@ -265,6 +265,10 @@ cal-group {
     display: flex;
     gap: 1.5rem;
 }
+career{
+    width: 75rem;
+    height: 100%;
+}
 
 /* Footer Section */
 footer {
@@ -275,3 +279,31 @@ footer {
     margin-top: auto;
 }
 
+.expanded-details {
+    background-color: var(--background-color-dm);
+}
+
+.expanded-details td {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border-color-dm);
+}
+
+.detail-label {
+    font-weight: bold;
+    color: var(--text-color-dm);
+    width: 150px;
+}
+
+.detail-value {
+    color: var(--text-color-dm);
+}
+
+.dt-control {
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: transform 0.2s;
+}
+
+.dt-control:hover {
+    color: var(--hover-color-dm);
+}

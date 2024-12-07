@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/styles.css">
+
+
+    <!-- internship table imports -->
     <title>Command Center</title>
 </head>
 
 <body>
+    <basicControls>
+        <input type="checkbox" id="theme-toggle" />
+        <label for="theme-toggle" class="theme-button">
+            Toggle Theme
+            <img src="{{ url_for('static', filename='assets/icons/lightmode.svg') }}" alt="theme" class="theme-icon" />
+        </label>
+        <button class="logout-btn">Sign out</button>
+    </basicControls>
     <hgroup>
         <header>
             <h1>Your Command Center</h1>
@@ -17,7 +28,7 @@
             <input type="checkbox" id="menu-toggle" />
             <!-- Menu Button -->
             <label for="menu-toggle" class="menu-button">
-                <img src="{{ url_for('static', filename='assets/navbar/menu.svg') }} alt="menu" class="menu-icon" />
+                <img src="{{ url_for('static', filename='assets/navbar/menu.svg') }}" alt="menu" class="menu-icon" />
             </label>
             <!-- Navigation Items -->
             <ul>
@@ -58,14 +69,14 @@
         </cal-group>
         <career>
             <h2>Career Tracker</h2>
-            <iframe src=
-            "/internshipTracker" width="100%" height="90%" style="border: none;">
+            {% include 'InternshipTracker.html' %}
         </career>
     </main>
     <footer>
         &copy; 2024 Team Two Good - UC San Diego. All rights reserved.
     </footer>
-    
+
+    <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 
 </html>

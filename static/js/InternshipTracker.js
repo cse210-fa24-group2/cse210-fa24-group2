@@ -3,6 +3,35 @@ document.addEventListener("DOMContentLoaded", () => {
      * Data for internships
      * Each object represents an internship and its associated details
      */
+    
+    class InternshipTracker extends HTMLElement {
+        constructor() {
+            super();
+            this.attachShadow({ mode: 'open' });
+        }
+    
+        connectedCallback() {
+            this.render();
+            this.initializeTable();
+        }
+    
+        render() {
+            this.shadowRoot.innerHTML = `
+                <style>
+                    @import "InternshipTracker.css";
+                </style>
+                <div class="datatable-wrapper">
+                    <table id="InternshipTrackerTable" class="datatable-table">
+                    </table>
+                </div>
+                <button class="add-button" onclick="openAddModal()">+</button>
+                <div id="internshipModal" class="modal">
+                    <!-- Modal content here -->
+                </div>
+            `;
+        }
+    
+    }
     const internshipData = [
         {
             internshipId: "1",
@@ -177,55 +206,66 @@ const generateStatusDropdown = (currentStatus) => {
 };
 
 
-    // Initialize DataTable
-    const dataTable = new simpleDatatables.DataTable("#InternshipTrackerTable", {
-        searchable: true,
-        data: {
-            headings: [
-                "Internship ID",
-                "Company Name",
-                "Position Title",
-                "Application Status",
-                "Date Applied",
-                "Follow-Up Date",
-                "Application Link",
-                "Start Date",
-                "Contact Person",
-                "Contact Email",
-                "Referral",
-                "Offer Received",
-                "Offer Deadline",
-                "Notes",
-                "Location",
-                "Salary",
-                "Internship Duration",
-                "Skills Required"
-            ],
-            data: internshipData.map((item) => [
-                item.internshipId,
-                item.companyName,
-                item.positionTitle,
-                generateStatusDropdown(item.applicationStatus),
-                item.dateApplied,
-                item.followUpDate,
-                `<a href="${item.applicationLink}" target="_blank">Link</a>`,
-                item.startDate,
-                item.contactPerson,
-                item.contactEmail,
-                item.referral ? "Yes" : "No",
-                item.offerReceived ? "Yes" : "No",
-                item.offerDeadline || "N/A",
-                `<p class="notes">${item.notes}</p>`,
-                item.location,
-                `$${parseFloat(item.salary).toFixed(2)}`,
-                item.internshipDuration,
-                `<div class="skills-column">${generateSkillPills(item.skillsRequired)}</div>`
-            ])
-        },
-        responsive: true
-        
-    });
+const dataTable = new simpleDatatables.DataTable("#InternshipTrackerTable", {
+    searchable: true,
+    data: {
+        headings: [
+            "",  // For expand/collapse arrow
+            "Company Name",
+            "Position Title",
+            "Application Status",
+            "Date Applied",
+            "Application Link",
+            ""  // For edit button
+        ],
+        data: internshipData.map((item, index) => [
+            `<span class="dt-control" data-index="${index}">▶</span>`,
+            item.companyName,
+            item.positionTitle,
+            generateStatusDropdown(item.applicationStatus),
+            item.dateApplied,
+            `<a href="${item.applicationLink}" target="_blank">Link</a>`,
+            `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`
+        ])
+    }
+});
 
+document.querySelector('#InternshipTrackerTable tbody').addEventListener('click', function(e) {
+    if (!e.target.classList.contains('dt-control')) return;
+    
+    const tr = e.target.closest('tr');
+    const index = e.target.dataset.index;
+    const item = internshipData[index];
+    
+    if (tr.nextElementSibling?.classList.contains('expanded-details')) {
+        // Close rows
+        while (tr.nextElementSibling && tr.nextElementSibling.classList.contains('expanded-details')) {
+            tr.nextElementSibling.remove();
+        }
+        e.target.textContent = '▶';
+    } else {
+        // Create expanded rows
+        const detailRows = [
+            ['Salary', `$${parseFloat(item.salary).toFixed(2)}`],
+            ['Location', item.location],
+            ['Contact', `${item.contactPerson} (${item.contactEmail})`],
+            ['Important Dates', `Start: ${item.startDate} | Follow-up: ${item.followUpDate} | Deadline: ${item.offerDeadline || 'N/A'}`],
+            ['Status', `Referral: ${item.referral ? 'Yes' : 'No'} | Offer: ${item.offerReceived ? 'Yes' : 'No'}`],
+            ['Duration', item.internshipDuration],
+            ['Skills', generateSkillPills(item.skillsRequired)],
+            ['Notes', item.notes]
+        ].map(([label, value]) => `
+            <tr class="expanded-details">
+                <td></td>
+                <td class="detail-label">${label}</td>
+                <td colspan="5" class="detail-value">${value}</td>
+            </tr>
+        `).join('');
+        
+        tr.insertAdjacentHTML('afterend', detailRows);
+        e.target.textContent = '▼';
+    }
+});
     // Modal-related logic
     const modal = document.getElementById("addInternshipModal");
     const addButton = document.getElementById("addRowBtn");
@@ -284,4 +324,68 @@ const generateStatusDropdown = (currentStatus) => {
         console.log(newInternship);
         closeModal();
     };
+
+
+    window.editInternship = function(item) {
+        const itemValues = typeof item === 'string' ? JSON.parse(item) : item;
+        modal.style.display = "block";
+        
+            // Function to convert date from MM/DD/YYYY to YYYY-MM-DD
+        const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const [month, day, year] = dateString.split('/');
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    };
+        // Pre-fill form fields with existing data
+        document.getElementById("company_name").value = itemValues.companyName;
+        document.getElementById("position_title").value = itemValues.positionTitle;
+        document.getElementById("application_status").value = itemValues.applicationStatus;
+        document.getElementById("date_applied").value = formatDate(itemValues.dateApplied);
+        document.getElementById("follow_up_date").value = formatDate(itemValues.followUpDate);
+        document.getElementById("application_link").value = itemValues.applicationLink;
+        document.getElementById("start_date").value = formatDate(itemValues.startDate);
+        document.getElementById("contact_person").value = itemValues.contactPerson;
+        document.getElementById("contact_email").value = itemValues.contactEmail;
+        document.getElementById("referral").checked = itemValues.referral;
+        document.getElementById("offer_received").checked = itemValues.offerReceived;
+        document.getElementById("offer_deadline").value = formatDate(itemValues.offerDeadline);
+        document.getElementById("notes").value = itemValues.notes;
+        document.getElementById("location").value = itemValues.location;
+        document.getElementById("salary").value = parseFloat(itemValues.salary);
+        document.getElementById("internship_duration").value = itemValues.internshipDuration;
+        document.getElementById("skills_required").value = JSON.parse(itemValues.skillsRequired).join(", ");
+    
+        // Modify save button to handle edit
+        const saveButton = document.querySelector(".save-btn");
+        saveButton.onclick = () => {
+            const updatedInternship = {
+                internshipId: item.internshipId,
+                companyName: document.getElementById("company_name").value,
+                positionTitle: document.getElementById("position_title").value,
+                applicationStatus: document.getElementById("application_status").value,
+                dateApplied: document.getElementById("date_applied").value,
+                followUpDate: document.getElementById("follow_up_date").value,
+                applicationLink: document.getElementById("application_link").value,
+                startDate: document.getElementById("start_date").value,
+                contactPerson: document.getElementById("contact_person").value,
+                contactEmail: document.getElementById("contact_email").value,
+                referral: document.getElementById("referral").checked,
+                offerReceived: document.getElementById("offer_received").checked,
+                offerDeadline: document.getElementById("offer_deadline").value,
+                notes: document.getElementById("notes").value,
+                location: document.getElementById("location").value,
+                salary: parseFloat(document.getElementById("salary").value) || 0,
+                internshipDuration: document.getElementById("internship_duration").value,
+                skillsRequired: JSON.stringify(
+                    document
+                        .getElementById("skills_required")
+                        .value.split(",")
+                        .map((skill) => skill.trim())
+                )
+            };
+    
+            console.log(updatedInternship);
+            closeModal();
+        };
+    }
 });
