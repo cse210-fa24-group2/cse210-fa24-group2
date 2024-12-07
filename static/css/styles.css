@@ -87,13 +87,23 @@ nav ul li:hover {
     filter: invert(9%) sepia(7%) saturate(3104%) hue-rotate(182deg) brightness(92%) contrast(90%);
 }
 
-.return {
-    color: var(--text-primary-lm);
-    text-decoration: none;
+.navlink {
+    display: flex;
+    align-items: center;
 }
 
-.return:hover {
-    color: var(--button-text-lm);
+.navlink a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    font-size: 1rem;
+}
+
+.icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right:10px;
 }
 
 /* Light Mode/Dark Mode Toggle */
@@ -186,26 +196,6 @@ nav ul li:hover {
     .icon {
         display: none;
     }
-}
-
-/* Tooltip Styling */
-.navlink {
-    display: flex;
-    align-items: center;
-}
-
-.navlink a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    font-size: 1rem;
-}
-
-.icon {
-    width: 2rem;
-    height: 2rem;
-    margin-right:10px;
 }
 
 /* Content Sections Styling */
