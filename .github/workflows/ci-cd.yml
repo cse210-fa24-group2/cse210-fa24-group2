@@ -59,14 +59,29 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
+
+          # Fetch the latest state of the remote repository
           git fetch origin
+
+          # Switch to or create the docs branch
           git checkout -B docs
-          mkdir -p jsdocs
-          cp -R jsdocs/* jsdocs/
-          rm -rf jsdocs/
+
+          # Use a temporary directory to ensure safe copying
+          mkdir -p jsdocs_temp
+          cp -R jsdocs/* jsdocs_temp/
+          rm -rf jsdocs
+          mv jsdocs_temp jsdocs
+
+          # Stage and commit the updated documentation
           git add jsdocs/
-          git commit -m "Update JSDocs [skip ci]"
-          git push --force --set-upstream origin docs
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update JSDocs [skip ci]"
+
+            # Push the changes to the remote docs branch
+            git push --force --set-upstream origin docs
+          fi
 
   linting_and_code_quality:
     runs-on: ubuntu-latest
