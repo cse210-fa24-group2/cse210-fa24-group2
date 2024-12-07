@@ -103,6 +103,25 @@
     color: var(--text-primary-lm)
 }
 
+/* Horizontal overflow for certain sections */
+.datatable-wrapper .datatable-top,
+.datatable-wrapper .datatable-container {
+    overflow-x: auto;
+}
+
+/* Cell alignment in table */
+.datatable-wrapper td,
+.datatable-wrapper th {
+    vertical-align: middle;
+    text-align: left;
+}
+
+.datatable-sorter::before,
+.datatable-sorter::after {
+    opacity: 0.8;
+}
+
+
 /* ============================================
    Skill Pills Styling
    ============================================ */
@@ -302,32 +321,5 @@
     display: flex;
     gap: 20px;
 }
-
-/* ============================================
-   Miscellaneous
-   ============================================ */
-
-/* Horizontal overflow for certain sections */
-.datatable-wrapper .datatable-top,
-.datatable-wrapper .datatable-container {
-    overflow-x: auto;
-}
-
-/* Cell alignment in table */
-.datatable-wrapper td,
-.datatable-wrapper th {
-    vertical-align: middle;
-    text-align: left;
-}
-
-.datatable-sorter::before,
-.datatable-sorter::after {
-    opacity: 0.8;
-}
-
-
-
-
-
 
 

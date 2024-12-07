@@ -1,28 +1,29 @@
+// Wait until the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
+
     /**
-     * Data for internships
-     * Each object represents an internship and its associated details
+     * Custom HTML Element for the Internship Tracker table
      */
-    
     class InternshipTracker extends HTMLElement {
         constructor() {
             super();
             this.attachShadow({ mode: 'open' });
         }
-    
+
+        // Lifecycle method called when the element is added to the DOM
         connectedCallback() {
             this.render();
             this.initializeTable();
         }
-    
+
+        // Render the HTML structure for the element
         render() {
             this.shadowRoot.innerHTML = `
                 <style>
-                    @import "InternshipTracker.css";
+                    @import "InternshipTracker.css"; /* Import external CSS */
                 </style>
                 <div class="datatable-wrapper">
-                    <table id="InternshipTrackerTable" class="datatable-table">
-                    </table>
+                    <table id="InternshipTrackerTable" class="datatable-table"></table>
                 </div>
                 <button class="add-button" onclick="openAddModal()">+</button>
                 <div id="internshipModal" class="modal">
@@ -30,8 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             `;
         }
-    
     }
+
+    // Data representing internships
     const internshipData = [
         {
             internshipId: "1",
@@ -134,18 +136,14 @@ document.addEventListener("DOMContentLoaded", () => {
             skillsRequired: '["Python", "SQL", "Data Analysis"]'
         }
     ];
-    
-
-
-        // Additional internships follow the same structure as above
 
     // Predefined colors for skill pills
     const pillColors = ["#072F5F", "#1261A0", "#3895D3", "#58CCED"];
 
     /**
-     * Generates HTML for skill pills
-     * @param {string} skillsRequired - JSON string of skills
-     * @returns {string} HTML string for skill pills
+     * Generate skill pills as HTML elements
+     * @param {string} skillsRequired - JSON string of required skills
+     * @returns {string} - HTML string for skill pills
      */
     const generateSkillPills = (skillsRequired) => {
         const skills = JSON.parse(skillsRequired);
@@ -155,118 +153,118 @@ document.addEventListener("DOMContentLoaded", () => {
         }).join(" ");
     };
 
+    // Application status options
+    const statusOptions = [
+        "Applied", "Interviewing", "Shortlisted", "OfferReceived", 
+        "Rejected", "Pending", "OnHold", "InProgress", "Withdrew"
+    ];
 
+    // Colors corresponding to application statuses
+    const statusColors = {
+        "Applied": "#6BD9E7",
+        "Interviewing": "#FFB347",
+        "Shortlisted": "#C5A3FF",
+        "OfferReceived": "#7FFFD4",
+        "Rejected": "#FF6B6B",
+        "Pending": "#FFD54F",
+        "OnHold": "#B0BEC5",
+        "InProgress": "#81D4FA",
+        "Withdrew": "#BDBDBD"
+    };
 
-// Status options for dropdown
-const statusOptions = [
-    "Applied",
-    "Interviewing",
-    "Shortlisted",
-    "OfferReceived",
-    "Rejected",
-    "Pending",
-    "OnHold",
-    "InProgress",
-    "Withdrew"
-];
+    /**
+     * Change the background color of the dropdown based on the selected status
+     * @param {HTMLElement} selectElement - Dropdown element
+     */
+    window.changeStatus = function(selectElement) {
+        const newStatus = selectElement.value;
+        selectElement.style.backgroundColor = statusColors[newStatus];
+    };
 
-// First, define the status colors globally
-const statusColors = {
-    "Applied": "#6BD9E7",
-    "Interviewing": "#FFB347",
-    "Shortlisted": "#C5A3FF",
-    "OfferReceived": "#7FFFD4",
-    "Rejected": "#FF6B6B",
-    "Pending": "#FFD54F",
-    "OnHold": "#B0BEC5",
-    "InProgress": "#81D4FA",
-    "Withdrew": "#BDBDBD"
-};
+    /**
+     * Generate a dropdown for application statuses
+     * @param {string} currentStatus - Current status of the application
+     * @returns {string} - HTML for the dropdown
+     */
+    const generateStatusDropdown = (currentStatus) => {
+        const options = statusOptions.map((status) => {
+            const selected = status === currentStatus ? "selected" : "";
+            return `<option value="${status}" ${selected}>${status}</option>`;
+        }).join("");
 
-// Make changeStatus function globally accessible
-window.changeStatus = function(selectElement) {
-    const newStatus = selectElement.value;
-    selectElement.style.backgroundColor = statusColors[newStatus];
-};
+        return `
+            <select class="status-dropdown" 
+                    onchange="changeStatus(this)" 
+                    style="background-color: ${statusColors[currentStatus]};">
+                ${options}
+            </select>
+        `;
+    };
 
-// Update your dropdown generator
-const generateStatusDropdown = (currentStatus) => {
-    const options = statusOptions.map((status) => {
-        const selected = status === currentStatus ? "selected" : "";
-        return `<option value="${status}" ${selected}>${status}</option>`;
-    }).join("");
-
-    return `
-        <select class="status-dropdown" 
-                onchange="changeStatus(this)" 
-                style="background-color: ${statusColors[currentStatus]};">
-            ${options}
-        </select>
-    `;
-};
-
-
-const dataTable = new simpleDatatables.DataTable("#InternshipTrackerTable", {
-    searchable: true,
-    data: {
-        headings: [
-            "",  // For expand/collapse arrow
-            "Company Name",
-            "Position Title",
-            "Application Status",
-            "Date Applied",
-            "Application Link",
-            ""  // For edit button
+    // Initialize the data table
+    const dataTable = new simpleDatatables.DataTable("#InternshipTrackerTable", {
+        searchable: true,
+        columns: [
+            { select: 0, sortable: false }, // Expand/collapse column
+            { select: 6, sortable: false } // Edit button column
         ],
-        data: internshipData.map((item, index) => [
-            `<span class="dt-control" data-index="${index}">▶</span>`,
-            item.companyName,
-            item.positionTitle,
-            generateStatusDropdown(item.applicationStatus),
-            item.dateApplied,
-            `<a href="${item.applicationLink}" target="_blank">Link</a>`,
-            `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`
-        ])
-    }
-});
-
-document.querySelector('#InternshipTrackerTable tbody').addEventListener('click', function(e) {
-    if (!e.target.classList.contains('dt-control')) return;
-    
-    const tr = e.target.closest('tr');
-    const index = e.target.dataset.index;
-    const item = internshipData[index];
-    
-    if (tr.nextElementSibling?.classList.contains('expanded-details')) {
-        // Close rows
-        while (tr.nextElementSibling && tr.nextElementSibling.classList.contains('expanded-details')) {
-            tr.nextElementSibling.remove();
+        data: {
+            headings: [
+                "", "Company Name", "Position Title", "Application Status",
+                "Date Applied", "Application Link", ""
+            ],
+            data: internshipData.map((item, index) => [
+                `<span class="dt-control" data-index="${index}">▶</span>`,
+                item.companyName,
+                item.positionTitle,
+                generateStatusDropdown(item.applicationStatus),
+                item.dateApplied,
+                `<a href="${item.applicationLink}" target="_blank">Link</a>`,
+                `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`
+            ])
         }
-        e.target.textContent = '▶';
-    } else {
-        // Create expanded rows
-        const detailRows = [
-            ['Salary', `$${parseFloat(item.salary).toFixed(2)}`],
-            ['Location', item.location],
-            ['Contact', `${item.contactPerson} (${item.contactEmail})`],
-            ['Important Dates', `Start: ${item.startDate} | Follow-up: ${item.followUpDate} | Deadline: ${item.offerDeadline || 'N/A'}`],
-            ['Status', `Referral: ${item.referral ? 'Yes' : 'No'} | Offer: ${item.offerReceived ? 'Yes' : 'No'}`],
-            ['Duration', item.internshipDuration],
-            ['Skills', generateSkillPills(item.skillsRequired)],
-            ['Notes', item.notes]
-        ].map(([label, value]) => `
-            <tr class="expanded-details">
-                <td></td>
-                <td class="detail-label">${label}</td>
-                <td colspan="5" class="detail-value">${value}</td>
-            </tr>
-        `).join('');
-        
-        tr.insertAdjacentHTML('afterend', detailRows);
-        e.target.textContent = '▼';
-    }
-});
-    // Modal-related logic
+    });
+
+    // Handle row expansion to show detailed internship info
+    document.querySelector('#InternshipTrackerTable tbody').addEventListener('click', function(e) {
+        if (!e.target.classList.contains('dt-control')) return;
+
+        const tr = e.target.closest('tr');
+        const index = e.target.dataset.index;
+        const item = internshipData[index];
+
+        // Toggle expansion
+        if (tr.nextElementSibling?.classList.contains('expanded-details')) {
+            // Close expanded rows
+            while (tr.nextElementSibling?.classList.contains('expanded-details')) {
+                tr.nextElementSibling.remove();
+            }
+            e.target.textContent = '▶';
+        } else {
+            // Expand row to show details
+            const detailRows = [
+                ['Salary', `$${parseFloat(item.salary).toFixed(2)}`],
+                ['Location', item.location],
+                ['Contact', `${item.contactPerson} (${item.contactEmail})`],
+                ['Important Dates', `Start: ${item.startDate} | Follow-up: ${item.followUpDate} | Deadline: ${item.offerDeadline || 'N/A'}`],
+                ['Status', `Referral: ${item.referral ? 'Yes' : 'No'} | Offer: ${item.offerReceived ? 'Yes' : 'No'}`],
+                ['Duration', item.internshipDuration],
+                ['Skills', generateSkillPills(item.skillsRequired)],
+                ['Notes', item.notes]
+            ].map(([label, value]) => `
+                <tr class="expanded-details">
+                    <td></td>
+                    <td class="detail-label">${label}</td>
+                    <td colspan="5" class="detail-value">${value}</td>
+                </tr>
+            `).join('');
+
+            tr.insertAdjacentHTML('afterend', detailRows);
+            e.target.textContent = '▼';
+        }
+    });
+
+    // Modal logic for adding/editing internships
     const modal = document.getElementById("addInternshipModal");
     const addButton = document.getElementById("addRowBtn");
     const closeButton = document.querySelector(".close");
@@ -276,6 +274,7 @@ document.querySelector('#InternshipTrackerTable tbody').addEventListener('click'
     // Show the modal
     addButton.onclick = () => {
         modal.style.display = "block";
+        document.querySelector('.modal-header h2').textContent = 'Add New Internship';
     };
 
     // Close the modal
@@ -293,7 +292,7 @@ document.querySelector('#InternshipTrackerTable tbody').addEventListener('click'
         }
     };
 
-    // Save form data
+    // Save form data when the modal is submitted
     saveButton.onclick = () => {
         const newInternship = {
             internshipId: Date.now().toString(),
@@ -325,18 +324,22 @@ document.querySelector('#InternshipTrackerTable tbody').addEventListener('click'
         closeModal();
     };
 
-
+    /**
+     * Edit an internship entry
+     * @param {object} item - Internship details
+     */
     window.editInternship = function(item) {
         const itemValues = typeof item === 'string' ? JSON.parse(item) : item;
         modal.style.display = "block";
-        
-            // Function to convert date from MM/DD/YYYY to YYYY-MM-DD
+        document.querySelector('.modal-header h2').textContent = 'Edit Internship';
+
+        // Pre-fill form fields
         const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const [month, day, year] = dateString.split('/');
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    };
-        // Pre-fill form fields with existing data
+            if (!dateString) return '';
+            const [month, day, year] = dateString.split('/');
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        };
+
         document.getElementById("company_name").value = itemValues.companyName;
         document.getElementById("position_title").value = itemValues.positionTitle;
         document.getElementById("application_status").value = itemValues.applicationStatus;
@@ -354,12 +357,12 @@ document.querySelector('#InternshipTrackerTable tbody').addEventListener('click'
         document.getElementById("salary").value = parseFloat(itemValues.salary);
         document.getElementById("internship_duration").value = itemValues.internshipDuration;
         document.getElementById("skills_required").value = JSON.parse(itemValues.skillsRequired).join(", ");
-    
-        // Modify save button to handle edit
+
+        // Save updated data
         const saveButton = document.querySelector(".save-btn");
         saveButton.onclick = () => {
             const updatedInternship = {
-                internshipId: item.internshipId,
+                ...item,
                 companyName: document.getElementById("company_name").value,
                 positionTitle: document.getElementById("position_title").value,
                 applicationStatus: document.getElementById("application_status").value,
@@ -383,9 +386,9 @@ document.querySelector('#InternshipTrackerTable tbody').addEventListener('click'
                         .map((skill) => skill.trim())
                 )
             };
-    
+
             console.log(updatedInternship);
             closeModal();
         };
-    }
+    };
 });
