@@ -98,9 +98,9 @@ footer {
     margin-top: auto;
 }
 
-privPolicy {
+.privacy {
     display: block;
-    text-decoration: underline;
+    color: var(--text-primary-lm);
     cursor: pointer;
 }
 

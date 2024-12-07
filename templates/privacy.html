@@ -14,7 +14,6 @@
             Toggle Theme
             <img src="{{ url_for('static', filename='assets/icons/lightmode.svg') }}" alt="theme" class="theme-icon" />
         </label>
-        <button class="logout-btn">Sign out</button>
     </basicControls>
     <hgroup>
         <header>
@@ -24,7 +23,7 @@
             <ul>
                 <li class="tooltip">
                     <img src="{{ url_for('static', filename='assets/icons/home.svg') }}" class="icon" alt="Home">
-                    <span class="text">Return to Home</span>
+                    <span class="text"><a href="/" class="return">Return Home</a></span>
                 </li>
         </nav>        
     </hgroup>
@@ -83,11 +82,10 @@
         <p>If you have any questions or concerns about this Privacy Policy, please contact us at team2good210@gmail.com</p>
     </main>
     <footer>
-        <privPolicy>View Privacy Policy.</privPolicy>
+        <a href="/privacy" class="privacy">View Privacy Policy.</a>
         &copy; 2024 Team Two Good - UC San Diego. All rights reserved.
     </footer>
 
-    <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/privacy.js') }}"></script>
     
 </body>

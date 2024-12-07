@@ -187,7 +187,7 @@ def logout():
         Response: A redirect response to the home page.
     """
     session.clear()
-    return redirect(url_for('home', _external=True))
+    return render_template("signIn.html")
 
 
 @app.route("/")
@@ -198,7 +198,10 @@ def home():
     Returns:
         str: HTML content with options.
     """
-    return render_template("signIn.html")
+    if "id_google" not in session:
+        return render_template("signIn.html")
+    else:
+        return render_template("index.html")
 
 @app.route("/privacy")
 def privacy_policy():
