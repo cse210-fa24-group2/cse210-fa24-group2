@@ -79,6 +79,36 @@ class User(db.Model):
     google_id = db.Column(db.String(255), unique=True, nullable=False)
     name = db.Column(db.String(255), nullable=False)
 
+class Internship(db.Model):
+    """
+    Internship model to store internship application information.
+    """
+    __tablename__ = 'internship'
+
+    internship_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    company_name = db.Column(db.String(255), nullable=False)
+    position_title = db.Column(db.String(255), nullable=False)
+    application_status = db.Column(db.String(50), nullable=False)
+    date_applied = db.Column(db.Date)
+    follow_up_date = db.Column(db.Date)
+    application_link = db.Column(db.Text)
+    start_date = db.Column(db.Date)
+    contact_person = db.Column(db.String(255))
+    contact_email = db.Column(db.String(255))
+    referral = db.Column(db.Boolean)
+    offer_received = db.Column(db.Boolean)
+    offer_deadline = db.Column(db.Date)
+    notes = db.Column(db.Text)
+    location = db.Column(db.String(255))
+    salary = db.Column(db.Numeric(10, 2))
+    internship_duration = db.Column(db.String(50))
+    skills_required = db.Column(db.JSONB)
+
+    user = db.relationship('User', back_populates='internships')
+
+    def __repr__(self):
+        return f'<Internship {self.internship_id}: {self.company_name} - {self.position_title}>'
 
 def login_required(function):
     """
@@ -473,10 +503,15 @@ def internshipTracker():
     """
     Internship Tracker, accessible only to logged-in users.
 
+    Fetch internship data from the PostgreSQL database and pass it to the template.
+
     Returns:
-        Response: Renders the InternshipTracker.html template.
+        Response: Renders the InternshipTracker.html template with internship data.
     """
-    return render_template("InternshipTracker.html")
+    # Fetch internship data from the PostgreSQL database
+    user_id = session["id_google"]
+    internships = Internship.query.filter_by(user_id=user_id).all()
+    return render_template("InternshipTracker.html", internships=internships)
 
 @app.errorhandler(404)
 def page_not_found(error):
