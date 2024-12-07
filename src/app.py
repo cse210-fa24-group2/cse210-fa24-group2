@@ -187,7 +187,7 @@ def logout():
         Response: A redirect response to the home page.
     """
     session.clear()
-    return render_template("signIn.html")
+    return redirect(url_for('home', _external=True))
 
 
 @app.route("/")
