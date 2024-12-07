@@ -23,6 +23,8 @@ from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
 from src.calendarGoogle import calendarGoogle
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableDict
 from datetime import datetime
 
 # Load environment variables from .env file
