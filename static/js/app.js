@@ -6,9 +6,17 @@ let currentMonth = new Date().getMonth();
 async function renderCalendar(year, month) {
   const root = document.getElementById('calendar-root');
   const header = document.getElementById('current-month');
+  const yearInput = document.getElementById('year-input');
 
   const days = getDaysInMonth(year, month);
-  header.textContent = `${year}-${month + 1}`;
+
+  const shortMonth = new Date(year, month).toLocaleString('en-US', { month: 'short' }).toUpperCase();
+  header.textContent = shortMonth;
+
+  if (yearInput) {
+    yearInput.placeholder = currentYear.toString();
+  }
+
   root.innerHTML = '';
 
   const firstDay = days[0].getDay();

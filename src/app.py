@@ -214,6 +214,14 @@ def dashboard():
     """
     return render_template("index.html")
 
+@app.route('/calendar.html')
+def serve_calendar():
+    """
+    Serve the calendar.html template.
+    """
+    return render_template('calendar.html')
+
+
 @app.errorhandler(404)
 def page_not_found(error):
     """

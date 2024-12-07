@@ -1,5 +1,11 @@
 import { getDaysInMonth, formatDate } from './dateUtils.js';
 
+/**
+ * Generate the calendar for the current month.
+ * @async
+ * @function Calendar
+ * @returns {Promise<string>} - The HTML string representation of the calendar.
+ */
 async function Calendar() {
   const today = new Date();
   const days = getDaysInMonth(today.getFullYear(), today.getMonth());
@@ -12,6 +18,7 @@ async function Calendar() {
     console.error('Error fetching events:', error);
   }
 
+  // Generate calendar grid with events
   const calendarHTML = days
     .map((day) => {
       const formattedDate = formatDate(day);
@@ -30,3 +37,57 @@ async function Calendar() {
 }
 
 export default Calendar;
+
+/**
+ * Load the calendar HTML content into the container on the index page.
+ * @async
+ * @function loadCalendar
+ * @returns {Promise<void>} - Injects calendar HTML into the container.
+ */
+export async function loadCalendar() {
+  try {
+    // Fetch the calendar HTML file
+    const response = await fetch('/calendar.html');
+    if (!response.ok) {
+      console.error('Failed to load calendar:', response.statusText);
+      return;
+    }
+
+    // Inject the fetched calendar HTML into the container
+    const calendarHTML = await response.text();
+    const container = document.getElementById('calendar-container');
+    if (container) {
+      container.innerHTML = calendarHTML;
+      container.style.overflow = 'hidden'; // Prevents overflow
+      container.style.maxHeight = '100%'; // Restricts height to container
+      console.log('Calendar loaded successfully.');
+
+      await loadCalendarScripts();
+    } else {
+      console.error('Calendar container not found.');
+    }
+  } catch (error) {
+    console.error('Error loading calendar:', error);
+  }
+}
+
+/**
+ * Dynamically load additional scripts for calendar functionality.
+ * @async
+ * @function loadCalendarScripts
+ * @returns {Promise<void>} - Dynamically appends scripts to the DOM.
+ */
+async function loadCalendarScripts() {
+  try {
+    const scriptApp = document.createElement('script');
+    scriptApp.type = 'module';
+    scriptApp.src = '/static/js/app.js';
+    document.body.appendChild(scriptApp);
+
+    console.log('Calendar scripts loaded successfully.');
+  } catch (error) {
+    console.error('Error loading calendar scripts:', error);
+  }
+}
+
+window.addEventListener('load', loadCalendar);
