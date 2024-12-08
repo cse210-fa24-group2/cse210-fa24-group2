@@ -1,4 +1,5 @@
 import { getDaysInMonth, formatDate } from './dateUtils.js';
+import axios from 'axios';
 
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
@@ -192,3 +193,9 @@ document.getElementById('year-input').addEventListener('change', async (e) => {
 });
 
 await renderCalendar(currentYear, currentMonth);
+export default {
+  addEvent,
+  updateEvent,
+  deleteEvent,
+  renderCalendar
+};
