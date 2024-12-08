@@ -59,7 +59,7 @@ REDIRECT_URI = os.environ.get("REDIRECT_URI", "http://127.0.0.1:5000/callback")
 
 # Path to the client secrets JSON file downloaded from Google Cloud Console
 CLIENT_SECRETS_FILE = os.path.join(
-    pathlib.Path(__file__).parent, "/etc/secrets/client_secret.json"
+    pathlib.Path(__file__).parent, "client_secret.json"
     )
 
 # OAuth 2.0 scopes (including Calendar API scopes)
@@ -264,10 +264,10 @@ def internshipTracker():
     user_id = session.get("user_id")
     # Fetch internship data for the logged-in user
     internships = db.session.query(Internship).filter_by(user_id=user_id).all() # This variable has the object with all internships for the user
-    internship_data = [obj.to_dict() for obj in internships]
-    print({"data": internships})
+    data = [obj.to_dict() for obj in internships]
+    print({"data": data})
     # Render the template with the internship data
-    return render_template("InternshipTracker.html",internship_data = internship_data )
+    return render_template("InternshipTracker.html")
 
 # Define the Internship model (if not already defined in your models)
 class Internship(db.Model):
@@ -297,23 +297,7 @@ class Internship(db.Model):
     user = db.relationship("User", backref="internships")
     def to_dict(self):
         return {
-            "companyName":self.company_name,
-            "positionTitle": self.position_title,
-            "applicationStatus": self.application_status,
-            "dateApplied": self.date_applied,
-            "followUpDate": self.follow_up_date,
-            "applicationLink": self.application_link,
-            "startDate": self.start_date,
-            "contactPerson": self.contact_person,
-            "contactEmail": self.contact_email,
-            "referral": self.referral,
-            "offerReceived": self.offer_received,
-            "offerDeadline": self.offer_deadline,
-            "notes": self.notes,
-            "location":self.location,
-            "salary": self.salary,
-            "internshipDuration": self.internship_duration,
-            "skillsRequired": str(self.skills_required)
+            "id": self.company_name
         }
 
 
