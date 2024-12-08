@@ -183,20 +183,20 @@ def callback():
         # Invalid token
         abort(401)
 
+
+
     # Add user to the database if not exists
     user = User.query.filter_by(google_id=id_info.get("sub")).first()
     if not user:
         user = User(google_id=id_info.get("sub"), name=id_info.get("name"))
         db.session.add(user)
         db.session.commit()
-
     # Store user information and credentials in the session
     session["user_id"] = user.id
     session["id_google"] = id_info.get("sub")
     session["name"] = id_info.get("name")
     session["access_token"] = credentials.token
     session["refresh_token"] = credentials.refresh_token
-
     return redirect(url_for('dashboard', _external=True))
 
 
@@ -266,7 +266,6 @@ def dashboard():
         Response: Renders the index.html template.
     """
     return render_template("index.html")
-
 @app.route("/internshipTracker")
 @login_required
 def internshipTracker():
@@ -274,8 +273,16 @@ def internshipTracker():
     Internship Tracker, accessible only to logged-in users.
 
     Returns:
-        Response: Renders the InternshipTracker.html template.
+        Response: Renders the InternshipTracker.html template with data from the internship table.
     """
+    # Get the logged-in user's ID from the session
+    google_id = session.get("id_google")
+    user_id = session.get("user_id")
+    # Fetch internship data for the logged-in user
+    internships = db.session.query(Internship).filter_by(user_id=user_id).all() # This variable has the object with all internships for the user
+    data = [obj.to_dict() for obj in internships]
+    print({"data": data})
+    # Render the template with the internship data
     # Fetch internship data from the PostgreSQL database
     user_id = session["id_google"]
     internships = Internship.query.filter_by(user_id=user_id).all()
@@ -296,6 +303,38 @@ def serve_todo_list():
     Serve the To-Do List HTML file.
     """
     return render_template('todoList.html')
+
+
+# Define the Internship model (if not already defined in your models)
+class Internship(db.Model):
+    __tablename__ = "internship"
+
+    internship_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    company_name = db.Column(db.String(255), nullable=False)
+    position_title = db.Column(db.String(255), nullable=False)
+    application_status = db.Column(db.String(50), nullable=False)
+    date_applied = db.Column(db.Date)
+    follow_up_date = db.Column(db.Date)
+    application_link = db.Column(db.Text)
+    start_date = db.Column(db.Date)
+    contact_person = db.Column(db.String(255))
+    contact_email = db.Column(db.String(255))
+    referral = db.Column(db.Boolean)
+    offer_received = db.Column(db.Boolean)
+    offer_deadline = db.Column(db.Date)
+    notes = db.Column(db.Text)
+    location = db.Column(db.String(255))
+    salary = db.Column(db.Numeric(10, 2))
+    internship_duration = db.Column(db.String(50))
+    skills_required = db.Column(db.JSON)
+
+    # Establish the relationship with the User model
+    user = db.relationship("User", backref="internships")
+    def to_dict(self):
+        return {
+            "id": self.company_name
+        }
 
 
 @app.errorhandler(404)
