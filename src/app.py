@@ -280,13 +280,12 @@ def internshipTracker():
     user_id = session.get("user_id")
     # Fetch internship data for the logged-in user
     internships = db.session.query(Internship).filter_by(user_id=user_id).all() # This variable has the object with all internships for the user
-    data = [obj.to_dict() for obj in internships]
-    print({"data": data})
+    internship_data = [obj.to_dict() for obj in internships]
+    print({"data": internships})
     # Render the template with the internship data
     # Fetch internship data from the PostgreSQL database
-    user_id = session["id_google"]
     internships = Internship.query.filter_by(user_id=user_id).all()
-    return render_template("InternshipTracker.html", internships=internships)
+    return render_template("InternshipTracker.html",internship_data = internship_data , internships=internships)
 
 
 @app.route('/calendar.html')
@@ -333,7 +332,23 @@ class Internship(db.Model):
     user = db.relationship("User", backref="internships")
     def to_dict(self):
         return {
-            "id": self.company_name
+            "companyName":self.company_name,
+            "positionTitle": self.position_title,
+            "applicationStatus": self.application_status,
+            "dateApplied": self.date_applied,
+            "followUpDate": self.follow_up_date,
+            "applicationLink": self.application_link,
+            "startDate": self.start_date,
+            "contactPerson": self.contact_person,
+            "contactEmail": self.contact_email,
+            "referral": self.referral,
+            "offerReceived": self.offer_received,
+            "offerDeadline": self.offer_deadline,
+            "notes": self.notes,
+            "location":self.location,
+            "salary": self.salary,
+            "internshipDuration": self.internship_duration,
+            "skillsRequired": str(self.skills_required)
         }
 
 
