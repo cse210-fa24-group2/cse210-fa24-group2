@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>To-Do List Component</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/todo.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/todo.css') }}?v={{ time.time() }}">
 </head>
 <body>
-  <div class="todo-list-container">
+  <div class="todo-container">
     <div class="to-do-column">
       <h3>Today</h3>
       <div class="todo-content">

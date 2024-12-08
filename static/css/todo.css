@@ -8,15 +8,16 @@
     border-radius: 8px;
     background-color: var(--background-secondary-lm);
     font-family: var(--font-primary);
-    font-size: medium;
+    font-size: small;
     color: var(--text-primary-lm);
     display: flex;
-    flex-wrap: wrap;
     gap: 20px; /* Spacing between columns */
-    margin: 20px auto;
-    overflow: hidden; /* Prevents content from overflowing */
-    max-width: 100%; /* Ensures container doesn't exceed parent width */
+    margin: 15px; /*20px auto;*/
+    overflow-x: auto;
     box-sizing: border-box;
+
+    max-width: 100%; /*Ensures container doesn't exceed parent width*/
+    max-height: 260px;
     align-items: stretch; /* Ensures all columns have the same height */
 }
 
@@ -31,9 +32,11 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    overflow: hidden;
+    overflow-y: hidden;
     box-sizing: border-box;
-    max-height: 100%; /* Ensure equal height */
+    max-height: 270px; /* Ensure equal height */
+    position: relative;
+
     align-self: stretch; /* Match the tallest column */
 }
 
@@ -41,40 +44,47 @@
 .todo-content {
     overflow-y: auto; /* Enables vertical scrolling */
     flex-grow: 1;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
+    scroll-behavior: smooth;
 }
 
 /* Column headers */
 .to-do-column h3 {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: -10px;
+    margin-top: 0px;
     font-size: 1.2em;
+    align-items: center;
 }
 
 /* Input and add button container */
 .todo-list-container {
-    display: flex;
-    align-items: center;
+    position:absolute;
     padding: 10px 0;
     gap: 10px;
+    display: flex;
+    align-items: center;
+    bottom:10px;
+    z-index: 1;
     box-sizing: border-box;
-    width: 100%;
+    width: 90%;
 }
 
 /* Individual to-do lists */
 .todo-list {
     list-style-type: none;
-    padding: 10px;
-    margin: 0;
-    overflow-y: auto;
-    max-height: 250px; /* Restrict list height */
+    padding: 0;
+    margin-bottom: 38px;
+    /* overflow-y: auto; */
+    max-height: 200px; /*Restrict list height*/
     flex-grow: 1;
+
     min-height: 50px; /* Ensures the list remains visible when empty */
     border: 1px dashed var(--background-secondary-lm);
     border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Align items to the top */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: flex-start; Align items to the top */
 }
 
 /* To-Do List items */
