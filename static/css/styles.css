@@ -24,7 +24,7 @@ hgroup {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0rem 1.25rem 2rem 1.25rem; 
+    padding: 0rem 1.25rem 1rem 1.25rem; 
 }
 
 header {
@@ -58,6 +58,17 @@ basicControls {
 }
 
 /* Navigation Menu */
+navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 0.1rem 0.5rem var(--background-primary-lm);
+}
+
+#todo, #calendar, #deadlines, #career {
+    scroll-margin-top: 6rem;
+}
+
 nav {
     display: flex;
     align-items: center;
@@ -87,13 +98,23 @@ nav ul li:hover {
     filter: invert(9%) sepia(7%) saturate(3104%) hue-rotate(182deg) brightness(92%) contrast(90%);
 }
 
-.return {
-    color: var(--text-primary-lm);
-    text-decoration: none;
+.navlink {
+    display: flex;
+    align-items: center;
 }
 
-.return:hover {
-    color: var(--button-text-lm);
+.navlink a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    font-size: 1rem;
+}
+
+.icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right:10px;
 }
 
 /* Light Mode/Dark Mode Toggle */
@@ -186,57 +207,6 @@ nav ul li:hover {
     .icon {
         display: none;
     }
-}
-
-/* Tooltip Styling */
-.tooltip {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.tooltip .text{
-    text-align: left;
-}
-
-.tooltip .icon {
-    width: 2rem;
-    height: 2rem;
-    margin-right:10px;
-}
-
-.tooltiptext {
-    visibility: hidden;
-    opacity: 0;
-    width: 12rem;
-    background-color: var(--background-secondary-lm);
-    color: var(--text-primary-lm);
-    text-align: center;
-    padding: 0.5rem;
-    border-radius: 4px;
-    position: absolute;
-    top: 50%;
-    left: -13rem;
-    transform: translateY(-50%);
-    transition: visibility 0.3s, opacity 0.3s;
-}
-
-/* Tooltip arrow */
-.tooltiptext::after {
-    content: "";
-    position: absolute;
-    top:50%;
-    right: -.55rem;
-    transform: translateY(-50%) rotate(-90deg);
-    border-width: 5px;
-    border-style: solid;
-    border-color: var(--background-secondary-lm) transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
 }
 
 /* Content Sections Styling */
