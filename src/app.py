@@ -167,6 +167,7 @@ def callback():
 
 
 
+
     # Add user to the database if not exists
     user = User.query.filter_by(google_id=id_info.get("sub")).first()
     if not user:
@@ -474,12 +475,53 @@ def internshipTracker():
     Internship Tracker, accessible only to logged-in users.
 
     Returns:
-        Response: Renders the InternshipTracker.html template with internship data.
+        Response: Renders the InternshipTracker.html template with data from the internship table.
     """
+    # Get the logged-in user's ID from the session
+    google_id = session.get("id_google")
+    user_id = session.get("user_id")
+    # Fetch internship data for the logged-in user
+    internships = db.session.query(Internship).filter_by(user_id=user_id).all() # This variable has the object with all internships for the user
+    data = [obj.to_dict() for obj in internships]
+    print({"data": data})
+    # Render the template with the internship data
+    return render_template("InternshipTracker.html")
     # Fetch internship data from the PostgreSQL database
     user_id = session["id_google"]
     internships = Internship.query.filter_by(user_id=user_id).all()
     return render_template("InternshipTracker.html", internships=internships)
+
+# Define the Internship model (if not already defined in your models)
+class Internship(db.Model):
+    __tablename__ = "internship"
+
+    internship_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    company_name = db.Column(db.String(255), nullable=False)
+    position_title = db.Column(db.String(255), nullable=False)
+    application_status = db.Column(db.String(50), nullable=False)
+    date_applied = db.Column(db.Date)
+    follow_up_date = db.Column(db.Date)
+    application_link = db.Column(db.Text)
+    start_date = db.Column(db.Date)
+    contact_person = db.Column(db.String(255))
+    contact_email = db.Column(db.String(255))
+    referral = db.Column(db.Boolean)
+    offer_received = db.Column(db.Boolean)
+    offer_deadline = db.Column(db.Date)
+    notes = db.Column(db.Text)
+    location = db.Column(db.String(255))
+    salary = db.Column(db.Numeric(10, 2))
+    internship_duration = db.Column(db.String(50))
+    skills_required = db.Column(db.JSON)
+
+    # Establish the relationship with the User model
+    user = db.relationship("User", backref="internships")
+    def to_dict(self):
+        return {
+            "id": self.company_name
+        }
+
 
 @app.errorhandler(404)
 def page_not_found(error):
