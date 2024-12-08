@@ -80,7 +80,8 @@ jobs:
             git commit -m "Update JSDocs [skip ci]"
 
             # Push the changes to the remote docs branch
-            git push --force --set-upstream origin docs
+            git push --force "https://b-ishan:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/<owner>/<repo>.git" docs
+
           fi
 
   linting_and_code_quality:
