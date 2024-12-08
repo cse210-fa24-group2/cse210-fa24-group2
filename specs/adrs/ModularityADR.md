@@ -20,7 +20,7 @@ The core of modularity lies in decoupling code, establishing clear module bounda
 ## Decision Outcome
 The project will be divided into the following modules:
 1. **Frontend**: 
-   - **Core UI**: Includes SPA structure, navigation, and dynamic filtering functionality.
+   - **Core UI**: Includes SPA structure, navigation.
    - **Feature Components**: Handles specific features: To-do list, calendar integration, and data table rendering.
 2. **Backend**:
    - **API Services**: Responsible for Google Calendar integration and user authentication via OAuth.
