@@ -58,6 +58,13 @@ basicControls {
 }
 
 /* Navigation Menu */
+navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 0.1rem 0.5rem var(--background-primary-lm);
+}
+
 nav {
     display: flex;
     align-items: center;
