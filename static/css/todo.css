@@ -55,6 +55,7 @@
     margin-top: 0px;
     font-size: 1.2em;
     align-items: center;
+    padding: 10px;
 }
 
 /* Input and add button container */
@@ -144,6 +145,8 @@
     color: #f44336;
     cursor: pointer;
     font-size: 16px;
+    margin-right: 15px;
+    padding: 3px;
 }
 
 .remove-btn:hover {
