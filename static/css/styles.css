@@ -187,22 +187,23 @@ todo, calendar, deadlines, career {
 
 todo, career {
     max-width: 75rem;
-    height: 20rem;
+    height: auto;
 }
 
 calendar {
-    height: 30rem;
+    height: auto;
     max-width: 48.5rem;
 }
 
 deadlines {
-    height: 30rem;
+    height: auto;
     max-width: 25rem;
 }
 
 calGroup {
     display: flex;
     gap: 1.5rem;
+    align-items: stretch;
 }
 
 /* Footer Section */
@@ -264,8 +265,7 @@ footer {
         flex-direction: column;
     }
 
-    calendar, deadlines {
+    deadlines {
         max-width: 75rem;
-        height: auto;
     }
 }
