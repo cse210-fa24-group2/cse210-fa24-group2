@@ -1,15 +1,15 @@
 /* Styling document for the to-do list */
 
-@import url("vars.css");
+@import "vars.css";
 
 .todo-container {
     padding: 10px;
-    border: 2px solid #2b6cb0;
+    border: 2px solid var(--button-background-lm);
     border-radius: 8px;
-    background-color: #E2E8F0;
-    font-family: (--font-primary);
+    background-color: var(--background-secondary-lm);
+    font-family: var(--font-primary);
     font-size: medium;
-    color: #1a202c;
+    color: var(--text-primary-lm);
     display: flex;
     flex-wrap: wrap;
     gap: 20px; /* Spacing between columns */
@@ -27,7 +27,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 10px;
-    background-color: #F7FAFC;
+    background-color: var(--background-primary-lm);
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -70,7 +70,7 @@
     max-height: 250px; /* Restrict list height */
     flex-grow: 1;
     min-height: 50px; /* Ensures the list remains visible when empty */
-    border: 1px dashed #ccc;
+    border: 1px dashed var(--background-secondary-lm);
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -83,9 +83,9 @@
     justify-content: space-between;
     align-items: center;
     padding: 8px 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--background-secondary-lm);
     border-radius: 4px;
-    background-color: #fff;
+    background-color: var(--background-primary-lm);
     margin-bottom: 5px;
 }
 
@@ -102,7 +102,7 @@
 .todo-input {
     flex: 1;
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--background-secondary-lm);
     border-radius: 4px;
     box-sizing: border-box;
 }
@@ -110,15 +110,15 @@
 /* Add button */
 .todo-add-btn {
     padding: 8px 12px;
-    background-color: #2B6CB0;
-    color: white;
+    background-color: var(--button-background-lm);
+    color: var(--background-primary-lm);
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
 .todo-add-btn:hover {
-    background-color: #2C5282;
+    background-color: var(--button-hover-lm);
 }
 
 /* Completed tasks */
@@ -142,14 +142,14 @@
 
 /* Drag-and-drop feedback */
 .todo-item.drag-over {
-    border: 2px dashed #e0f7fa;
-    background-color: #4fc3f7;
+    border: 2px dashed var(--background-secondary-lm);
+    background-color: var(--button-background-lm);
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .todo-list.drag-over {
-    background-color: #e0f7fa;
-    border-color: #4fc3f7;
+    background-color: var(--background-secondary-lm);
+    border-color: var(--button-background-lm);
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
