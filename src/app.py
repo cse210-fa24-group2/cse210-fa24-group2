@@ -205,6 +205,7 @@ def home():
     else:
         return render_template("index.html")
 
+
 @app.route("/privacy")
 def privacy_policy():
     """
