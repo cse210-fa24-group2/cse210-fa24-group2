@@ -21,9 +21,7 @@ import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
-from src.calendarGoogle import calendarGoogle
-
-from src.calendarGoogle import calendarGoogle
+from calendarGoogle import calendarGoogle
 
 # Load environment variables from .env file
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -227,10 +225,10 @@ def internshipTracker():
     user_id = session.get("user_id")
     # Fetch internship data for the logged-in user
     internships = db.session.query(Internship).filter_by(user_id=user_id).all() # This variable has the object with all internships for the user
-    data = [obj.to_dict() for obj in internships]
-    print({"data": data})
+    internship_data = [obj.to_dict() for obj in internships]
+    print({"data": internships})
     # Render the template with the internship data
-    return render_template("InternshipTracker.html")
+    return render_template("InternshipTracker.html",internship_data = internship_data )
 
 # Define the Internship model (if not already defined in your models)
 class Internship(db.Model):
@@ -260,7 +258,23 @@ class Internship(db.Model):
     user = db.relationship("User", backref="internships")
     def to_dict(self):
         return {
-            "id": self.company_name
+            "companyName":self.company_name,
+            "positionTitle": self.position_title,
+            "applicationStatus": self.application_status,
+            "dateApplied": self.date_applied,
+            "followUpDate": self.follow_up_date,
+            "applicationLink": self.application_link,
+            "startDate": self.start_date,
+            "contactPerson": self.contact_person,
+            "contactEmail": self.contact_email,
+            "referral": self.referral,
+            "offerReceived": self.offer_received,
+            "offerDeadline": self.offer_deadline,
+            "notes": self.notes,
+            "location":self.location,
+            "salary": self.salary,
+            "internshipDuration": self.internship_duration,
+            "skillsRequired": str(self.skills_required)
         }
 
 
