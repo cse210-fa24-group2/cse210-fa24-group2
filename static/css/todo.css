@@ -46,6 +46,8 @@
     flex-grow: 1;
     margin-bottom: 3.125rem;
     scroll-behavior: smooth;
+    border: 0.063rem dashed var(--background-secondary-lm);
+    border-radius: 0.313rem;
 }
 
 /* Column headers */
@@ -75,14 +77,14 @@
 .todo-list {
     list-style-type: none;
     padding: 0;
-    margin-bottom: 2.375rem;
+    /* margin-bottom: 2.375rem; */
     /* overflow-y: auto; */
     max-height: 12.5rem; /*Restrict list height*/
     flex-grow: 1;
 
     min-height: 3.125rem; /* Ensures the list remains visible when empty */
-    border: 0.063rem dashed var(--background-secondary-lm);
-    border-radius: 0.313rem;
+    /* border: 0.063rem dashed var(--background-secondary-lm);
+    border-radius: 0.313rem; */
     /* display: flex; */
     /* flex-direction: column; */
     /* justify-content: flex-start; Align items to the top */
@@ -177,18 +179,33 @@
 
 /* Responsive design for smaller screens */
 @media (max-width: 48rem) {
+    
     .todo-container {
-        flex-direction: column; /* Stack columns vertically */
+        display:flex;
+        flex-wrap: wrap;
+        height:auto;
+        box-sizing: border-box;
         overflow-y: auto;
+        max-height: 100vh;
+        align-items: flex-start;
+        gap:0.625rem;
+        padding: 0.313rem;
     }
 
     .to-do-column {
-        max-width: 100%; /* Allow columns to span full width */
-        margin: 0 auto; /* Center align columns */
+        max-width: 100%; 
+        min-width: 40%;
+        margin: 0 auto; 
     }
 
     .todo-list-container {
-        flex-wrap: wrap; /* Stack input and button */
-        gap: 0.313rem;
+        display: flex;
+        flex-wrap: wrap; 
+        margin-right: 0;
+        padding: 0.625rem 0;
+        gap: 0.625rem;
     }
+
+
 }
+
