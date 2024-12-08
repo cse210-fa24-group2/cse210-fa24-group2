@@ -1,7 +1,9 @@
+@import "vars.css";
+
 .calendar-container {
     margin: 1rem auto;
     padding: 1rem;
-    background-color: #E2E8F0;
+    background-color: var(--background-secondary-lm);
     border-radius: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 100%;
@@ -23,8 +25,8 @@
 }
 
 .calendar-header button {
-    background-color: #2B6CB0;
-    color: #F7FAFC;
+    background-color: var(--button-background-lm);
+    color: var(--background-primary-lm);
     border: none;
     border-radius: 0.25rem;
     padding: 0.3rem 0.7rem;
@@ -36,14 +38,14 @@
 }
 
 .calendar-header button:hover {
-    background-color: #2C5282;
+    background-color: var(--button-hover-lm);
 }
 
 .calendar-header input {
     width: 3.5rem;
     padding: 0.2rem;
     font-size: 0.8rem;
-    border: 1px solid #CBD5E0;
+    border: 1px solid var(--background-secondary-lm);
     border-radius: 0.25rem;
     text-align: center;
 }
@@ -54,7 +56,7 @@
     gap: 0.2rem;
     width: 100%;
     padding: 0.3rem;
-    background-color: #FFF;
+    background-color: var(--background-primary-lm);
     border-radius: 0.5rem;
     box-sizing: border-box;
 }
@@ -62,8 +64,8 @@
 .calendar-cell {
     padding: 0.4rem;
     text-align: center;
-    background-color: #FAFAFA;
-    border: 1px solid #E2E8F0;
+    background-color: var(--background-primary-lm);
+    border: 1px solid var(--background-secondary-lm);
     border-radius: 0.25rem;
     display: flex;
     flex-direction: column;
@@ -73,14 +75,14 @@
 }
 
 .calendar-cell:hover {
-    background-color: #E2E8F0;
+    background-color: var(--background-secondary-lm);
 }
 
 .event {
     margin-top: 0.2rem;
     padding: 0.2rem;
     background-color: #FBA183;
-    color: #1A202C;
+    color: var(--text-primary-lm);
     font-size: 0.7rem;
     font-weight: 500;
     border-radius: 0.25rem;
@@ -104,7 +106,7 @@
 }
 
 .event button.update-event {
-    color: #2B6CB0;
+    color: var(--button-background-lm);
 }
 
 .event button.update-event:hover {
@@ -115,7 +117,7 @@
     margin-top: 1rem;
     width: 100%;
     padding: 0.8rem;
-    background-color: #E2E8F0;
+    background-color: var(--background-secondary-lm);
     border-radius: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -138,7 +140,7 @@
 .add-event form button {
     font-size: 0.8rem;
     padding: 0.3rem 0.5rem;
-    border: 1px solid #CBD5E0;
+    border: 1px solid var(--background-secondary-lm);
     border-radius: 0.25rem;
 }
 
@@ -148,8 +150,8 @@
 }
 
 .add-event form button {
-    background-color: #2B6CB0;
-    color: #F7FAFC;
+    background-color: var(--button-background-lm);
+    color: var(--background-primary-lm);
     cursor: pointer;
     font-weight: 600;
     border: none;
@@ -157,11 +159,11 @@
 }
 
 .add-event form button:hover {
-    background-color: #2C5282;
+    background-color: var(--button-hover-lm);
 }
 
 .add-event form button:disabled {
-    background-color: #CBD5E0;
+    background-color: var(--button-background-lm);
     cursor: not-allowed;
 }
 
