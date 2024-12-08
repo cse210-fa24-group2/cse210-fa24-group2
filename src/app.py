@@ -15,7 +15,8 @@ import pathlib
 
 import cachecontrol
 from dotenv import load_dotenv
-from flask import Flask, abort, redirect, request, session, url_for, render_template
+from flask import Flask, abort, redirect, request, session
+from flask import url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
 import google.auth.transport.requests
 from google.oauth2 import id_token
@@ -66,6 +67,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/calendar.events",
 ]
+
 
 class User(db.Model):
     """
@@ -203,6 +205,7 @@ def home():
     else:
         return render_template("index.html")
 
+
 @app.route("/privacy")
 def privacy_policy():
     """
@@ -222,6 +225,23 @@ def dashboard():
     """
     return render_template("index.html")
 
+
+@app.route('/calendar.html')
+def serve_calendar():
+    """
+    Serve the calendar.html template.
+    """
+    return render_template('calendar.html')
+
+
+@app.route('/todoList.html')
+def serve_todo_list():
+    """
+    Serve the To-Do List HTML file.
+    """
+    return render_template('todoList.html')
+
+
 @app.errorhandler(404)
 def page_not_found(error):
     """
@@ -231,6 +251,127 @@ def page_not_found(error):
         Response: Renders the error404.html template with a 404 status code.
     """
     return render_template("error404.html"), 404
+
+
+class Todo(db.Model):
+    """
+    Todo model to store tasks for the to-do list.
+    """
+    __tablename__ = 'todo'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    task_text = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(50), nullable=False)  # today, week, etc.
+    created_at = db.Column(db.DateTime, default=db.func.now())
+
+    user = db.relationship('User', backref='todos')
+
+
+@app.route("/api/todos", methods=["GET"])
+@login_required
+def get_todos():
+    """
+    Fetch all todos for the logged-in user.
+    """
+    user = User.query.filter_by(google_id=session["id_google"]).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    todos = Todo.query.filter_by(user_id=user.id).all()
+    return {
+        "todos": [
+            {"id": todo.id, "category": todo.category, "task": todo.task_text}
+            for todo in todos
+        ]
+    }
+
+
+@app.route("/api/todos", methods=["POST"])
+@login_required
+def add_todo():
+    """
+    Add a new todo for the logged-in user.
+    """
+    data = request.json
+    if not data or not data.get("category") or not data.get("task"):
+        return {"error": "Invalid data"}, 400
+
+    # Validate and normalize category
+    valid_categories = ["Today", "This Week", "This Month", "Next Month"]
+    category = data["category"].strip()
+    if category not in valid_categories:
+        return {"error": f"Invalid category: {category}"}, 400
+
+    user = User.query.filter_by(google_id=session["id_google"]).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    new_todo = Todo(user_id=user.id, category=category, task_text=data["task"])
+    try:
+        db.session.add(new_todo)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Failed to add todo: {str(e)}"}, 500
+
+    return {
+        "id": new_todo.id,
+        "category": new_todo.category,
+        "task": new_todo.task_text}
+
+
+@app.route("/api/todos/<int:todo_id>", methods=["DELETE"])
+@login_required
+def delete_todo(todo_id):
+    """
+    Delete a todo by ID for the logged-in user.
+    """
+    user = User.query.filter_by(google_id=session["id_google"]).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    todo = Todo.query.filter_by(id=todo_id, user_id=user.id).first()
+    if not todo:
+        return {"error": "Todo not found"}, 404
+
+    try:
+        db.session.delete(todo)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Failed to delete todo: {str(e)}"}, 500
+
+    return {"message": "Todo deleted"}
+
+
+@app.route("/api/todos/<int:todo_id>/category", methods=["PATCH"])
+@login_required
+def update_todo_category(todo_id):
+    """
+    Update the category of a todo by ID for the logged-in user.
+    """
+    user = User.query.filter_by(google_id=session["id_google"]).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    todo = Todo.query.filter_by(id=todo_id, user_id=user.id).first()
+    if not todo:
+        return {"error": "Todo not found"}, 404
+
+    data = request.json
+    new_category = data.get("category")
+    if new_category not in ["Today", "This Week", "This Month", "Next Month"]:
+        return {"error": f"Invalid category: {new_category}"}, 400
+
+    try:
+        todo.category = new_category
+        db.session.commit()
+        return {"message": "Category updated successfully"}
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Failed to update category: {str(e)}"}, 500
+
 
 if __name__ == "__main__":
     # Create tables in the database

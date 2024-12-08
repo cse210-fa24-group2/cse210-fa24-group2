@@ -1,52 +1,180 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+.calendar-container {
+    margin: 1rem auto;
+    padding: 1rem;
+    background-color: #E2E8F0;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f5f5f5;
-  }
-  
-  .calendar-container {
-    margin-top: 20px;
-    width: 400px;
-    text-align: center;
-  }
-  
-  .calendar-header {
+    overflow: hidden;
+}
+
+.calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .calendar-grid {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+.calendar-header button {
+    background-color: #2B6CB0;
+    color: #F7FAFC;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header button:hover {
+    background-color: #2C5282;
+}
+
+.calendar-header input {
+    width: 3.5rem;
+    padding: 0.2rem;
+    font-size: 0.8rem;
+    border: 1px solid #CBD5E0;
+    border-radius: 0.25rem;
+    text-align: center;
+}
+
+.calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    background-color: #fff;
-  }
-  
-  .calendar-cell {
-    padding: 10px;
+    gap: 0.2rem;
+    width: 100%;
+    padding: 0.3rem;
+    background-color: #FFF;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+}
+
+.calendar-cell {
+    padding: 0.4rem;
     text-align: center;
-    border: 1px solid #ddd;
-    background-color: #fafafa;
-  }
-  
-  .calendar-cell:hover {
-    background-color: #e0e0e0;
-  }
-  
-  .event {
-    color: #ff5722;
+    background-color: #FAFAFA;
+    border: 1px solid #E2E8F0;
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.75rem;
+}
+
+.calendar-cell:hover {
+    background-color: #E2E8F0;
+}
+
+.event {
+    margin-top: 0.2rem;
+    padding: 0.2rem;
+    background-color: #FBA183;
+    color: #1A202C;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 0.25rem;
+    word-wrap: break-word;
+    text-align: center;
+    width: 90%;
+}
+
+.event button {
+    background: none;
+    border: none;
+    color: #E53E3E;
+    font-size: 0.6rem;
+    cursor: pointer;
+    margin: 0 0.1rem;
+    transition: color 0.3s ease;
+}
+
+.event button:hover {
+    color: #FC8181;
+}
+
+.event button.update-event {
+    color: #2B6CB0;
+}
+
+.event button.update-event:hover {
+    color: #2C5282;
+}
+
+.add-event {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #E2E8F0;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-event h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.add-event form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-event form input,
+.add-event form button {
     font-size: 0.8rem;
-  }
-  
-  .add-event {
-    margin-top: 20px;
-  }
-  
+    padding: 0.3rem 0.5rem;
+    border: 1px solid #CBD5E0;
+    border-radius: 0.25rem;
+}
+
+.add-event form input {
+    flex: 1;
+    min-width: 9rem;
+}
+
+.add-event form button {
+    background-color: #2B6CB0;
+    color: #F7FAFC;
+    cursor: pointer;
+    font-weight: 600;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.add-event form button:hover {
+    background-color: #2C5282;
+}
+
+.add-event form button:disabled {
+    background-color: #CBD5E0;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .add-event form {
+        flex-direction: column;
+    }
+
+    .add-event form input {
+        width: 100%;
+    }
+
+    .add-event form button {
+        width: 100%;
+    }
+}

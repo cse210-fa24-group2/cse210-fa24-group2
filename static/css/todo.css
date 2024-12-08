@@ -1,0 +1,181 @@
+/* Styling document for the to-do list */
+
+@import url("vars.css");
+
+.todo-container {
+    padding: 10px;
+    border: 2px solid #2b6cb0;
+    border-radius: 8px;
+    background-color: #E2E8F0;
+    font-family: (--font-primary);
+    font-size: medium;
+    color: #1a202c;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Spacing between columns */
+    margin: 20px auto;
+    overflow: hidden; /* Prevents content from overflowing */
+    max-width: 100%; /* Ensures container doesn't exceed parent width */
+    box-sizing: border-box;
+    align-items: stretch; /* Ensures all columns have the same height */
+}
+
+/* Individual columns */
+.to-do-column {
+    flex: 1; /* All columns get equal width */
+    max-width: 300px; /* Restrict maximum width for each column */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #F7FAFC;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+    box-sizing: border-box;
+    max-height: 100%; /* Ensure equal height */
+    align-self: stretch; /* Match the tallest column */
+}
+
+/* Content inside each column */
+.todo-content {
+    overflow-y: auto; /* Enables vertical scrolling */
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+
+/* Column headers */
+.to-do-column h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+/* Input and add button container */
+.todo-list-container {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    gap: 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Individual to-do lists */
+.todo-list {
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    overflow-y: auto;
+    max-height: 250px; /* Restrict list height */
+    flex-grow: 1;
+    min-height: 50px; /* Ensures the list remains visible when empty */
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align items to the top */
+}
+
+/* To-Do List items */
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+
+.todo-item:last-child {
+    border-bottom: none;
+}
+
+.todo-item span {
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+/* Input box */
+.todo-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Add button */
+.todo-add-btn {
+    padding: 8px 12px;
+    background-color: #2B6CB0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.todo-add-btn:hover {
+    background-color: #2C5282;
+}
+
+/* Completed tasks */
+.todo-item.completed span {
+    text-decoration: line-through;
+    color: gray;
+}
+
+/* Remove button */
+.remove-btn {
+    background: none;
+    border: none;
+    color: #f44336;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.remove-btn:hover {
+    color: #d32f2f;
+}
+
+/* Drag-and-drop feedback */
+.todo-item.drag-over {
+    border: 2px dashed #e0f7fa;
+    background-color: #4fc3f7;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.todo-list.drag-over {
+    background-color: #e0f7fa;
+    border-color: #4fc3f7;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.todo-item {
+    cursor: grab;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.todo-item:active {
+    cursor: grabbing;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .todo-container {
+        flex-direction: column; /* Stack columns vertically */
+        overflow-y: auto;
+    }
+
+    .to-do-column {
+        max-width: 100%; /* Allow columns to span full width */
+        margin: 0 auto; /* Center align columns */
+    }
+
+    .todo-list-container {
+        flex-wrap: wrap; /* Stack input and button */
+        gap: 5px;
+    }
+}

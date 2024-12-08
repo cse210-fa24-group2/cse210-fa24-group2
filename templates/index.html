@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Command Center</title>
 </head>
 
@@ -55,10 +56,12 @@
     <main>
         <todo>
             <h2>To-Do List</h2>
+            <div id="todo-container"></div>
         </todo>
         <cal-group>
             <calendar>
                 <h2>Calendar</h2>
+                <div id="calendar-container"></div>
             </calendar>
             <deadlines>
                 <h2>Upcoming Deadlines</h2>
@@ -74,6 +77,8 @@
     </footer>
 
     <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script type="module" src="/static/js/todoList.js"></script>
+    <script type="module" src="/static/js/Calendar.js"></script>
     
 </body>
 
