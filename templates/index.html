@@ -4,79 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/styles.css">
-
-
-    <!-- internship table imports -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Command Center</title>
 </head>
 
 <body>
-    <basicControls>
-        <input type="checkbox" id="theme-toggle" />
-        <label for="theme-toggle" class="theme-button">
-            Toggle Theme
-            <img src="{{ url_for('static', filename='assets/icons/lightmode.svg') }}" alt="theme" class="theme-icon" />
-        </label>
-        <button class="logout-btn">Sign out</button>
-    </basicControls>
-    <hgroup>
-        <header>
-            <h1>Your Command Center</h1>
-        </header>
-        <nav>
-            <!-- Hidden checkbox to toggle menu -->
-            <input type="checkbox" id="menu-toggle" />
-            <!-- Menu Button -->
-            <label for="menu-toggle" class="menu-button">
-                <img src="{{ url_for('static', filename='assets/navbar/menu.svg') }}" alt="menu" class="menu-icon" />
+    <navbar>
+        <basicControls>
+            <input type="checkbox" id="theme-toggle" />
+            <label for="theme-toggle" class="theme-button">
+                Toggle Theme
+                <img src="{{ url_for('static', filename='assets/icons/lightmode.svg') }}" alt="theme" class="theme-icon" />
             </label>
-            <!-- Navigation Items -->
-            <ul>
-                <li class="tooltip">
-                    <img src="{{ url_for('static', filename='assets/icons/home.svg') }}" class="icon" alt="Home">
-                    <span class="text">Overview</span>
-                    <span class="tooltiptext">A quick summary view of all subpages</span>
-                </li>
-                <li class="tooltip">
-                    <img src="{{ url_for('static', filename='assets/icons/gradcap.svg') }}" class="icon" alt="Courses">
-                    <span class="text">Course Central</span>
-                    <span class="tooltiptext">Track your homework, assignments, and to-dos</span>
-                </li>
-                <li class="tooltip">
-                    <img src="{{ url_for('static', filename='assets/icons/briefcase.svg') }}" class="icon" alt="Career">
-                    <span class="text">Career Compass</span>
-                    <span class="tooltiptext">Monitor internship applications and career growth tools</span>
-                </li>
-                <li class="tooltip">
-                    <img src="{{ url_for('static', filename='assets/icons/beaker.svg') }}" class="icon" alt="Projects">
-                    <span class="text">Project Board</span>
-                    <span class="tooltiptext">Organize personal projects and track next steps</span>
-                </li>
-            </ul>
-        </nav>        
-    </hgroup>
+            <button class="logout-btn">Sign out</button>
+        </basicControls>
+        <hgroup>
+            <header>
+                <h1>FireStack</h1>
+            </header>
+            <nav>
+                <!-- Hidden checkbox to toggle menu -->
+                <input type="checkbox" id="menu-toggle" />
+                <!-- Menu Button -->
+                <label for="menu-toggle" class="menu-button">
+                    <img src="{{ url_for('static', filename='assets/navbar/menu.svg') }}" alt="menu" class="menu-icon" />
+                </label>
+                <!-- Navigation Items -->
+                <ul>
+                    <li class="navlink">
+                        <a href="#todo">
+                            <img src="{{ url_for('static', filename='assets/icons/list.svg') }}" class="icon" alt="Home">
+                            To-Do List
+                        </a>
+                    </li>
+                    <li class="navlink">
+                        <a href="#calendar">
+                            <img src="{{ url_for('static', filename='assets/icons/calendar.svg') }}" class="icon" alt="Courses">
+                            Calendar
+                        </a>
+                    </li>
+                    <li class="navlink">
+                        <a href="#deadlines">
+                            <img src="{{ url_for('static', filename='assets/icons/alert.svg') }}" class="icon" alt="Career">
+                            Deadlines
+                        </a>
+                    </li>
+                    <li class="navlink">
+                        <a href="#career">
+                            <img src="{{ url_for('static', filename='assets/icons/briefcase.svg') }}" class="icon" alt="Projects">
+                            Career Tracker
+                        </a>
+                    </li>
+                </ul>
+            </nav>        
+        </hgroup>
+    </navbar>
     <main>
-        <todo>
+        <todo id="todo">
             <h2>To-Do List</h2>
+            <div id="todo-container"></div>
         </todo>
         <cal-group>
-            <calendar>
+            <calendar id="calendar">
                 <h2>Calendar</h2>
+                <div id="calendar-container"></div>
             </calendar>
-            <deadlines>
+            <deadlines id="deadlines">
                 <h2>Upcoming Deadlines</h2>
             </deadlines>
         </cal-group>
-        <career>
+        <career id="career">
             <h2>Career Tracker</h2>
             {% include 'InternshipTracker.html' %}
         </career>
     </main>
     <footer>
+        <a href="/privacy" class="privacy">View Privacy Policy.</a>
         &copy; 2024 Team Two Good - UC San Diego. All rights reserved.
     </footer>
 
     <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script type="module" src="/static/js/todoList.js"></script>
+    <script type="module" src="/static/js/Calendar.js"></script>
+    
 </body>
 
 </html>

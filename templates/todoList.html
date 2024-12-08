@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List Component</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/todo.css') }}">
+</head>
+<body>
+  <div class="todo-list-container">
+    <div class="to-do-column">
+      <h3>Today</h3>
+      <div class="todo-content">
+        <ul id="todo-today" class="todo-list"></ul>
+        <div class="todo-list-container">
+            <input type="text" class="todo-input" id="input-today" placeholder="Add a task for today">
+            <button class="todo-add-btn" onclick="addTask('todo-today', 'input-today')">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="to-do-column">
+      <h3>This Week</h3>
+      <div class="todo-content">
+        <ul id="todo-week" class="todo-list"></ul>
+        <div class="todo-list-container">
+            <input type="text" class="todo-input" id="input-week" placeholder="Add a task for this week">
+            <button class="todo-add-btn" onclick="addTask('todo-week', 'input-week')">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="to-do-column">
+      <h3>This Month</h3>
+      <div class="todo-content">
+        <ul id="todo-month" class="todo-list"></ul>
+        <div class="todo-list-container">
+            <input type="text" class="todo-input" id="input-month" placeholder="Add a task for this month">
+            <button class="todo-add-btn" onclick="addTask('todo-month', 'input-month')">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="to-do-column">
+      <h3>Next Month</h3>
+      <div class="todo-content">
+        <ul id="todo-next-month" class="todo-list"></ul>
+        <div class="todo-list-container">
+            <input type="text" class="todo-input" id="input-next-month" placeholder="Add a task for next month">
+            <button class="todo-add-btn" onclick="addTask('todo-next-month', 'input-next-month')">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/todoList.js') }}" defer></script>
+</body>
+</html>

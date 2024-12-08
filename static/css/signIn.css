@@ -98,6 +98,12 @@ footer {
     margin-top: auto;
 }
 
+.privacy {
+    display: block;
+    color: var(--text-primary-lm);
+    cursor: pointer;
+}
+
 /* Responsive sign in card */
 @media screen and (max-width: 830px) {
     returnCard {
