@@ -264,4 +264,4 @@ async function updateTaskCategory(taskId, newCategory) {
 // Automatically load the To-Do List when the page loads
 window.addEventListener('load', loadTodoList);
 
-module.exports = { loadTodoList, addTask, loadTasks, deleteTask };
+export { loadTodoList, addTask, loadTasks, deleteTask };

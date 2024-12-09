@@ -192,3 +192,9 @@ document.getElementById('year-input').addEventListener('change', async (e) => {
 });
 
 await renderCalendar(currentYear, currentMonth);
+export default {
+  addEvent,
+  updateEvent,
+  deleteEvent,
+  renderCalendar
+};

@@ -2,23 +2,22 @@
  * @jest-environment jsdom
  */
 
-const { loadTodoList, addTask, loadTasks, deleteTask } = require('../static/js/todoList');
-require('@testing-library/jest-dom');
-const fetchMock = require('jest-fetch-mock');
-
-fetchMock.enableMocks();
+import '@testing-library/jest-dom';
+import { jest } from '@jest/globals';
+import { loadTodoList, addTask, loadTasks, deleteTask } from '../static/js/todoList.js';
 
 describe('TodoList Functionality', () => {
     beforeEach(() => {
-        // Reset the DOM and fetch mocks before each test
-        document.body.innerHTML = `
-            <div id="todo-container"></div>
-        `;
-        fetchMock.resetMocks();
+        // Reset the DOM and mock fetch before each test
+        document.body.innerHTML = `<div id="todo-container"></div>`;
+        global.fetch = jest.fn();
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
     });
 
     test('loads the To-Do List HTML into the container', async () => {
-        // Mock the HTML content for the to-do list
         const mockHtml = `
             <div class="to-do-column">
                 <h3>Today</h3>
@@ -26,30 +25,77 @@ describe('TodoList Functionality', () => {
                     <ul id="todo-today" class="todo-list"></ul>
                 </div>
             </div>
+            <div class="to-do-column">
+                <h3>This Week</h3>
+                <div class="todo-content">
+                    <ul id="todo-week" class="todo-list"></ul>
+                </div>
+            </div>
+            <div class="to-do-column">
+                <h3>This Month</h3>
+                <div class="todo-content">
+                    <ul id="todo-month" class="todo-list"></ul>
+                </div>
+            </div>
+            <div class="to-do-column">
+                <h3>Next Month</h3>
+                <div class="todo-content">
+                    <ul id="todo-next-month" class="todo-list"></ul>
+                </div>
+            </div>
         `;
-        fetchMock.mockResponseOnce(mockHtml);
 
-        // Call the function to load the to-do list
-        await loadTodoList();
-
-        // Verify the HTML content is loaded correctly
-        const container = document.querySelector('#todo-container');
-        expect(container.innerHTML).toContain('<div class="to-do-column">');
-        expect(fetchMock).toHaveBeenCalledWith('/todoList.html');
-    });
-
-    test('loads tasks and populates the respective lists', async () => {
-        // Mock the API response with sample tasks
-        fetchMock.mockResponseOnce(JSON.stringify({
+        const mockTasks = {
             todos: [
                 { id: 1, category: 'Today', task: 'Task 1' },
                 { id: 2, category: 'This Week', task: 'Task 2' },
                 { id: 3, category: 'This Month', task: 'Task 3' },
                 { id: 4, category: 'Next Month', task: 'Task 4' },
             ],
-        }));
+        };
 
-        // Setup the DOM with placeholders for task lists
+        // Mocking fetch for '/todoList.html'
+        fetch
+            .mockResolvedValueOnce({
+                ok: true,
+                text: async () => mockHtml,
+            })
+            // Mocking fetch for '/api/todos'
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => mockTasks,
+            });
+
+        await loadTodoList();
+
+        const container = document.querySelector('#todo-container');
+        expect(container.innerHTML).toContain('<div class="to-do-column">');
+        expect(fetch).toHaveBeenCalledWith('/todoList.html');
+        expect(fetch).toHaveBeenCalledWith('/api/todos');
+
+        // Checking if tasks are loaded correctly
+        expect(document.getElementById('todo-today').children.length).toBe(1);
+        expect(document.getElementById('todo-week').children.length).toBe(1);
+        expect(document.getElementById('todo-month').children.length).toBe(1);
+        expect(document.getElementById('todo-next-month').children.length).toBe(1);
+    });
+
+    test('fetches tasks and loads them into the respective lists', async () => {
+        const mockTasks = {
+            todos: [
+                { id: 1, category: 'Today', task: 'Task 1' },
+                { id: 2, category: 'This Week', task: 'Task 2' },
+                { id: 3, category: 'This Month', task: 'Task 3' },
+                { id: 4, category: 'Next Month', task: 'Task 4' },
+            ],
+        };
+
+        // Mocking fetch for '/api/todos'
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => mockTasks,
+        });
+
         document.body.innerHTML = `
             <div id="todo-container">
                 <div class="to-do-column">
@@ -67,10 +113,8 @@ describe('TodoList Functionality', () => {
             </div>
         `;
 
-        // Call the function to load tasks
         await loadTasks();
 
-        // Verify tasks are loaded into the correct lists
         expect(document.getElementById('todo-today').children.length).toBe(1);
         expect(document.getElementById('todo-week').children.length).toBe(1);
         expect(document.getElementById('todo-month').children.length).toBe(1);
@@ -78,10 +122,11 @@ describe('TodoList Functionality', () => {
     });
 
     test('adds a task to the specified list', async () => {
-        // Mock the API response for adding a task
-        fetchMock.mockResponseOnce(JSON.stringify({ id: 3, category: 'Today', task: 'New Task' }));
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ id: 3, category: 'Today', task: 'New Task' }),
+        });
 
-        // Setup the DOM with a task input and list
         document.body.innerHTML = `
             <div class="to-do-column">
                 <ul id="todo-today" class="todo-list"></ul>
@@ -92,18 +137,17 @@ describe('TodoList Functionality', () => {
         const input = document.getElementById('input-today');
         input.value = 'New Task';
 
-        // Call the function to add a task
         await addTask('todo-today', 'input-today');
 
-        // Verify the task is added to the list
         const todayList = document.getElementById('todo-today');
         expect(todayList.children.length).toBe(1);
         expect(todayList.children[0].textContent).toContain('New Task');
-        expect(input.value).toBe(''); // Ensure the input is cleared
+        expect(input.value).toBe('');
+
+        expect(fetch).toHaveBeenCalledWith('/api/todos', expect.any(Object));
     });
 
     test('handles invalid inputs when adding a task', async () => {
-        // Setup the DOM with a task input and list
         document.body.innerHTML = `
             <div class="to-do-column">
                 <ul id="todo-today" class="todo-list"></ul>
@@ -112,21 +156,21 @@ describe('TodoList Functionality', () => {
         `;
 
         const input = document.getElementById('input-today');
-        input.value = ''; // Set empty input
+        input.value = '';
 
-        // Call the function to add a task
         await addTask('todo-today', 'input-today');
 
-        // Verify no task is added
         const todayList = document.getElementById('todo-today');
         expect(todayList.children.length).toBe(0);
+        expect(fetch).not.toHaveBeenCalled();
     });
 
     test('deletes a task from the list', async () => {
-        // Mock the API response for deleting a task
-        fetchMock.mockResponseOnce('', { status: 200 });
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            status: 200,
+        });
 
-        // Setup the DOM with a task and delete button
         document.body.innerHTML = `
             <ul id="todo-today" class="todo-list">
                 <li class="todo-item" data-id="1">
@@ -140,25 +184,25 @@ describe('TodoList Functionality', () => {
         const taskElement = document.querySelector('.todo-item');
         const taskList = document.getElementById('todo-today');
 
-        // Simulate clicking the delete button
+        // Simulation of clicking the delete button
         deleteButton.addEventListener('click', async () => {
             await deleteTask(1, taskElement);
         });
         deleteButton.click();
 
-        // Wait for async behavior
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await Promise.resolve();
 
-        // Verify the task is removed from the list
         expect(taskList.children.length).toBe(0);
         expect(document.querySelector('.todo-item')).toBeNull();
+        expect(fetch).toHaveBeenCalledWith('/api/todos/1', { method: 'DELETE' });
     });
 
     test('handles Enter key functionality for adding tasks', async () => {
-        // Mock the API response for adding a task
-        fetchMock.mockResponseOnce(JSON.stringify({ id: 3, category: 'Today', task: 'Task via Enter' }));
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ id: 3, category: 'Today', task: 'Task via Enter' }),
+        });
 
-        // Setup the DOM with a task input and list
         document.body.innerHTML = `
             <div class="to-do-column">
                 <ul id="todo-today" class="todo-list"></ul>
@@ -169,14 +213,12 @@ describe('TodoList Functionality', () => {
         const input = document.getElementById('input-today');
         input.value = 'Task via Enter';
 
-        // Simulate pressing the Enter key
+        // Simulation of pressing the Enter key
         const event = new KeyboardEvent('keypress', { key: 'Enter' });
         input.dispatchEvent(event);
 
-        // Call the function to add a task
         await addTask('todo-today', 'input-today');
 
-        // Verify the task is added to the list
         const todayList = document.getElementById('todo-today');
         expect(todayList.children.length).toBe(1);
         expect(todayList.children[0].textContent).toContain('Task via Enter');
