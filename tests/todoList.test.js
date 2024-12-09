@@ -54,13 +54,13 @@ describe('TodoList Functionality', () => {
             ],
         };
 
-        // Mock fetch for '/todoList.html'
+        // Mocking fetch for '/todoList.html'
         fetch
             .mockResolvedValueOnce({
                 ok: true,
                 text: async () => mockHtml,
             })
-            // Mock fetch for '/api/todos'
+            // Mocking fetch for '/api/todos'
             .mockResolvedValueOnce({
                 ok: true,
                 json: async () => mockTasks,
@@ -73,14 +73,14 @@ describe('TodoList Functionality', () => {
         expect(fetch).toHaveBeenCalledWith('/todoList.html');
         expect(fetch).toHaveBeenCalledWith('/api/todos');
 
-        // Check if tasks are loaded correctly
+        // Checking if tasks are loaded correctly
         expect(document.getElementById('todo-today').children.length).toBe(1);
         expect(document.getElementById('todo-week').children.length).toBe(1);
         expect(document.getElementById('todo-month').children.length).toBe(1);
         expect(document.getElementById('todo-next-month').children.length).toBe(1);
     });
 
-    test('loads tasks and populates the respective lists', async () => {
+    test('fetches tasks and loads them into the respective lists', async () => {
         const mockTasks = {
             todos: [
                 { id: 1, category: 'Today', task: 'Task 1' },
@@ -90,7 +90,7 @@ describe('TodoList Functionality', () => {
             ],
         };
 
-        // Mock fetch for '/api/todos'
+        // Mocking fetch for '/api/todos'
         fetch.mockResolvedValueOnce({
             ok: true,
             json: async () => mockTasks,
@@ -184,13 +184,12 @@ describe('TodoList Functionality', () => {
         const taskElement = document.querySelector('.todo-item');
         const taskList = document.getElementById('todo-today');
 
-        // Simulate clicking the delete button
+        // Simulation of clicking the delete button
         deleteButton.addEventListener('click', async () => {
             await deleteTask(1, taskElement);
         });
         deleteButton.click();
 
-        // Wait for async behavior
         await Promise.resolve();
 
         expect(taskList.children.length).toBe(0);
@@ -214,7 +213,7 @@ describe('TodoList Functionality', () => {
         const input = document.getElementById('input-today');
         input.value = 'Task via Enter';
 
-        // Simulate pressing the Enter key
+        // Simulation of pressing the Enter key
         const event = new KeyboardEvent('keypress', { key: 'Enter' });
         input.dispatchEvent(event);
 

@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom'; // For DOM assertions
+import '@testing-library/jest-dom';
 import { jest } from '@jest/globals';
 import MockAdapter from 'axios-mock-adapter';
 
@@ -8,16 +8,14 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
   let deleteEvent, updateEvent, renderCalendar;
 
   beforeAll(async () => {
-    // Ensure axios is globally available
     const axiosModule = await import('axios');
     global.axios = axiosModule.default;
   });
 
   beforeEach(async () => {
-    // Initialize MockAdapter before each test
     mock = new MockAdapter(global.axios);
 
-    // Set up the DOM with all required elements
+    // Setting up the DOM with all required elements
     document.body.innerHTML = `
       <div id="calendar-root"></div>
       <button id="add-event">Add Event</button>
@@ -36,7 +34,6 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
       </form>
     `;
 
-    // Mock addEventListener on 'add-event', 'prev-month', and 'next-month' buttons without invoking callbacks
     const addEventButton = document.getElementById('add-event');
     if (addEventButton) {
       addEventButton.addEventListener = jest.fn();
@@ -52,8 +49,7 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
       nextMonthButton.addEventListener = jest.fn();
     }
 
-    // Set up a default mock for axios.get to prevent 404 during initial renderCalendar call
-    mock.onGet('/api/calendar/events').reply(200, []); // Returns an empty array of events
+    mock.onGet('/api/calendar/events').reply(200, []);
 
     // Clear all mock calls and instances before each test
     jest.clearAllMocks();
@@ -80,16 +76,15 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
     const location = 'Online';
     const description = 'This is a test event';
 
-    // Mock axios.post response
+    // Mocking axios.post response
     mock.onPost('/api/calendar/events').reply(200, { data: 'Event added' });
 
     // Spy on addEvent to ensure it's called only once
     const addEventSpy = jest.spyOn(app, 'addEvent');
 
-    // Call addEvent directly on app
     await app.addEvent(title, date, startTime, endTime, location, description);
 
-    // Check if axios.post was called with correct parameters
+    // Checking if axios.post was called with correct parameters
     expect(mock.history.post.length).toBe(1);
     expect(mock.history.post[0].url).toBe('/api/calendar/events');
     expect(JSON.parse(mock.history.post[0].data)).toEqual({
@@ -104,7 +99,6 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
     // Ensure addEvent was called once
     expect(addEventSpy).toHaveBeenCalledTimes(1);
 
-    // Restore the original implementation
     addEventSpy.mockRestore();
   });
 
@@ -118,7 +112,7 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
     // Call deleteEvent
     await deleteEvent(eventId);
 
-    // Check if axios.delete was called with correct event ID
+    // Checking if axios.delete was called with correct event ID
     expect(mock.history.delete.length).toBe(1);
     expect(mock.history.delete[0].url).toBe(`/api/calendar/events/${eventId}`);
   });
@@ -135,13 +129,12 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
       description: 'Updated description',
     };
 
-    // Mock axios.put response
     mock.onPut(`/api/calendar/events/${eventId}`).reply(200, { data: 'Event updated' });
 
     // Call updateEvent
     await updateEvent(eventId, updatedEvent);
 
-    // Check if axios.put was called with correct event ID and data
+    // Checking if axios.put was called with correct event ID and data
     expect(mock.history.put.length).toBe(1);
     expect(mock.history.put[0].url).toBe(`/api/calendar/events/${eventId}`);
     expect(JSON.parse(mock.history.put[0].data)).toEqual(updatedEvent);
@@ -149,7 +142,7 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
 
   // Test for renderCalendar (Check if it renders calendar correctly)
   test('should render the calendar correctly', async () => {
-    // Mock axios.get response for fetching events
+    // Mocking axios.get response for fetching events
     const mockEvents = [
       {
         id: '1',
