@@ -55,7 +55,7 @@ jobs:
 
       - name: Push JSDocs to Docs Branch
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
@@ -80,7 +80,7 @@ jobs:
             git commit -m "Update JSDocs [skip ci]"
 
             # Push the changes to the remote docs branch
-            git push --force "https://b-ishan:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/<owner>/<repo>.git" docs
+            git push --force --set-upstream origin docs
 
           fi
 
