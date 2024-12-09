@@ -168,8 +168,61 @@ nav ul li:hover {
     display: none;
 }
 
+/* Content Sections Styling */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 1.5rem auto;
+    padding: 1rem;
+}
+
+todo, calendar, deadlines, career {
+    background-color: var(--background-secondary-lm);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    width: 100%;
+}
+
+todo, career {
+    max-width: 75rem;
+    height: auto;
+}
+
+calendar {
+    height: auto;
+    max-width: 48.5rem;
+}
+
+deadlines {
+    height: auto;
+    max-width: 25rem;
+}
+
+calGroup {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+/* Footer Section */
+footer {
+    text-align: center;
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    padding: 1rem;
+    margin-top: auto;
+}
+
+.privacy {
+    display: block;
+    color: var(--text-primary-lm);
+    cursor: pointer;
+}
+
 /* Responsive nav bar */
-@media screen and (max-width: 830px) {
+@media screen and (max-width: 950px) {
     hgroup {
         flex-direction: column;
         align-items: flex-start;
@@ -207,56 +260,12 @@ nav ul li:hover {
     .icon {
         display: none;
     }
-}
 
-/* Content Sections Styling */
-main {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin: 1.5rem auto;
-    padding: 1rem;
-}
+    calGroup {
+        flex-direction: column;
+    }
 
-todo, calendar, deadlines, career {
-    background-color: var(--background-secondary-lm);
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
+    deadlines {
+        max-width: 75rem;
+    }
 }
-
-todo, career {
-    width: 75rem;
-    height: 20rem;
-}
-
-calendar {
-    height: 30rem;
-    width: 48.5rem;
-}
-
-deadlines {
-    height: 30rem;
-    width: 25rem;
-}
-
-cal-group {
-    display: flex;
-    gap: 1.5rem;
-}
-
-/* Footer Section */
-footer {
-    text-align: center;
-    background-color: var(--background-secondary-lm);
-    color: var(--text-primary-lm);
-    padding: 1rem;
-    margin-top: auto;
-}
-
-.privacy {
-    display: block;
-    color: var(--text-primary-lm);
-    cursor: pointer;
-}
-

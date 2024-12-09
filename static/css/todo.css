@@ -61,6 +61,11 @@
     width: 100%;
 }
 
+input {
+    background-color: var(--background-primary-lm);
+    color: var(--text-primary-lm)
+}
+
 /* Individual to-do lists */
 .todo-list {
     list-style-type: none;
