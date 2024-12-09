@@ -168,6 +168,59 @@ nav ul li:hover {
     display: none;
 }
 
+/* Content Sections Styling */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 1.5rem auto;
+    padding: 1rem;
+}
+
+todo, calendar, deadlines, career {
+    background-color: var(--background-secondary-lm);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    width: 100%;
+}
+
+todo, career {
+    max-width: 75rem;
+    height: auto;
+}
+
+calendar {
+    height: auto;
+    max-width: 48.5rem;
+}
+
+deadlines {
+    height: auto;
+    max-width: 25rem;
+}
+
+calGroup {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+/* Footer Section */
+footer {
+    text-align: center;
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    padding: 1rem;
+    margin-top: auto;
+}
+
+.privacy {
+    display: block;
+    color: var(--text-primary-lm);
+    cursor: pointer;
+}
+
 /* Tooltip Styling */
 .tooltip {
     position: relative;
@@ -186,7 +239,6 @@ nav ul li:hover {
     margin-right:0.625rem;
 }
 
-/*can probably delete this portion*/
 .tooltiptext {
     visibility: hidden;
     opacity: 0;
@@ -260,6 +312,14 @@ nav ul li:hover {
 
     .icon {
         display: none;
+    }
+
+    calGroup {
+        flex-direction: column;
+    }
+    
+    deadlines {
+        max-width: 75rem;
     }
 }
 
