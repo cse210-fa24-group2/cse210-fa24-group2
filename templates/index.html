@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <title>Command Center</title>
+    <title>FireStack</title>
 </head>
 
 <body>
@@ -20,6 +20,7 @@
         </basicControls>
         <hgroup>
             <header>
+                <img src="{{ url_for('static', filename='assets/icons/simpleLogo.svg') }}" alt="logo" class="logo" />
                 <h1>FireStack</h1>
             </header>
             <nav>
@@ -70,8 +71,8 @@
                 <div id="calendar-container"></div>
             </calendar>
             <deadlines id="deadlines">
-                <h2>Upcoming Deadlines</h2>
-                <ul id="upcoming-deadlines-list">
+                <h2>Today's Deadlines</h2>
+                <ul id="upcomingDeadlinesList">
                     <!-- Events due today will appear here -->
                 </ul>
             </deadlines>
