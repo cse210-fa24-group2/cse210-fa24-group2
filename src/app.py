@@ -12,7 +12,7 @@ Attributes:
 import functools
 import os
 import pathlib
-
+import json
 import cachecontrol
 from dotenv import load_dotenv
 from flask import Flask, abort, redirect, request, session, jsonify
@@ -378,32 +378,41 @@ def add_internship():
         return jsonify({"error": "User not logged in"}), 401
 
     data = request.json  # Get the JSON payload from the request
+    processed_data = {
+        key: (None if value == "" else value)
+        for key, value in data.items()
+    }
     if not data:
         return jsonify({"error": "Invalid data"}), 400
 
     try:
-        # Create a new internship entry 
+        # Process skills_required from comma-separated string to JSON string
+        skills_required = data.get("skills_required", "")
+        if isinstance(skills_required, str):
+            skills_list = [skill.strip() for skill in skills_required.split(",") if skill.strip()]
+            skills_required = json.dumps(skills_list)  # Convert list to JSON string
+
+        # Create a new internship entry
         new_internship = Internship(
             user_id=user_id,
             company_name=data.get("company_name"),
             position_title=data.get("position_title"),
             application_status=data.get("application_status", "Applied"),
-            date_applied=data.get("date_applied"),
-            follow_up_date=data.get("follow_up_date"),
+            date_applied=processed_data.get("date_applied"),
+            follow_up_date=processed_data.get("follow_up_date"),
             application_link=data.get("application_link"),
-            start_date=data.get("start_date"),
+            start_date=processed_data.get("start_date"),
             contact_person=data.get("contact_person"),
             contact_email=data.get("contact_email"),
             referral=data.get("referral", False),
             offer_received=data.get("offer_received", False),
-            offer_deadline=data.get("offer_deadline"),
+            offer_deadline=processed_data.get("offer_deadline"),
             notes=data.get("notes"),
             location=data.get("location"),
             salary=data.get("salary"),   
             internship_duration=data.get("internship_duration"),
-            skills_required=data.get("skills_required"),
+            skills_required=skills_required,  # Store as JSON string
         )
-
         # Add to the database
         db.session.add(new_internship)
         db.session.commit()
@@ -411,7 +420,9 @@ def add_internship():
         return jsonify({"message": "Internship added successfully", "internship_id": new_internship.internship_id}), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": f"Failed to add internship: {str(e)}"}), 500 
+        return jsonify({"error": f"Failed to add internship: {str(e)}"}), 500
+
+
 @app.route('/api/internships/<int:internship_id>', methods=['PUT'])
 def update_internship(internship_id):
     """
@@ -422,11 +433,18 @@ def update_internship(internship_id):
 
     if not internship:
         return jsonify({"error": "Internship not found"}), 404
-
-    # Update the internship fields dynamically
+        # Dynamically update the fields in the internship record
     for key, value in data.items():
         if hasattr(internship, key):
-            setattr(internship, key, value)
+            if key in ['date_applied', 'follow_up_date', 'start_date', 'offer_deadline'] and not value:
+                # Set nullable date fields to None if they are empty
+                setattr(internship, key, None)
+            elif key in ['referral', 'offer_received']:
+                # Convert boolean-like values (if necessary)
+                setattr(internship, key, bool(value))
+            else:
+                setattr(internship, key, value)
+
 
     try:
         db.session.commit()  # Save changes to the database
@@ -435,7 +453,36 @@ def update_internship(internship_id):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/internships/<int:internship_id>', methods=['DELETE'])
+@login_required
+def delete_internship(internship_id):
+    """
+    Delete an internship entry by its ID.
 
+    Args:
+        internship_id (int): The ID of the internship to delete.
+
+    Returns:
+        Response: JSON response indicating success or failure.
+    """
+    user_id = session.get("user_id")  # Get the logged-in user's ID from the session
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 401
+
+    # Fetch the internship entry for the given ID and user
+    internship = Internship.query.filter_by(internship_id=internship_id, user_id=user_id).first()
+    
+    if not internship:
+        return jsonify({"error": "Internship not found"}), 404
+
+    try:
+        # Delete the internship from the database
+        db.session.delete(internship)
+        db.session.commit()
+        return jsonify({"message": "Internship deleted successfully!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to delete internship: {str(e)}"}), 500
 
 
 @app.route('/calendar.html')
