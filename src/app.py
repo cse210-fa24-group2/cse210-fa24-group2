@@ -16,13 +16,14 @@ import pathlib
 import cachecontrol
 from dotenv import load_dotenv
 from flask import Flask, abort, redirect, request, session
-from flask import url_for, render_template
+from flask import url_for, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
 from src.calendarGoogle import calendarGoogle
+from datetime import datetime
 
 
 # Load environment variables from .env file
@@ -122,6 +123,23 @@ def login():
     return redirect(authorization_url)
 
 
+class Internship(db.Model):
+    __tablename__ = "internship"
+
+    internship_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    company_name = db.Column(db.String(255), nullable=False)
+    position_title = db.Column(db.String(255), nullable=False)
+    follow_up_date = db.Column(db.Date)
+
+    def to_dict(self):
+        return {
+            "companyName": self.company_name,
+            "positionTitle": self.position_title,
+            "followUpDate": str(self.follow_up_date),
+        }
+
+
 @app.route("/callback")
 def callback():
     """
@@ -164,12 +182,6 @@ def callback():
         # Invalid token
         abort(401)
 
-    # Store user information and credentials in the session
-    session["id_google"] = id_info.get("sub")
-    session["name"] = id_info.get("name")
-    session["access_token"] = credentials.token
-    session["refresh_token"] = credentials.refresh_token
-
     # Add user to the database if not exists
     user = User.query.filter_by(google_id=id_info.get("sub")).first()
     if not user:
@@ -177,7 +189,36 @@ def callback():
         db.session.add(user)
         db.session.commit()
 
+    # Store user information and credentials in the session
+    session["user_id"] = user.id
+    session["id_google"] = id_info.get("sub")
+    session["name"] = id_info.get("name")
+    session["access_token"] = credentials.token
+    session["refresh_token"] = credentials.refresh_token
+
     return redirect(url_for('dashboard', _external=True))
+
+
+# Add the endpoint for fetching today's internships (upcoming deadlines)
+@app.route('/api/internships/today', methods=['GET'])
+@login_required
+def get_todays_internships():
+    """
+    Fetch internships with follow-up dates matching today's date.
+    """
+    try:
+        user_id = session.get("user_id")  # Get the logged-in user's ID
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 401
+
+        today = datetime.now().date()  # Get today's date
+        internships = db.session.query(Internship).filter_by(
+            user_id=user_id).filter(Internship.follow_up_date == today).all()
+
+        internships_data = [internship.to_dict() for internship in internships]
+        return jsonify(internships_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/logout")

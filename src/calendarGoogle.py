@@ -15,7 +15,7 @@ from flask import Blueprint, request, session, jsonify, abort
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import google.auth.transport.requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Create a Flask Blueprint
 calendarGoogle = Blueprint('calendarGoogle', __name__)
@@ -41,8 +41,8 @@ def get_calendar_service():
         client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),
         scopes=[
             "https://www.googleapis.com/auth/calendar",
-            "https://www.googleapis.com/auth/calendar.events"
-        ]
+            "https://www.googleapis.com/auth/calendar.events",
+        ],
     )
 
     # Refresh the token if expired
@@ -173,25 +173,31 @@ def update_event(event_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# API endpoint to delete an existing calendar event
 
-
-@calendarGoogle.route('/api/calendar/events/<event_id>', methods=['DELETE'])
-def delete_event(event_id):
+@calendarGoogle.route('/api/calendar/events/today', methods=['GET'])
+def get_todays_events():
     """
-    Delete an existing Google Calendar event.
-
-    Args:
-        event_id (str): The ID of the event to be deleted.
-
-    Returns:
-        Response: JSON response indicating the result of the delete operation.
+    Fetch Google Calendar events for the current day in the user's time zone.
     """
     try:
         service = get_calendar_service()
-        service.events().delete(
-            calendarId='primary', eventId=event_id).execute()
+        now = datetime.now().astimezone().replace(hour=0, minute=0,
+                                                  second=0, microsecond=0)
+        end_of_day = now + timedelta(hours=23, minutes=59, seconds=59)
 
-        return jsonify({"message": "Event deleted successfully."}), 200
+        # Convert to ISO format
+        time_min = now.isoformat()
+        time_max = end_of_day.isoformat()
+
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=time_min,
+            timeMax=time_max,
+            singleEvents=True,
+            orderBy='startTime',
+        ).execute()
+
+        events = events_result.get('items', [])
+        return jsonify(events), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
