@@ -145,6 +145,15 @@ function createTodoElement(id, taskText) {
         <button class="remove-btn">×</button>
     `;
 
+    /* when hover over remove button, change color of task item */
+    li.querySelector('.remove-btn').addEventListener('mouseover',() => {
+        li.style.backgroundColor= '#E2E8F0';
+    });
+    li.querySelector('.remove-btn').addEventListener('mouseout',() => {
+        li.style.backgroundColor= '#F7FAFC';
+    });
+
+
     li.querySelector('.remove-btn').addEventListener('click', () => {
         deleteTask(id, li);
     });
