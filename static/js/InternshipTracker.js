@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     class InternshipTracker extends HTMLElement {
         constructor() {
             super();
-            this.attachShadow({ mode: 'open' });
+            this.attachShadow({ mode: 'open' }); // Attach a shadow DOM to the element
         }
 
         // Lifecycle method called when the element is added to the DOM
@@ -32,21 +32,25 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
         }
     }
+
     let dataTable;
+
+    /**
+     * Add a new internship entry to the database
+     * @param {Object} internshipData - Data for the new internship
+     */
     async function addInternship(internshipData) {
         try {
             const response = await fetch("/api/internships", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(internshipData),
             });
-    
+
             const result = await response.json();
             if (response.ok) {
                 console.log("Internship added successfully:", result);
-                internshipDataFetch();
+                internshipDataFetch(); // Refresh data after successful addition
             } else {
                 console.error("Error adding internship:", result.error);
             }
@@ -54,9 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error:", error);
         }
     }
-    
-    // Data representing internships
-   
+
     // Predefined colors for skill pills
     const pillColors = ["#072F5F", "#1261A0", "#3895D3", "#58CCED"];
 
@@ -120,43 +122,26 @@ document.addEventListener("DOMContentLoaded", () => {
             </select>
         `;
     };
-    // const internshipData = [
-    //     {
-    //         internshipId: "1",
-    //         companyName: "Google",
-    //         positionTitle: "Software Engineer Intern",
-    //         applicationStatus: "Applied",
-    //         dateApplied: "11/10/2024",
-    //         followUpDate: "11/20/2024",
-    //         applicationLink: "https://careers.google.com/jobs/results/12345",
-    //         startDate: "06/01/2025",
-    //         contactPerson: "Jane Doe",
-    //         contactEmail: "jane.doe@google.com",
-    //         referral: true,
-    //         offerReceived: false,
-    //         offerDeadline: "",
-    //         notes: "Submitted coding test on 11/15/2024.",
-    //         location: "Mountain View, CA",
-    //         salary: "8000.0",
-    //         internshipDuration: "12 weeks",
-    //         skillsRequired: '["Python", "C++", "Data Structures"]'
-    //     }]
+
+    /**
+     * Attach row expansion logic to the table
+     */
     function attachRowExpansionLogic() {
         const tableBody = document.querySelector('#InternshipTrackerTable tbody');
-    
+
         if (!tableBody) {
             console.error("Table body not found for attaching row expansion logic.");
             return;
         }
-    
+
         // Attach click event for row expansion
         tableBody.addEventListener('click', function (e) {
             if (!e.target.classList.contains('dt-control')) return;
-    
+
             const tr = e.target.closest('tr');
             const index = e.target.dataset.index;
             const item = internshipData[index];
-    
+
             // Toggle expansion
             if (tr.nextElementSibling?.classList.contains('expanded-details')) {
                 // Close expanded rows
@@ -182,26 +167,29 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td colspan="5" class="detail-value">${value}</td>
                     </tr>
                 `).join('');
-    
+
                 tr.insertAdjacentHTML('afterend', detailRows);
                 e.target.textContent = '▼';
             }
         });
     }
-    
+
+    /**
+     * Fetch internship data and render the table
+     */
     async function internshipDataFetch() {
         try {
             const response = await fetch('/internshipData');
             const data = await response.json();
-    
+
             console.log('Received:', data);
             internshipData = data;
-    
+
             // Destroy the existing table if it exists
             if (dataTable) {
                 dataTable.destroy();
             }
-    
+
             // Ensure the table has a <tbody>
             const tableBody = document.querySelector("#InternshipTrackerTable tbody");
             if (!tableBody) {
@@ -211,18 +199,19 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 tableBody.innerHTML = ""; // Clear existing rows
             }
-    
+
             // Reinitialize the DataTable with updated data
             dataTable = new simpleDatatables.DataTable("#InternshipTrackerTable", {
                 searchable: true,
                 columns: [
                     { select: 0, sortable: false }, // Expand/collapse column
-                    { select: 6, sortable: false } // Edit button column
+                    { select: 6, sortable: false }, // Edit button column
+                    { select: 7, sortable: false } // Delete button column
                 ],
                 data: {
                     headings: [
                         "", "Company Name", "Position Title", "Application Status",
-                        "Date Applied", "Application Link", ""
+                        "Date Applied", "Application Link", "", ""
                     ],
                     data: internshipData.map((item, index) => [
                         `<span class="dt-control" data-index="${index}">▶</span>`,
@@ -231,22 +220,21 @@ document.addEventListener("DOMContentLoaded", () => {
                         generateStatusDropdown(item.applicationStatus),
                         item.dateApplied,
                         `<a href="${item.applicationLink}" target="_blank">Link</a>`,
-                        `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`
+                        `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`,
+                        `<div class="delete" onclick='deleteInternship(${JSON.stringify(item)})'>❌</div>`
                     ])
                 }
             });
-    
+
             // Reattach row expansion logic
             attachRowExpansionLogic();
         } catch (error) {
             console.error('Error:', error);
         }
     }
-    
-    
+
     internshipDataFetch();
 
-    
     // Modal logic for adding/editing internships
     const modal = document.getElementById("addInternshipModal");
     const addButton = document.getElementById("addRowBtn");
@@ -275,7 +263,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Save form data when the modal is submitted
+    /**
+     * Save form data when the modal is submitted
+     */
     saveButton.onclick = () => {
         const newInternship = {
             company_name: document.getElementById("company_name").value,
@@ -300,8 +290,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     .map((skill) => skill.trim())
             )
         };
-        addInternship(newInternship)
-        console.log(newInternship);
+
+        addInternship(newInternship);
         closeModal();
     };
 
@@ -316,8 +306,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Pre-fill form fields
         const formatDate = (dateString) => {
-            if (!dateString) return '';
-            const [month, day, year] = dateString.split('/');
+            if (!dateString || typeof dateString !== 'string') return '';
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return '';
+            const [year, month, day] = parts;
             return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
         };
 
@@ -341,53 +333,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Save updated data
         const saveButton = document.querySelector(".save-btn");
-saveButton.onclick = async () => {
-    const updatedInternship = {
-        companyName: document.getElementById("company_name").value,
-        positionTitle: document.getElementById("position_title").value,
-        applicationStatus: document.getElementById("application_status").value,
-        dateApplied: document.getElementById("date_applied").value,
-        followUpDate: document.getElementById("follow_up_date").value,
-        applicationLink: document.getElementById("application_link").value,
-        startDate: document.getElementById("start_date").value,
-        contactPerson: document.getElementById("contact_person").value,
-        contactEmail: document.getElementById("contact_email").value,
-        referral: document.getElementById("referral").checked,
-        offerReceived: document.getElementById("offer_received").checked,
-        offerDeadline: document.getElementById("offer_deadline").value,
-        notes: document.getElementById("notes").value,
-        location: document.getElementById("location").value,
-        salary: parseFloat(document.getElementById("salary").value) || 0,
-        internshipDuration: document.getElementById("internship_duration").value,
-        skillsRequired: JSON.stringify(
-            document
-                .getElementById("skills_required")
-                .value.split(",")
-                .map((skill) => skill.trim())
-        )
+        saveButton.onclick = async () => {
+            const updatedInternship = {
+                companyName: document.getElementById("company_name").value,
+                positionTitle: document.getElementById("position_title").value,
+                applicationStatus: document.getElementById("application_status").value,
+                dateApplied: document.getElementById("date_applied").value,
+                followUpDate: document.getElementById("follow_up_date").value,
+                applicationLink: document.getElementById("application_link").value,
+                startDate: document.getElementById("start_date").value,
+                contactPerson: document.getElementById("contact_person").value,
+                contactEmail: document.getElementById("contact_email").value,
+                referral: document.getElementById("referral").checked,
+                offerReceived: document.getElementById("offer_received").checked,
+                offerDeadline: document.getElementById("offer_deadline").value,
+                notes: document.getElementById("notes").value,
+                location: document.getElementById("location").value,
+                salary: parseFloat(document.getElementById("salary").value) || 0,
+                internshipDuration: document.getElementById("internship_duration").value,
+                skillsRequired: JSON.stringify(
+                    document
+                        .getElementById("skills_required")
+                        .value.split(",")
+                        .map((skill) => skill.trim())
+                )
+            };
+
+            try {
+                const response = await fetch(`/api/internships/${item.internshipId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updatedInternship),
+                });
+
+                if (response.ok) {
+                    console.log("Internship updated successfully.");
+                    internshipDataFetch(); // Refresh the data
+                } else {
+                    const errorData = await response.json();
+                    console.error("Error updating internship:", errorData.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            } finally {
+                closeModal();
+            }
+        };
     };
 
-    try {
-        const response = await fetch(`/api/internships/${item.internshipId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedInternship),
-        });
-
-        if (response.ok) {
-            console.log("Internship updated successfully.");
-            internshipDataFetch(); // Refresh the data
-        } else {
-            const errorData = await response.json();
-            console.error("Error updating internship:", errorData.error);
-        }
-    } catch (error) {
-        console.error("Error:", error);
-    } finally {
-        closeModal();
-    }
-};
+    /**
+     * Delete an internship entry
+     * @param {object} item - Internship details
+     */
+    window.deleteInternship = async function(item) {
+        const itemValues = typeof item === 'string' ? JSON.parse(item) : item;
+        const confirmDelete = confirm(`Are you sure you want to delete the internship at ${itemValues.companyName}?`);
+        if (!confirmDelete) return;
     };
 });
