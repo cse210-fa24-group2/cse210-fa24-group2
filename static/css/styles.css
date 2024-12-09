@@ -24,7 +24,7 @@ hgroup {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0rem 1.25rem 2rem 1.25rem; 
+    padding: 0rem 1.25rem 1rem 1.25rem; 
 }
 
 header {
@@ -58,6 +58,17 @@ basicControls {
 }
 
 /* Navigation Menu */
+navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 0.1rem 0.5rem var(--background-primary-lm);
+}
+
+#todo, #calendar, #deadlines, #career {
+    scroll-margin-top: 6rem;
+}
+
 nav {
     display: flex;
     align-items: center;
@@ -87,13 +98,23 @@ nav ul li:hover {
     filter: invert(9%) sepia(7%) saturate(3104%) hue-rotate(182deg) brightness(92%) contrast(90%);
 }
 
-.return {
-    color: var(--text-primary-lm);
-    text-decoration: none;
+.navlink {
+    display: flex;
+    align-items: center;
 }
 
-.return:hover {
-    color: var(--button-text-lm);
+.navlink a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    font-size: 1rem;
+}
+
+.icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right:10px;
 }
 
 /* Light Mode/Dark Mode Toggle */
@@ -198,6 +219,7 @@ nav ul li:hover {
     opacity: 1;
 }
 
+
 /* Content Sections Styling */
 main {
     display: flex;
@@ -213,6 +235,7 @@ todo, calendar, deadlines, career {
     border-radius: 0.5rem;
     box-shadow: 0 0.013rem 0.313rem rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
+    width: 100%;
 }
 
 todo, career {
@@ -230,11 +253,10 @@ deadlines {
     max-width: 25rem;
 }
 
-cal-group {
+calGroup {
     display: flex;
     gap: 1.5rem;
     align-items: stretch;
-
 }
 
 /* Footer Section */
@@ -309,4 +331,5 @@ footer {
         max-height: 100vh;
     }
 }
+
 
