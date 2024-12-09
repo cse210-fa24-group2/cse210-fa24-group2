@@ -32,111 +32,31 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
         }
     }
-
-    // Data representing internships
-    const internshipData = [
-        {
-            internshipId: "1",
-            companyName: "Google",
-            positionTitle: "Software Engineer Intern",
-            applicationStatus: "Applied",
-            dateApplied: "11/10/2024",
-            followUpDate: "11/20/2024",
-            applicationLink: "https://careers.google.com/jobs/results/12345",
-            startDate: "06/01/2025",
-            contactPerson: "Jane Doe",
-            contactEmail: "jane.doe@google.com",
-            referral: true,
-            offerReceived: false,
-            offerDeadline: "",
-            notes: "Submitted coding test on 11/15/2024.",
-            location: "Mountain View, CA",
-            salary: "8000.0",
-            internshipDuration: "12 weeks",
-            skillsRequired: '["Python", "C++", "Data Structures"]'
-        },
-        {
-            internshipId: "2",
-            companyName: "Meta",
-            positionTitle: "Machine Learning Intern",
-            applicationStatus: "Interviewing",
-            dateApplied: "10/15/2024",
-            followUpDate: "10/25/2024",
-            applicationLink: "https://careers.meta.com/jobs/results/23456",
-            startDate: "06/10/2025",
-            contactPerson: "John Smith",
-            contactEmail: "john.smith@meta.com",
-            referral: false,
-            offerReceived: false,
-            offerDeadline: "",
-            notes: "Technical interview focused on ML concepts.",
-            location: "Remote",
-            salary: "8500.0",
-            internshipDuration: "10 weeks",
-            skillsRequired: '["Machine Learning", "TensorFlow", "Python"]'
-        },
-        {
-            internshipId: "3",
-            companyName: "Amazon",
-            positionTitle: "Software Development Intern",
-            applicationStatus: "Applied",
-            dateApplied: "10/01/2024",
-            followUpDate: "",
-            applicationLink: "https://www.amazon.jobs/en/jobs/34567",
-            startDate: "05/20/2025",
-            contactPerson: "Alice Johnson",
-            contactEmail: "alice.johnson@amazon.com",
-            referral: false,
-            offerReceived: true,
-            offerDeadline: "11/30/2024",
-            notes: "Offer includes relocation assistance.",
-            location: "Seattle, WA",
-            salary: "9000.0",
-            internshipDuration: "12 weeks",
-            skillsRequired: '["Java", "Spring", "AWS"]'
-        },
-        {
-            internshipId: "4",
-            companyName: "Apple",
-            positionTitle: "iOS Developer Intern",
-            applicationStatus: "Rejected",
-            dateApplied: "09/15/2024",
-            followUpDate: "",
-            applicationLink: "https://jobs.apple.com/en-us/details/45678",
-            startDate: "",
-            contactPerson: "No Response",
-            contactEmail: "noreply@apple.com",
-            referral: false,
-            offerReceived: false,
-            offerDeadline: "",
-            notes: "Interview went well, but rejection email received.",
-            location: "Cupertino, CA",
-            salary: "8500.0",
-            internshipDuration: "12 weeks",
-            skillsRequired: '["Swift", "iOS Development", "Xcode"]'
-        },
-        {
-            internshipId: "5",
-            companyName: "Microsoft",
-            positionTitle: "Data Science Intern",
-            applicationStatus: "Interviewing",
-            dateApplied: "10/20/2024",
-            followUpDate: "11/01/2024",
-            applicationLink: "https://careers.microsoft.com/us/en/job/56789",
-            startDate: "06/15/2025",
-            contactPerson: "Michael Brown",
-            contactEmail: "michael.brown@microsoft.com",
-            referral: true,
-            offerReceived: false,
-            offerDeadline: "",
-            notes: "Awaiting feedback from final interview.",
-            location: "Redmond, WA",
-            salary: "8200.0",
-            internshipDuration: "12 weeks",
-            skillsRequired: '["Python", "SQL", "Data Analysis"]'
+    let dataTable;
+    async function addInternship(internshipData) {
+        try {
+            const response = await fetch("/api/internships", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(internshipData),
+            });
+    
+            const result = await response.json();
+            if (response.ok) {
+                console.log("Internship added successfully:", result);
+                internshipDataFetch();
+            } else {
+                console.error("Error adding internship:", result.error);
+            }
+        } catch (error) {
+            console.error("Error:", error);
         }
-    ];
-
+    }
+    
+    // Data representing internships
+   
     // Predefined colors for skill pills
     const pillColors = ["#072F5F", "#1261A0", "#3895D3", "#58CCED"];
 
@@ -200,70 +120,133 @@ document.addEventListener("DOMContentLoaded", () => {
             </select>
         `;
     };
-
-    // Initialize the data table
-    const dataTable = new simpleDatatables.DataTable("#InternshipTrackerTable", {
-        searchable: true,
-        columns: [
-            { select: 0, sortable: false }, // Expand/collapse column
-            { select: 6, sortable: false } // Edit button column
-        ],
-        data: {
-            headings: [
-                "", "Company Name", "Position Title", "Application Status",
-                "Date Applied", "Application Link", ""
-            ],
-            data: internshipData.map((item, index) => [
-                `<span class="dt-control" data-index="${index}">▶</span>`,
-                item.companyName,
-                item.positionTitle,
-                generateStatusDropdown(item.applicationStatus),
-                item.dateApplied,
-                `<a href="${item.applicationLink}" target="_blank">Link</a>`,
-                `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`
-            ])
+    // const internshipData = [
+    //     {
+    //         internshipId: "1",
+    //         companyName: "Google",
+    //         positionTitle: "Software Engineer Intern",
+    //         applicationStatus: "Applied",
+    //         dateApplied: "11/10/2024",
+    //         followUpDate: "11/20/2024",
+    //         applicationLink: "https://careers.google.com/jobs/results/12345",
+    //         startDate: "06/01/2025",
+    //         contactPerson: "Jane Doe",
+    //         contactEmail: "jane.doe@google.com",
+    //         referral: true,
+    //         offerReceived: false,
+    //         offerDeadline: "",
+    //         notes: "Submitted coding test on 11/15/2024.",
+    //         location: "Mountain View, CA",
+    //         salary: "8000.0",
+    //         internshipDuration: "12 weeks",
+    //         skillsRequired: '["Python", "C++", "Data Structures"]'
+    //     }]
+    function attachRowExpansionLogic() {
+        const tableBody = document.querySelector('#InternshipTrackerTable tbody');
+    
+        if (!tableBody) {
+            console.error("Table body not found for attaching row expansion logic.");
+            return;
         }
-    });
-
-    // Handle row expansion to show detailed internship info
-    document.querySelector('#InternshipTrackerTable tbody').addEventListener('click', function(e) {
-        if (!e.target.classList.contains('dt-control')) return;
-
-        const tr = e.target.closest('tr');
-        const index = e.target.dataset.index;
-        const item = internshipData[index];
-
-        // Toggle expansion
-        if (tr.nextElementSibling?.classList.contains('expanded-details')) {
-            // Close expanded rows
-            while (tr.nextElementSibling?.classList.contains('expanded-details')) {
-                tr.nextElementSibling.remove();
+    
+        // Attach click event for row expansion
+        tableBody.addEventListener('click', function (e) {
+            if (!e.target.classList.contains('dt-control')) return;
+    
+            const tr = e.target.closest('tr');
+            const index = e.target.dataset.index;
+            const item = internshipData[index];
+    
+            // Toggle expansion
+            if (tr.nextElementSibling?.classList.contains('expanded-details')) {
+                // Close expanded rows
+                while (tr.nextElementSibling?.classList.contains('expanded-details')) {
+                    tr.nextElementSibling.remove();
+                }
+                e.target.textContent = '▶';
+            } else {
+                // Expand row to show details
+                const detailRows = [
+                    ['Salary', `$${parseFloat(item.salary).toFixed(2)}`],
+                    ['Location', item.location],
+                    ['Contact', `${item.contactPerson} (${item.contactEmail})`],
+                    ['Important Dates', `Start: ${item.startDate} | Follow-up: ${item.followUpDate} | Deadline: ${item.offerDeadline || 'N/A'}`],
+                    ['Status', `Referral: ${item.referral ? 'Yes' : 'No'} | Offer: ${item.offerReceived ? 'Yes' : 'No'}`],
+                    ['Duration', item.internshipDuration],
+                    ['Skills', generateSkillPills(item.skillsRequired)],
+                    ['Notes', item.notes]
+                ].map(([label, value]) => `
+                    <tr class="expanded-details">
+                        <td></td>
+                        <td class="detail-label">${label}</td>
+                        <td colspan="5" class="detail-value">${value}</td>
+                    </tr>
+                `).join('');
+    
+                tr.insertAdjacentHTML('afterend', detailRows);
+                e.target.textContent = '▼';
             }
-            e.target.textContent = '▶';
-        } else {
-            // Expand row to show details
-            const detailRows = [
-                ['Salary', `$${parseFloat(item.salary).toFixed(2)}`],
-                ['Location', item.location],
-                ['Contact', `${item.contactPerson} (${item.contactEmail})`],
-                ['Important Dates', `Start: ${item.startDate} | Follow-up: ${item.followUpDate} | Deadline: ${item.offerDeadline || 'N/A'}`],
-                ['Status', `Referral: ${item.referral ? 'Yes' : 'No'} | Offer: ${item.offerReceived ? 'Yes' : 'No'}`],
-                ['Duration', item.internshipDuration],
-                ['Skills', generateSkillPills(item.skillsRequired)],
-                ['Notes', item.notes]
-            ].map(([label, value]) => `
-                <tr class="expanded-details">
-                    <td></td>
-                    <td class="detail-label">${label}</td>
-                    <td colspan="5" class="detail-value">${value}</td>
-                </tr>
-            `).join('');
-
-            tr.insertAdjacentHTML('afterend', detailRows);
-            e.target.textContent = '▼';
+        });
+    }
+    
+    async function internshipDataFetch() {
+        try {
+            const response = await fetch('/internshipData');
+            const data = await response.json();
+    
+            console.log('Received:', data);
+            internshipData = data;
+    
+            // Destroy the existing table if it exists
+            if (dataTable) {
+                dataTable.destroy();
+            }
+    
+            // Ensure the table has a <tbody>
+            const tableBody = document.querySelector("#InternshipTrackerTable tbody");
+            if (!tableBody) {
+                const table = document.querySelector("#InternshipTrackerTable");
+                const newTbody = document.createElement("tbody");
+                table.appendChild(newTbody);
+            } else {
+                tableBody.innerHTML = ""; // Clear existing rows
+            }
+    
+            // Reinitialize the DataTable with updated data
+            dataTable = new simpleDatatables.DataTable("#InternshipTrackerTable", {
+                searchable: true,
+                columns: [
+                    { select: 0, sortable: false }, // Expand/collapse column
+                    { select: 6, sortable: false } // Edit button column
+                ],
+                data: {
+                    headings: [
+                        "", "Company Name", "Position Title", "Application Status",
+                        "Date Applied", "Application Link", ""
+                    ],
+                    data: internshipData.map((item, index) => [
+                        `<span class="dt-control" data-index="${index}">▶</span>`,
+                        item.companyName,
+                        item.positionTitle,
+                        generateStatusDropdown(item.applicationStatus),
+                        item.dateApplied,
+                        `<a href="${item.applicationLink}" target="_blank">Link</a>`,
+                        `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`
+                    ])
+                }
+            });
+    
+            // Reattach row expansion logic
+            attachRowExpansionLogic();
+        } catch (error) {
+            console.error('Error:', error);
         }
-    });
+    }
+    
+    
+    internshipDataFetch();
 
+    
     // Modal logic for adding/editing internships
     const modal = document.getElementById("addInternshipModal");
     const addButton = document.getElementById("addRowBtn");
@@ -295,31 +278,29 @@ document.addEventListener("DOMContentLoaded", () => {
     // Save form data when the modal is submitted
     saveButton.onclick = () => {
         const newInternship = {
-            internshipId: Date.now().toString(),
-            companyName: document.getElementById("company_name").value,
-            positionTitle: document.getElementById("position_title").value,
-            applicationStatus: document.getElementById("application_status").value,
-            dateApplied: document.getElementById("date_applied").value,
-            followUpDate: document.getElementById("follow_up_date").value,
-            applicationLink: document.getElementById("application_link").value,
-            startDate: document.getElementById("start_date").value,
-            contactPerson: document.getElementById("contact_person").value,
-            contactEmail: document.getElementById("contact_email").value,
+            company_name: document.getElementById("company_name").value,
+            position_title: document.getElementById("position_title").value,
+            application_status: document.getElementById("application_status").value,
+            date_applied: document.getElementById("date_applied").value,
+            follow_up_date: document.getElementById("follow_up_date").value,
+            application_link: document.getElementById("application_link").value,
+            start_date: document.getElementById("start_date").value,
+            contact_person: document.getElementById("contact_person").value,
+            contact_email: document.getElementById("contact_email").value,
             referral: document.getElementById("referral").checked,
-            offerReceived: document.getElementById("offer_received").checked,
-            offerDeadline: document.getElementById("offer_deadline").value,
+            offer_received: document.getElementById("offer_received").checked,
             notes: document.getElementById("notes").value,
             location: document.getElementById("location").value,
             salary: parseFloat(document.getElementById("salary").value) || 0,
-            internshipDuration: document.getElementById("internship_duration").value,
-            skillsRequired: JSON.stringify(
+            internship_duration: document.getElementById("internship_duration").value,
+            skills_required: JSON.stringify(
                 document
                     .getElementById("skills_required")
                     .value.split(",")
                     .map((skill) => skill.trim())
             )
         };
-
+        addInternship(newInternship)
         console.log(newInternship);
         closeModal();
     };
@@ -360,35 +341,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Save updated data
         const saveButton = document.querySelector(".save-btn");
-        saveButton.onclick = () => {
-            const updatedInternship = {
-                ...item,
-                companyName: document.getElementById("company_name").value,
-                positionTitle: document.getElementById("position_title").value,
-                applicationStatus: document.getElementById("application_status").value,
-                dateApplied: document.getElementById("date_applied").value,
-                followUpDate: document.getElementById("follow_up_date").value,
-                applicationLink: document.getElementById("application_link").value,
-                startDate: document.getElementById("start_date").value,
-                contactPerson: document.getElementById("contact_person").value,
-                contactEmail: document.getElementById("contact_email").value,
-                referral: document.getElementById("referral").checked,
-                offerReceived: document.getElementById("offer_received").checked,
-                offerDeadline: document.getElementById("offer_deadline").value,
-                notes: document.getElementById("notes").value,
-                location: document.getElementById("location").value,
-                salary: parseFloat(document.getElementById("salary").value) || 0,
-                internshipDuration: document.getElementById("internship_duration").value,
-                skillsRequired: JSON.stringify(
-                    document
-                        .getElementById("skills_required")
-                        .value.split(",")
-                        .map((skill) => skill.trim())
-                )
-            };
+saveButton.onclick = async () => {
+    const updatedInternship = {
+        companyName: document.getElementById("company_name").value,
+        positionTitle: document.getElementById("position_title").value,
+        applicationStatus: document.getElementById("application_status").value,
+        dateApplied: document.getElementById("date_applied").value,
+        followUpDate: document.getElementById("follow_up_date").value,
+        applicationLink: document.getElementById("application_link").value,
+        startDate: document.getElementById("start_date").value,
+        contactPerson: document.getElementById("contact_person").value,
+        contactEmail: document.getElementById("contact_email").value,
+        referral: document.getElementById("referral").checked,
+        offerReceived: document.getElementById("offer_received").checked,
+        offerDeadline: document.getElementById("offer_deadline").value,
+        notes: document.getElementById("notes").value,
+        location: document.getElementById("location").value,
+        salary: parseFloat(document.getElementById("salary").value) || 0,
+        internshipDuration: document.getElementById("internship_duration").value,
+        skillsRequired: JSON.stringify(
+            document
+                .getElementById("skills_required")
+                .value.split(",")
+                .map((skill) => skill.trim())
+        )
+    };
 
-            console.log(updatedInternship);
-            closeModal();
-        };
+    try {
+        const response = await fetch(`/api/internships/${item.internshipId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedInternship),
+        });
+
+        if (response.ok) {
+            console.log("Internship updated successfully.");
+            internshipDataFetch(); // Refresh the data
+        } else {
+            const errorData = await response.json();
+            console.error("Error updating internship:", errorData.error);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    } finally {
+        closeModal();
+    }
+};
     };
 });
