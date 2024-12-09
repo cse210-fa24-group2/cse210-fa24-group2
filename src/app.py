@@ -250,7 +250,7 @@ def dashboard():
         Response: Renders the index.html template.
     """
     return render_template("index.html")
-@app.route("/internshipTracker")
+@app.route("/internshipTracker") 
 @login_required
 def internshipTracker():
     """
@@ -264,11 +264,22 @@ def internshipTracker():
     user_id = session.get("user_id")
     # Fetch internship data for the logged-in user
     internships = db.session.query(Internship).filter_by(user_id=user_id).all() # This variable has the object with all internships for the user
-    data = [obj.to_dict() for obj in internships]
-    print({"data": data})
+    internship_data = [obj.to_dict() for obj in internships]
     # Render the template with the internship data
-    return render_template("InternshipTracker.html")
-
+    return render_template("InternshipTracker.html",internship_data=internship_data)
+@app.route('/internshipData') 
+def send_data():
+    # Get the logged-in user's ID from the session
+    google_id = session.get("id_google")
+    user_id = session.get("user_id")
+    # Fetch internship data for the logged-in user
+    internships = db.session.query(Internship).filter_by(user_id=user_id).all() # This variable has the object with all internships for the user
+    internship_data = [obj.to_dict() for obj in internships]
+    print({"data": internship_data})
+    # Render the template with the internship data
+    return internship_data
+    # data = {'message': 'Hello from Flask!', 'status': 'success'}
+    # return jsonify(data) 
 # Define the Internship model (if not already defined in your models)
 class Internship(db.Model):
     __tablename__ = "internship"
@@ -291,15 +302,123 @@ class Internship(db.Model):
     location = db.Column(db.String(255))
     salary = db.Column(db.Numeric(10, 2))
     internship_duration = db.Column(db.String(50))
-    skills_required = db.Column(db.JSON)
+    skills_required = str(db.Column(db.JSON))
 
     # Establish the relationship with the User model
     user = db.relationship("User", backref="internships")
     def to_dict(self):
         return {
-            "id": self.company_name
+            "internshipId":str(self.internship_id),
+            "companyName": str(self.company_name),
+            "positionTitle": str(self.position_title),
+            "applicationStatus": str(self.application_status),
+            "dateApplied": str(self.date_applied),
+            "followUpDate": str(self.follow_up_date),
+            "applicationLink": str(self.application_link),
+            "startDate": str(self.start_date),
+            "contactPerson": str(self.contact_person),
+            "contactEmail": str(self.contact_email),
+            "referral": str(self.referral),
+            "offerReceived": str(self.offer_received),
+            "offerDeadline": str(self.offer_deadline),
+            "notes": str(self.notes),
+            "location": str(self.location),
+            "salary": str(self.salary),
+            "internshipDuration": str(self.internship_duration),
+            "skillsRequired": '["str(self.skills_required)"]', 
         }
 
+@app.route("/api/internships", methods=["POST"])
+@login_required
+def add_internship():
+    """
+    API endpoint to add a new internship entry to the PostgreSQL table.
+
+    Accepts JSON data from the client and writes it to the `internship` table.
+
+    Returns:
+        Response: JSON response indicating success or failure.
+    """
+    user_id = session.get("user_id")  # Get the logged-in user's ID from the session
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 401
+
+    data = request.json  # Get the JSON payload from the request
+    if not data:
+        return jsonify({"error": "Invalid data"}), 400
+
+    try:
+        # Create a new internship entry 
+        new_internship = Internship(
+            user_id=user_id,
+            company_name=data.get("company_name"),
+            position_title=data.get("position_title"),
+            application_status=data.get("application_status", "Applied"),
+            date_applied=data.get("date_applied"),
+            follow_up_date=data.get("follow_up_date"),
+            application_link=data.get("application_link"),
+            start_date=data.get("start_date"),
+            contact_person=data.get("contact_person"),
+            contact_email=data.get("contact_email"),
+            referral=data.get("referral", False),
+            offer_received=data.get("offer_received", False),
+            offer_deadline=data.get("offer_deadline"),
+            notes=data.get("notes"),
+            location=data.get("location"),
+            salary=data.get("salary"),   
+            internship_duration=data.get("internship_duration"),
+            skills_required=data.get("skills_required"),
+        )
+
+        # Add to the database
+        db.session.add(new_internship)
+        db.session.commit()
+
+        return jsonify({"message": "Internship added successfully", "internship_id": new_internship.internship_id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to add internship: {str(e)}"}), 500 
+@app.route('/api/internships/<int:internship_id>', methods=['PUT'])
+def update_internship(internship_id):
+    """
+    Update an internship by its ID.
+    """
+    data = request.json  # Get the JSON data from the request
+    internship = Internship.query.get(internship_id)  # Fetch the internship by ID
+
+    if not internship:
+        return jsonify({"error": "Internship not found"}), 404
+
+    # Update the internship fields dynamically
+    for key, value in data.items():
+        if hasattr(internship, key):
+            setattr(internship, key, value)
+
+    try:
+        db.session.commit()  # Save changes to the database
+        return jsonify({"message": "Internship updated successfully!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+@app.route('/calendar.html')
+def serve_calendar():
+    """
+    Serve the calendar.html template.
+    """
+    return render_template('calendar.html')
+
+
+@app.route('/todoList.html')
+def serve_todo_list():
+    """
+    Serve the To-Do List HTML file.
+    """
+    return render_template('todoList.html')
+ 
 
 @app.errorhandler(404)
 def page_not_found(error):
