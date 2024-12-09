@@ -220,62 +220,9 @@ nav ul li:hover {
 }
 
 
-/* Content Sections Styling */
-main {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin: 1.5rem auto;
-    padding: 1rem;
-    /* width:100%; */
-}
-
-todo, calendar, deadlines, career {
-    background-color: var(--background-secondary-lm);
-    border-radius: 0.5rem;
-    box-shadow: 0 0.013rem 0.313rem rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    width: 100%;
-}
-
-todo, career {
-    max-width: 75rem;
-    height: auto;
-}
-
-calendar {
-    height: auto;
-    max-width: 48.5rem;
-}
-
-deadlines {
-    height: auto;
-    max-width: 25rem;
-}
-
-calGroup {
-    display: flex;
-    gap: 1.5rem;
-    align-items: stretch;
-}
-
-/* Footer Section */
-footer {
-    text-align: center;
-    background-color: var(--background-secondary-lm);
-    color: var(--text-primary-lm);
-    padding: 1rem;
-    margin-top: auto;
-}
-
-.privacy {
-    display: block;
-    color: var(--text-primary-lm);
-    cursor: pointer;
-}
 
 /* Responsive nav bar */
-@media screen and (max-width: 51.875rem) {
+@media screen and (max-width: 950px) {
     hgroup {
         flex-direction: column;
         align-items: flex-start;
@@ -312,23 +259,6 @@ footer {
 
     .icon {
         display: none;
-    }
-
-    /* calGroup {
-        flex-direction: column;
-    }
-
-    deadlines {
-        max-width: 75rem;
-    }*/
-
-    main {
-        width: 100%;
-    }
-    todo{
-        width:100%;
-        height: auto;
-        max-height: 100vh;
     }
 }
 
