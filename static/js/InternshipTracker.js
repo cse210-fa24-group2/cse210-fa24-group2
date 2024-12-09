@@ -282,10 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
             contact_person: document.getElementById("contact_person").value,
             contact_email: document.getElementById("contact_email").value,
             referral: document.getElementById("referral").checked,
-<<<<<<< HEAD
             offer_deadline: document.getElementById("offer_deadline").value,
-=======
->>>>>>> 4f7cfbd (Create, Read, Update implemented for internship tracker)
             offer_received: document.getElementById("offer_received").checked,
             notes: document.getElementById("notes").value,
             location: document.getElementById("location").value,
@@ -347,28 +344,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const saveButton = document.querySelector(".save-btn");
         saveButton.onclick = async () => {
             const updatedInternship = {
-                companyName: document.getElementById("company_name").value,
-                positionTitle: document.getElementById("position_title").value,
-                applicationStatus: document.getElementById("application_status").value,
-                dateApplied: document.getElementById("date_applied").value,
-                followUpDate: document.getElementById("follow_up_date").value,
-                applicationLink: document.getElementById("application_link").value,
-                startDate: document.getElementById("start_date").value,
-                contactPerson: document.getElementById("contact_person").value,
-                contactEmail: document.getElementById("contact_email").value,
-                referral: document.getElementById("referral").checked,
-                offerReceived: document.getElementById("offer_received").checked,
-                offerDeadline: document.getElementById("offer_deadline").value,
-                notes: document.getElementById("notes").value,
-                location: document.getElementById("location").value,
-                salary: parseFloat(document.getElementById("salary").value) || 0,
-                internshipDuration: document.getElementById("internship_duration").value,
-                skillsRequired: JSON.stringify(
-                    document
-                        .getElementById("skills_required")
-                        .value.split(",")
-                        .map((skill) => skill.trim())
-                )
+                    company_name: document.getElementById("company_name").value,
+                    position_title: document.getElementById("position_title").value,
+                    application_status: document.getElementById("application_status").value,
+                    date_applied: document.getElementById("date_applied").value,
+                    follow_up_date: document.getElementById("follow_up_date").value,
+                    application_link: document.getElementById("application_link").value,
+                    start_date: document.getElementById("start_date").value,
+                    contact_person: document.getElementById("contact_person").value,
+                    contact_email: document.getElementById("contact_email").value,
+                    referral: document.getElementById("referral").checked,
+                    offer_deadline: document.getElementById("offer_deadline").value,
+                    offer_received: document.getElementById("offer_received").checked,
+                    notes: document.getElementById("notes").value,
+                    location: document.getElementById("location").value,
+                    salary: parseFloat(document.getElementById("salary").value) || 0,
+                    internship_duration: document.getElementById("internship_duration").value,
+                    skills_required: JSON.stringify(
+                        document
+                            .getElementById("skills_required")
+                            .value.split(",")
+                            .map((skill) => skill.trim())
+                    )
             };
 
             try {
@@ -401,6 +398,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const itemValues = typeof item === 'string' ? JSON.parse(item) : item;
         const confirmDelete = confirm(`Are you sure you want to delete the internship at ${itemValues.companyName}?`);
         if (!confirmDelete) return;
+    
+        try {
+            const response = await fetch(`/api/internships/${itemValues.internshipId}`, {
+                method: "DELETE",
+            });
+    
+            if (response.ok) {
+                console.log(`Internship at ${itemValues.companyName} deleted successfully.`);
+                internshipDataFetch(); // Refresh the table data
+            } else {
+                const errorData = await response.json();
+                console.error("Error deleting internship:", errorData.error);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
     };
 });
 
