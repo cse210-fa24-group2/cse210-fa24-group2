@@ -31,6 +31,7 @@ Sets up the environment to prepare for subsequent jobs. This includes:
 Generates and pushes JavaScript documentation to the `docs` branch.
 - Generates JSDocs using `jsdoc.json`.
 - Commits and pushes changes to the `docs` branch if updates are detected.
+- [JSDocs can be viewed here.](https://github.com/cse210-fa24-group2/cse210-fa24-group2/tree/docs/jsdocs)
 
 #### 3. **Linting and Code Quality**
 Performs code linting and quality checks for Python and JavaScript:
