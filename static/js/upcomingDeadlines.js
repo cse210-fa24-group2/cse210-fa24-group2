@@ -7,17 +7,34 @@ async function fetchTodaysEvents() {
         const response = await fetch('/api/calendar/events/today');
         if (!response.ok) {
             console.error("Failed to fetch today's events:", response.statusText);
-            return;
+            return [];
         }
 
         const events = await response.json();
-        if (Array.isArray(events)) {
-            renderEvents(events);
-        } else {
-            console.error("Unexpected response format:", events);
-        }
+        return Array.isArray(events) ? events : [];
     } catch (error) {
         console.error("Error fetching today's events:", error);
+        return [];
+    }
+}
+
+/**
+ * Fetch today's internship follow-ups from the backend.
+ */
+async function fetchTodaysInternships() {
+    try {
+        console.log("Fetching today's internships...");
+        const response = await fetch('/api/internships/today');
+        if (!response.ok) {
+            console.error("Failed to fetch today's internships:", response.statusText);
+            return [];
+        }
+
+        const internships = await response.json();
+        return Array.isArray(internships) ? internships : [];
+    } catch (error) {
+        console.error("Error fetching today's internships:", error);
+        return [];
     }
 }
 
@@ -39,35 +56,66 @@ function formatEventTime(dateTime, timeZone) {
 }
 
 /**
- * Render the list of events in the "Upcoming Deadlines" section.
+ * Fetch and display all today's deadlines, including calendar events and internships.
  */
-function renderEvents(events) {
-    console.log("Rendering events...");
+async function fetchAndRenderDeadlines() {
+    try {
+        console.log("Fetching all deadlines...");
+
+        // Fetch Google Calendar events and internships
+        const [events, internships] = await Promise.all([
+            fetchTodaysEvents(),
+            fetchTodaysInternships()
+        ]);
+
+        // Combine events and internships
+        const combinedDeadlines = [
+            ...events.map(event => ({
+                type: 'event',
+                summary: event.summary,
+                time: event.start && event.start.dateTime ? formatEventTime(event.start.dateTime, event.start.timeZone) : "Time not specified"
+            })),
+            ...internships.map(internship => ({
+                type: 'internship',
+                summary: `${internship.companyName} (${internship.positionTitle})`
+            }))
+        ];
+
+        renderDeadlines(combinedDeadlines);
+    } catch (error) {
+        console.error("Error fetching and rendering deadlines:", error);
+    }
+}
+
+/**
+ * Render the combined deadlines in the "Upcoming Deadlines" section.
+ */
+function renderDeadlines(deadlines) {
+    console.log("Rendering deadlines...");
     const deadlinesList = document.getElementById('upcoming-deadlines-list');
     if (!deadlinesList) {
         console.error("Could not find element with ID 'upcoming-deadlines-list'");
         return;
     }
 
-    deadlinesList.innerHTML = ''; // Clear any existing events
+    deadlinesList.innerHTML = '';
 
-    if (events.length === 0) {
-        const noEventsItem = document.createElement('li');
-        noEventsItem.textContent = 'No upcoming deadlines today.';
-        deadlinesList.appendChild(noEventsItem);
+    if (deadlines.length === 0) {
+        const noDeadlinesItem = document.createElement('li');
+        noDeadlinesItem.textContent = 'No upcoming deadlines today.';
+        deadlinesList.appendChild(noDeadlinesItem);
     } else {
-        events.forEach(event => {
+        deadlines.forEach(deadline => {
             const listItem = document.createElement('li');
-            if (event.start && event.start.dateTime && event.start.timeZone) {
-                const formattedTime = formatEventTime(event.start.dateTime, event.start.timeZone);
-                listItem.textContent = `${event.summary} (${formattedTime})`;
+            if (deadline.type === 'event') {
+                listItem.textContent = `${deadline.summary} (${deadline.time})`;
             } else {
-                listItem.textContent = `${event.summary} (Time not specified)`;
+                listItem.textContent = deadline.summary;
             }
             deadlinesList.appendChild(listItem);
         });
     }
 }
 
-// Fetch today's events when the page loads
-window.addEventListener('load', fetchTodaysEvents);
+// Fetch all deadlines when the page loads
+window.addEventListener('load', fetchAndRenderDeadlines);
