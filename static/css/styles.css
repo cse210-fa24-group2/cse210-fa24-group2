@@ -177,6 +177,10 @@ main {
     padding: 1rem;
 }
 
+h2 {
+    margin-bottom: 0.5rem;
+}
+
 todo, calendar, deadlines, career {
     background-color: var(--background-secondary-lm);
     border-radius: 0.5rem;
@@ -204,6 +208,11 @@ calGroup {
     display: flex;
     gap: 1.5rem;
     align-items: stretch;
+}
+
+#upcomingDeadlinesList > li {
+    margin: 0.5rem 1rem;
+    font-size: 1.1rem;
 }
 
 /* Footer Section */

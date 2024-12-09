@@ -92,9 +92,9 @@ async function fetchAndRenderDeadlines() {
  */
 function renderDeadlines(deadlines) {
     console.log("Rendering deadlines...");
-    const deadlinesList = document.getElementById('upcoming-deadlines-list');
+    const deadlinesList = document.getElementById('upcomingDeadlinesList');
     if (!deadlinesList) {
-        console.error("Could not find element with ID 'upcoming-deadlines-list'");
+        console.error("Could not find element with ID 'upcomingDeadlinesList'");
         return;
     }
 
