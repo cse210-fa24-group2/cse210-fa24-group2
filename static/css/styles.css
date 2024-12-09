@@ -186,6 +186,7 @@ nav ul li:hover {
     margin-right:0.625rem;
 }
 
+/*can probably delete this portion*/
 .tooltiptext {
     visibility: hidden;
     opacity: 0;
