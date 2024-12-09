@@ -36,7 +36,7 @@ async function Calendar() {
   return `<div class="calendar">${calendarHTML}</div>`;
 }
 
-export default Calendar;
+// export default Calendar;
 
 /**
  * Load the calendar HTML content into the container on the index page.
@@ -91,3 +91,7 @@ async function loadCalendarScripts() {
 }
 
 window.addEventListener('load', loadCalendar);
+export default {
+  Calendar,
+  loadCalendar
+};
