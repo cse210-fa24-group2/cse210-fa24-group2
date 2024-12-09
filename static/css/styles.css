@@ -147,6 +147,111 @@ nav ul li:hover {
     display: none;
 }
 
+/* Tooltip Styling */
+.tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.tooltip .text{
+    text-align: left;
+}
+
+.tooltip .icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right:0.625rem;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    opacity: 0;
+    width: 12rem;
+    background-color: var(--background-primary-lm);/*var(--background-secondary-lm);*/
+    color: var(--text-primary-lm);/*var(--text-primary-lm);*/
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    position: absolute;
+    top: 50%;
+    left: -13rem;
+    transform: translateY(-50%);
+    transition: visibility 0.3s, opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltiptext::after {
+    content: "";
+    position: absolute;
+    top:50%;
+    right: -.55rem;
+    transform: translateY(-50%) rotate(-90deg);
+    border-width: 0.313rem;
+    border-style: solid;
+    border-color: var(--background-primary-lm) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Content Sections Styling */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 1.5rem auto;
+    padding: 1rem;
+    /* width:100%; */
+}
+
+todo, calendar, deadlines, career {
+    background-color: var(--background-secondary-lm);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.013rem 0.313rem rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+todo, career {
+    max-width: 75rem;
+    height: auto;
+}
+
+calendar {
+    height: auto;
+    max-width: 48.5rem;
+}
+
+deadlines {
+    height: auto;
+    max-width: 25rem;
+}
+
+cal-group {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+
+}
+
+/* Footer Section */
+footer {
+    text-align: center;
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    padding: 1rem;
+    margin-top: auto;
+}
+
+.privacy {
+    display: block;
+    color: var(--text-primary-lm);
+    cursor: pointer;
+}
+
 /* Responsive nav bar */
 @media screen and (max-width: 51.875rem) {
     hgroup {
@@ -186,111 +291,15 @@ nav ul li:hover {
     .icon {
         display: none;
     }
-}
 
-/* Tooltip Styling */
-.tooltip {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-}
+    /* calGroup {
+        flex-direction: column;
+    }
 
-.tooltip .text{
-    text-align: left;
-}
+    deadlines {
+        max-width: 75rem;
+    }*/
 
-.tooltip .icon {
-    width: 2rem;
-    height: 2rem;
-    margin-right:0.625rem;
-}
-
-.tooltiptext {
-    visibility: hidden;
-    opacity: 0;
-    width: 12rem;
-    background-color: var(--background-secondary-lm);
-    color: var(--text-primary-lm);
-    text-align: center;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    position: absolute;
-    top: 50%;
-    left: -13rem;
-    transform: translateY(-50%);
-    transition: visibility 0.3s, opacity 0.3s;
-}
-
-/* Tooltip arrow */
-.tooltiptext::after {
-    content: "";
-    position: absolute;
-    top:50%;
-    right: -.55rem;
-    transform: translateY(-50%) rotate(-90deg);
-    border-width: 0.313rem;
-    border-style: solid;
-    border-color: var(--background-secondary-lm) transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* Content Sections Styling */
-main {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin: 1.5rem auto;
-    padding: 1rem;
-}
-
-todo, calendar, deadlines, career {
-    background-color: var(--background-secondary-lm);
-    border-radius: 0.5rem;
-    box-shadow: 0 0.013rem 0.313rem rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-}
-
-todo, career {
-    width: 75rem;
-    height: 21rem;
-}
-
-calendar {
-    height: 30rem;
-    width: 48.5rem;
-}
-
-deadlines {
-    height: 30rem;
-    width: 25rem;
-}
-
-cal-group {
-    display: flex;
-    gap: 1.5rem;
-}
-
-/* Footer Section */
-footer {
-    text-align: center;
-    background-color: var(--background-secondary-lm);
-    color: var(--text-primary-lm);
-    padding: 1rem;
-    margin-top: auto;
-}
-
-.privacy {
-    display: block;
-    color: var(--text-primary-lm);
-    cursor: pointer;
-}
-
-@media (max-width: 51.875rem) {
     main {
         width: 100%;
     }
@@ -300,3 +309,4 @@ footer {
         max-height: 100vh;
     }
 }
+

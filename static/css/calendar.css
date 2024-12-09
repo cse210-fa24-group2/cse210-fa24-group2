@@ -41,6 +41,11 @@
     background-color: var(--button-hover-lm);
 }
 
+input {
+    background-color: var(--background-primary-lm);
+    color: var(--text-primary-lm)
+}
+
 .calendar-header input {
     width: 3.5rem;
     padding: 0.2rem;
