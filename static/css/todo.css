@@ -16,9 +16,9 @@
     overflow-x: auto;
     box-sizing: border-box;
 
-    max-width: 100%; /*Ensures container doesn't exceed parent width*/
-    max-height: 16.25rem;
-    align-items: stretch; /* Ensures all columns have the same height */
+    max-width: 100%; 
+    max-height: 30rem; 
+    align-items: stretch; 
 }
 
 /* Individual columns */
@@ -34,10 +34,9 @@
     gap: 0.625rem;
     overflow-y: hidden;
     box-sizing: border-box;
-    max-height: 16.875rem; /* Ensure equal height */
+    max-height: 30rem; 
     position: relative;
-
-    align-self: stretch; /* Match the tallest column */
+    align-self: stretch; 
 }
 
 /* Content inside each column */
@@ -84,17 +83,10 @@ input {
 .todo-list {
     list-style-type: none;
     padding: 0;
-    /* margin-bottom: 2.375rem; */
-    /* overflow-y: auto; */
-    max-height: 12.5rem; /*Restrict list height*/
+    max-height: 20rem;
     flex-grow: 1;
-
-    min-height: 3.125rem; /* Ensures the list remains visible when empty */
-    /* border: 0.063rem dashed var(--background-secondary-lm);
-    border-radius: 0.313rem; */
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* justify-content: flex-start; Align items to the top */
+    min-height: 3.125rem; 
+ 
 }
 
 /* To-Do List items */
@@ -108,6 +100,7 @@ input {
     background-color: var(--background-primary-lm);
     margin-bottom: 0.313rem;
 }
+
 
 .todo-item:last-child {
     border-bottom: none;
@@ -144,11 +137,6 @@ input {
     background-color: var(--button-hover-lm);
 }
 
-/* Completed tasks */
-.todo-item.completed span {
-    text-decoration: line-through;
-    color: gray;
-}
 
 /* Remove button */
 .remove-btn {
@@ -161,9 +149,6 @@ input {
     padding: 0.188rem;
 }
 
-.remove-btn:hover {
-    color: #d32f2f;
-}
 
 /* Drag-and-drop feedback */
 .todo-item.drag-over {
