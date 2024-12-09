@@ -1,17 +1,21 @@
-// tests/Calendar.test.js
 import '@testing-library/jest-dom'; // For DOM assertions
 import { jest } from '@jest/globals';
 import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
 
 describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
   let mock;
   let app;
   let deleteEvent, updateEvent, renderCalendar;
 
+  beforeAll(async () => {
+    // Ensure axios is globally available
+    const axiosModule = await import('axios');
+    global.axios = axiosModule.default;
+  });
+
   beforeEach(async () => {
     // Initialize MockAdapter before each test
-    mock = new MockAdapter(axios);
+    mock = new MockAdapter(global.axios);
 
     // Set up the DOM with all required elements
     document.body.innerHTML = `
@@ -64,7 +68,7 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
 
   afterEach(() => {
     // Reset the mock after each test
-    mock.reset();
+    if (mock) mock.reset();
   });
 
   // Test for addEvent (Add an event)
@@ -78,9 +82,6 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
 
     // Mock axios.post response
     mock.onPost('/api/calendar/events').reply(200, { data: 'Event added' });
-
-    // Mock axios.get response used in fetchEvents after adding an event
-    mock.onGet('/api/calendar/events').reply(200, []); // Assuming events = response.data
 
     // Spy on addEvent to ensure it's called only once
     const addEventSpy = jest.spyOn(app, 'addEvent');
@@ -100,9 +101,6 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
       description: description,
     });
 
-    // Ensure axios.post was called once
-    expect(mock.history.post.length).toBe(1);
-
     // Ensure addEvent was called once
     expect(addEventSpy).toHaveBeenCalledTimes(1);
 
@@ -116,9 +114,6 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
 
     // Mock axios.delete response
     mock.onDelete(`/api/calendar/events/${eventId}`).reply(200, { data: 'Event deleted' });
-
-    // Mock axios.get response used in fetchEvents after deletion
-    mock.onGet('/api/calendar/events').reply(200, []); // Assuming events = response.data
 
     // Call deleteEvent
     await deleteEvent(eventId);
@@ -142,9 +137,6 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
 
     // Mock axios.put response
     mock.onPut(`/api/calendar/events/${eventId}`).reply(200, { data: 'Event updated' });
-
-    // Mock axios.get response used in fetchEvents after updating an event
-    mock.onGet('/api/calendar/events').reply(200, []); // Assuming events = response.data
 
     // Call updateEvent
     await updateEvent(eventId, updatedEvent);

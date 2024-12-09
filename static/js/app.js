@@ -1,5 +1,4 @@
 import { getDaysInMonth, formatDate } from './dateUtils.js';
-import axios from 'axios';
 
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
