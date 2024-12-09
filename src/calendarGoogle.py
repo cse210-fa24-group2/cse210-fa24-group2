@@ -181,7 +181,8 @@ def get_todays_events():
     """
     try:
         service = get_calendar_service()
-        now = datetime.now().astimezone().replace(hour=0, minute=0, second=0, microsecond=0)
+        now = datetime.now().astimezone().replace(hour=0, minute=0,
+                                                  second=0, microsecond=0)
         end_of_day = now + timedelta(hours=23, minutes=59, seconds=59)
 
         # Convert to ISO format
