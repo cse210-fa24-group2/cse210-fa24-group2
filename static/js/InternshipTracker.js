@@ -76,54 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }).join(" ");
     };
 
-    // Application status options
-    const statusOptions = [
-        "Applied", "Interviewing", "Shortlisted", "OfferReceived", 
-        "Rejected", "Pending", "OnHold", "InProgress", "Withdrew"
-    ];
-
-    // Colors corresponding to application statuses
-    const statusColors = {
-        "Applied": "#6BD9E7",
-        "Interviewing": "#FFB347",
-        "Shortlisted": "#C5A3FF",
-        "OfferReceived": "#7FFFD4",
-        "Rejected": "#FF6B6B",
-        "Pending": "#FFD54F",
-        "OnHold": "#B0BEC5",
-        "InProgress": "#81D4FA",
-        "Withdrew": "#BDBDBD"
-    };
-
-    /**
-     * Change the background color of the dropdown based on the selected status
-     * @param {HTMLElement} selectElement - Dropdown element
-     */
-    window.changeStatus = function(selectElement) {
-        const newStatus = selectElement.value;
-        selectElement.style.backgroundColor = statusColors[newStatus];
-    };
-
-    /**
-     * Generate a dropdown for application statuses
-     * @param {string} currentStatus - Current status of the application
-     * @returns {string} - HTML for the dropdown
-     */
-    const generateStatusDropdown = (currentStatus) => {
-        const options = statusOptions.map((status) => {
-            const selected = status === currentStatus ? "selected" : "";
-            return `<option value="${status}" ${selected}>${status}</option>`;
-        }).join("");
-
-        return `
-            <select class="status-dropdown" 
-                    onchange="changeStatus(this)" 
-                    style="background-color: ${statusColors[currentStatus]};">
-                ${options}
-            </select>
-        `;
-    };
-
     /**
      * Attach row expansion logic to the table
      */
@@ -142,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const tr = e.target.closest('tr');
             const index = e.target.dataset.index;
             const item = internshipData[index];
+            const isSmallScreen = window.innerWidth <= 950;
 
             // Toggle expansion
             if (tr.nextElementSibling?.classList.contains('expanded-details')) {
@@ -160,16 +113,26 @@ document.addEventListener("DOMContentLoaded", () => {
                     ['Status', `Referral: ${item.referral ? 'Yes' : 'No'} | Offer: ${item.offerReceived ? 'Yes' : 'No'}`],
                     ['Duration', item.internshipDuration],
                     ['Skills', generateSkillPills(item.skillsRequired)],
-                    ['Notes', item.notes]
-                ].map(([label, value]) => `
-                    <tr class="expanded-details">
-                        <td></td>
-                        <td class="detail-label">${label}</td>
-                        <td colspan="5" class="detail-value">${value}</td>
-                    </tr>
+                    ['Notes', item.notes]]
+                    
+                if (isSmallScreen) {
+                    detailRows.unshift(
+                        ['Application Status', item.applicationStatus],
+                        ['Date Applied', item.dateApplied],
+                        ['Application Link', `<a href="${item.applicationLink}" target="_blank">Link</a>`],
+                        ['Actions', `<button class="in-row-edit" onclick='editInternship(${JSON.stringify(item)})'>✎</button> <button class="in-row-delete" onclick='deleteInternship(${JSON.stringify(item)})'>❌</button>`]
+                    );
+                }   
+                    
+                const detailHtml = detailRows.map(([label, value]) => `
+                <tr class="expanded-details">
+                    <td></td>
+                    <td class="detail-label">${label}</td>
+                    <td colspan="5" class="detail-value">${value}</td>
+                </tr>
                 `).join('');
 
-                tr.insertAdjacentHTML('afterend', detailRows);
+                tr.insertAdjacentHTML('afterend', detailHtml);
                 e.target.textContent = '▼';
             }
         });
@@ -218,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         `<span class="dt-control" data-index="${index}">▶</span>`,
                         item.companyName,
                         item.positionTitle,
-                        generateStatusDropdown(item.applicationStatus),
+                        item.applicationStatus,
                         item.dateApplied,
                         `<a href="${item.applicationLink}" target="_blank">Link</a>`,
                         `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`,
