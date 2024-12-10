@@ -1,3 +1,5 @@
+import { DataTable } from "simple-datatables";
+
 // Wait until the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -120,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Reinitialize the DataTable with updated data
-            dataTable = new simpleDatatables.DataTable("#InternshipTrackerTable", {
+            dataTable = new DataTable("#InternshipTrackerTable", {
                 searchable: true,
                 columns: [
                     { select: 0, sortable: false }, // Expand/collapse column
