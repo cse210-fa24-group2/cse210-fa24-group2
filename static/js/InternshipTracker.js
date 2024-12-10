@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
         constructor() {
             super();
             this.attachShadow({ mode: 'open' }); // Attach a shadow DOM to the element
-            this.attachShadow({ mode: 'open' }); // Attach a shadow DOM to the element
         }
 
         // Lifecycle method called when the element is added to the DOM
@@ -130,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             console.log('Received:', data);
-            let internshipData = data;
+            internshipData = data;
 
             // Destroy the existing table if it exists
             if (dataTable) {
@@ -298,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     notes: document.getElementById("notes").value,
                     location: document.getElementById("location").value,
                     salary: parseFloat(document.getElementById("salary").value) || 0,
-                    internship_duration: document.getElementById("internship_duration").value
+                    internship_duration: document.getElementById("internship_duration").value,
             };
 
             try {
