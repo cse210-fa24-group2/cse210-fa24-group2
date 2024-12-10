@@ -302,7 +302,6 @@ class Internship(db.Model):
     location = db.Column(db.String(255))
     salary = db.Column(db.Numeric(10, 2))
     internship_duration = db.Column(db.String(50))
-    skills_required = str(db.Column(db.JSON))
 
     # Establish the relationship with the User model
     user = db.relationship("User", backref="internships")
@@ -325,7 +324,6 @@ class Internship(db.Model):
             "location": str(self.location),
             "salary": str(self.salary),
             "internshipDuration": str(self.internship_duration),
-            "skillsRequired": '["str(self.skills_required)"]', 
         }
 
 @app.route("/api/internships", methods=["POST"])
@@ -352,12 +350,7 @@ def add_internship():
         return jsonify({"error": "Invalid data"}), 400
 
     try:
-        # Process skills_required from comma-separated string to JSON string
-        skills_required = data.get("skills_required", "")
-        if isinstance(skills_required, str):
-            skills_list = [skill.strip() for skill in skills_required.split(",") if skill.strip()]
-            skills_required = json.dumps(skills_list)  # Convert list to JSON string
-
+        
         # Create a new internship entry
         new_internship = Internship(
             user_id=user_id,
@@ -377,7 +370,6 @@ def add_internship():
             location=data.get("location"),
             salary=data.get("salary"),   
             internship_duration=data.get("internship_duration"),
-            skills_required=skills_required,  # Store as JSON string
         )
         # Add to the database
         db.session.add(new_internship)
