@@ -13,8 +13,10 @@ import functools
 import os
 import pathlib
 import json
+import json
 import cachecontrol
 from dotenv import load_dotenv
+from flask import Flask, abort, redirect, request, session, jsonify
 from flask import Flask, abort, redirect, request, session, jsonify
 from flask import url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -275,27 +277,9 @@ def send_data():
     internship_data = [obj.to_dict() for obj in internships]
     print({"data": internship_data})
     # Render the template with the internship data
-    # Fetch internship data from the PostgreSQL database
-    internships = Internship.query.filter_by(user_id=user_id).all()
-    return render_template("InternshipTracker.html",internship_data = internship_data , internships=internships)
-
-
-@app.route('/calendar.html')
-def serve_calendar():
-    """
-    Serve the calendar.html template.
-    """
-    return render_template('calendar.html')
-
-
-@app.route('/todoList.html')
-def serve_todo_list():
-    """
-    Serve the To-Do List HTML file.
-    """
-    return render_template('todoList.html')
-
-
+    return internship_data
+    # data = {'message': 'Hello from Flask!', 'status': 'success'}
+    # return jsonify(data) 
 # Define the Internship model (if not already defined in your models)
 class Internship(db.Model):
     __tablename__ = "internship"
@@ -465,6 +449,22 @@ def delete_internship(internship_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Failed to delete internship: {str(e)}"}), 500
+
+
+@app.route('/calendar.html')
+def serve_calendar():
+    """
+    Serve the calendar.html template.
+    """
+    return render_template('calendar.html')
+
+
+@app.route('/todoList.html')
+def serve_todo_list():
+    """
+    Serve the To-Do List HTML file.
+    """
+    return render_template('todoList.html')
 
 
 @app.errorhandler(404)
