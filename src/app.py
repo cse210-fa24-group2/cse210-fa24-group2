@@ -325,7 +325,6 @@ class Internship(db.Model):
             "location": str(self.location),
             "salary": str(self.salary),
             "internshipDuration": str(self.internship_duration),
-            "skillsRequired": '["str(self.skills_required)"]',
         }
 
 @app.route("/api/internships", methods=["POST"])
@@ -353,8 +352,6 @@ def add_internship():
 
     try:
 
-        skills_required = data.get("skills_required", "")
-        
         # Create a new internship entry
         new_internship = Internship(
             user_id=user_id,
@@ -374,7 +371,6 @@ def add_internship():
             location=data.get("location"),
             salary=data.get("salary"),   
             internship_duration=data.get("internship_duration"),
-            skills_required=skills_required,
         )
         # Add to the database
         db.session.add(new_internship)
