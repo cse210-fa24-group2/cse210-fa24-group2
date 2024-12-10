@@ -4,34 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     /**
      * Custom HTML Element for the Internship Tracker table
      */
-    class InternshipTracker extends HTMLElement {
-        constructor() {
-            super();
-            this.attachShadow({ mode: 'open' }); // Attach a shadow DOM to the element
-        }
-
-        // Lifecycle method called when the element is added to the DOM
-        connectedCallback() {
-            this.render();
-            this.initializeTable();
-        }
-
-        // Render the HTML structure for the element
-        render() {
-            this.shadowRoot.innerHTML = `
-                <style>
-                    @import "InternshipTracker.css"; /* Import external CSS */
-                </style>
-                <div class="datatable-wrapper">
-                    <table id="InternshipTrackerTable" class="datatable-table"></table>
-                </div>
-                <button class="add-button" onclick="openAddModal()">+</button>
-                <div id="internshipModal" class="modal">
-                    <!-- Modal content here -->
-                </div>
-            `;
-        }
-    }
 
     let dataTable;
 
