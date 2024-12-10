@@ -280,80 +280,12 @@ footer {
         display: none;
     }
 
-/* Content Sections Styling */
-main {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin: 1.5rem auto;
-    padding: 1rem;
+    calGroup {
+        flex-direction: column;
+    }
+
+    deadlines {
+        max-width: 75rem;
+    }
 }
 
-todo, calendar, deadlines, career {
-    background-color: var(--background-secondary-lm);
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-}
-
-todo {
-    width: 75rem;
-    height: 20rem;
-}
-
-calendar {
-    height: 30rem;
-    width: 48.5rem;
-}
-
-deadlines {
-    height: 30rem;
-    width: 25rem;
-}
-
-cal-group {
-    display: flex;
-    gap: 1.5rem;
-}
-career{
-    width: 75rem;
-    height: 100%;
-}
-
-/* Footer Section */
-footer {
-    text-align: center;
-    background-color: var(--background-secondary-lm);
-    color: var(--text-primary-lm);
-    padding: 1rem;
-    margin-top: auto;
-}
-
-.expanded-details {
-    background-color: var(--background-color-dm);
-}
-
-.expanded-details td {
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--border-color-dm);
-}
-
-.detail-label {
-    font-weight: bold;
-    color: var(--text-color-dm);
-    width: 150px;
-}
-
-.detail-value {
-    color: var(--text-color-dm);
-}
-
-.dt-control {
-    cursor: pointer;
-    padding: 4px 8px;
-    transition: transform 0.2s;
-}
-
-.dt-control:hover {
-    color: var(--hover-color-dm);
-}
