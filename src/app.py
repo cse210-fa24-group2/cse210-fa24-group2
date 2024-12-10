@@ -26,7 +26,7 @@ from src.calendarGoogle import calendarGoogle
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableDict
 from datetime import datetime
-from calendarGoogle import calendarGoogle
+from src.calendarGoogle import calendarGoogle
 
 # Load environment variables from .env file
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
