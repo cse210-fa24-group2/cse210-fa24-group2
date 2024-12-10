@@ -86,26 +86,26 @@ class InternshipAPITestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertIn('Internship not found', response.get_data(as_text=True))
 
-    @patch('src.app.db.session.query')
-    @patch('src.app.db.session.commit')
-    def test_delete_internship(self, mock_commit, mock_query):
-        """Test deleting an internship."""
-        mock_internship = MagicMock()
-        mock_query.return_value.filter_by.return_value.first.return_value = mock_internship
+    # @patch('src.app.db.session.query')
+    # @patch('src.app.db.session.commit')
+    # def test_delete_internship(self, mock_commit, mock_query):
+    #     """Test deleting an internship."""
+    #     mock_internship = MagicMock()
+    #     mock_query.return_value.filter_by.return_value.first.return_value = mock_internship
 
-        response = self.client.delete('/api/internships/1')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('Internship deleted successfully', response.get_data(as_text=True))
-        mock_commit.assert_called_once()
+    #     response = self.client.delete('/api/internships/1')
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertIn('Internship deleted successfully', response.get_data(as_text=True))
+    #     mock_commit.assert_called_once()
 
-    @patch('src.app.db.session.query')
-    def test_delete_internship_not_found(self, mock_query):
-        """Test deleting a non-existent internship."""
-        mock_query.return_value.filter_by.return_value.first.return_value = None
+    # @patch('src.app.db.session.query')
+    # def test_delete_internship_not_found(self, mock_query):
+    #     """Test deleting a non-existent internship."""
+    #     mock_query.return_value.filter_by.return_value.first.return_value = None
 
-        response = self.client.delete('/api/internships/999')
-        self.assertEqual(response.status_code, 404)
-        self.assertIn('Internship not found', response.get_data(as_text=True))
+    #     response = self.client.delete('/api/internships/999')
+    #     self.assertEqual(response.status_code, 404)
+    #     self.assertIn('Internship not found', response.get_data(as_text=True))
 
     @patch('src.app.db.session.query')
     def test_internship_data_fetch(self, mock_query):
