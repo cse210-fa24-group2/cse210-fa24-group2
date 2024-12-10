@@ -181,16 +181,9 @@ document.addEventListener("DOMContentLoaded", () => {
             closeModal();
         }
     };
-
-    /**
+    /*
      * Save form data when the modal is submitted
      */
-<<<<<<< HEAD
-    /**
-     * Save form data when the modal is submitted
-     */
-=======
->>>>>>> 9058543f243e97b61b8761594e5b93a4cf6641bf
     saveButton.onclick = () => {
         const newInternship = {
             company_name: document.getElementById("company_name").value,
@@ -230,13 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const parts = dateString.split('-');
             if (parts.length !== 3) return '';
             const [year, month, day] = parts;
-<<<<<<< HEAD
-            if (!dateString || typeof dateString !== 'string') return '';
-            const parts = dateString.split('-');
-            if (parts.length !== 3) return '';
-            const [year, month, day] = parts;
-=======
->>>>>>> 9058543f243e97b61b8761594e5b93a4cf6641bf
             return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
         };
 
@@ -327,7 +313,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 });
-<<<<<<< HEAD
-
-=======
->>>>>>> 9058543f243e97b61b8761594e5b93a4cf6641bf
