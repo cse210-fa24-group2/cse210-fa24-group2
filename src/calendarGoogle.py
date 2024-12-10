@@ -15,7 +15,7 @@ from flask import Blueprint, request, session, jsonify, abort
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import google.auth.transport.requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Create a Flask Blueprint
 calendarGoogle = Blueprint('calendarGoogle', __name__)
@@ -68,10 +68,11 @@ def get_events():
     """
     try:
         service = get_calendar_service()
-        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        # now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        now = datetime.now(timezone.utc).isoformat()
         events_result = service.events().list(
             calendarId='primary', timeMin=now,
-            maxResults=10, singleEvents=True,
+            maxResults=50, singleEvents=True,
             orderBy='startTime').execute()
         events = events_result.get('items', [])
 
