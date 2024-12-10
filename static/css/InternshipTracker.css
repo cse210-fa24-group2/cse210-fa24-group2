@@ -322,4 +322,9 @@
     gap: 20px;
 }
 
-
+@media (max-width: 950) {
+    .datatable-wrapper th:nth-child(n+3),
+    .datatable-wrapper td:nth-child(n+3) {
+        display: none;
+    }
+}

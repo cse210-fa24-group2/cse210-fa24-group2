@@ -208,7 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     { select: 6, sortable: false }, // Edit button column
                     { select: 7, sortable: false } // Delete button column
                 ],
-                responsive: true,
                 data: {
                     headings: [
                         "", "Company Name", "Position Title", "Application Status",
@@ -224,16 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`,
                         `<div class="delete" onclick='deleteInternship(${JSON.stringify(item)})'>❌</div>`
                     ])
-                },
-                responsive: {
-                    details: {
-                        type: 'column', // Add a control column for expanded details
-                        target: 0 // Set the control column to the first column
-                    },
-                    breakpoints: [
-                        { width: 950, columns: [1, 2] }, // Show only the first two columns on screens smaller than 768px
-                        { width: 0, columns: [] } // Hide all columns for very small screens
-                    ]
                 }
             });
 
