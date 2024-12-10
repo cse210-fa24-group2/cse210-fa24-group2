@@ -25,6 +25,8 @@ import requests
 from src.calendarGoogle import calendarGoogle
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableDict
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableDict
 from datetime import datetime
 from src.calendarGoogle import calendarGoogle
 
@@ -165,9 +167,6 @@ def callback():
     except ValueError:
         # Invalid token
         abort(401)
-
-
-
 
     # Add user to the database if not exists
     user = User.query.filter_by(google_id=id_info.get("sub")).first()
