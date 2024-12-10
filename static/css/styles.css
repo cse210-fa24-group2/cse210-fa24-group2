@@ -18,21 +18,65 @@ body {
 
 /* Header Section */
 hgroup {
-    background-color: var(--button-background-lm);
-    color: var(--button-text-lm);
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
     height: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 2rem; 
+    padding: 0rem 1.25rem 1rem 1.25rem; 
 }
 
 header {
     font-size: 1.25rem;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 3rem;
+    height: 3rem;
+    margin: 0;
+}
+
+/* Header Controls Section */
+basicControls {
+    background-color: var(--background-secondary-lm);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.logout-btn {
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    border: none;
+    padding: 0.5rem 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-right: 2rem;
+}
+
+.logout-btn:hover {
+    background-color: var(--button-hover-lm);
+    transform: scale(1.05);
 }
 
 /* Navigation Menu */
+navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 0.1rem 0.5rem var(--background-primary-lm);
+}
+
+#todo, #calendar, #deadlines, #career {
+    scroll-margin-top: 6rem;
+}
+
 nav {
     display: flex;
     align-items: center;
@@ -47,7 +91,7 @@ nav ul {
 nav ul li {
     padding: 0.5rem 1rem;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     transition: background-color 0.3s, transform 0.2s;
     text-align: left;
 }
@@ -58,7 +102,62 @@ nav ul li:hover {
     transform: scale(1.05);
 }
 
+.icon, .menu-icon, .theme-icon {
+    filter: invert(9%) sepia(7%) saturate(3104%) hue-rotate(182deg) brightness(92%) contrast(90%);
+}
 
+.navlink {
+    display: flex;
+    align-items: center;
+}
+
+.navlink a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    font-size: 1rem;
+}
+
+.icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right:10px;
+}
+
+/* Light Mode/Dark Mode Toggle */
+
+.theme-button {
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    border: none;
+    padding: 0.5rem 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.theme-button:hover {
+    background-color: var(--button-hover-lm);
+    transform: scale(1.05);
+}
+
+.theme-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+#theme-toggle {
+    display: none;
+}
+
+#theme-toggle:checked + .theme-button img.theme-icon {
+    content: url("../assets/icons/darkmode.svg");
+}
 
 /* Menu Button - can be used later for responsive screen sizing */
 .menu-button {
@@ -77,8 +176,72 @@ nav ul li:hover {
     display: none;
 }
 
+/* Content Sections Styling */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 1.5rem auto;
+    padding: 1rem;
+}
+
+h2 {
+    margin-bottom: 0.5rem;
+}
+
+todo, calendar, deadlines, career {
+    background-color: var(--background-secondary-lm);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    width: 100%;
+}
+
+todo, career {
+    max-width: 75rem;
+    height: auto;
+}
+
+calendar {
+    height: auto;
+    max-width: 48.5rem;
+}
+
+deadlines {
+    height: auto;
+    max-width: 25rem;
+}
+
+calGroup {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+#upcomingDeadlinesList > li {
+    margin: 0.5rem 1rem;
+    font-size: 1.1rem;
+}
+
+/* Footer Section */
+footer {
+    text-align: center;
+    background-color: var(--background-secondary-lm);
+    color: var(--text-primary-lm);
+    padding: 1rem;
+    margin-top: auto;
+}
+
+.privacy {
+    display: block;
+    color: var(--text-primary-lm);
+    cursor: pointer;
+}
+
+
+
 /* Responsive nav bar */
-@media screen and (max-width: 830px) {
+@media screen and (max-width: 950px) {
     hgroup {
         flex-direction: column;
         align-items: flex-start;
@@ -90,7 +253,7 @@ nav ul li:hover {
     }
 
     #menu-toggle:checked + .menu-button img.menu-icon {
-        content: url("../assets/navbar/menu.svg");
+        content: url("../assets/navbar/exit.svg");
     }
 
     nav > ul {
@@ -99,8 +262,6 @@ nav ul li:hover {
         align-items: left; /*allows left alignment of nav bar in mobile view*/
         gap: 1rem;
         border-radius: 1rem;
-        background: rgb(25, 55, 109);
-        background: linear-gradient(0deg, rgba(25, 55, 109, 0.2) 0%, rgba(24, 55, 109, 1) 100%);
         padding: 1rem 1rem;
         margin: 1rem 0.5rem;
         box-shadow: 0 0 1rem 0 rgba(0, 0, 0 , 0.25%)
@@ -114,104 +275,17 @@ nav ul li:hover {
     .tooltiptext {
         display: none;
     }
-}
 
-/* Tooltip Styling */
-.tooltip {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-}
+    .icon {
+        display: none;
+    }
 
-.tooltip .text{
-    text-align: left;
-}
+    calGroup {
+        flex-direction: column;
+    }
 
-.tooltip .icon {
-    width: 2rem;
-    height: 2rem;
-    margin-right:10px;
-}
-
-.tooltiptext {
-    visibility: hidden;
-    opacity: 0;
-    width: 12rem;
-    background-color: var(--background-secondary-lm);
-    color: var(--text-primary-lm);
-    text-align: center;
-    padding: 0.5rem;
-    border-radius: 4px;
-    position: absolute;
-    top: 50%;
-    left: -13rem;
-    transform: translateY(-50%);
-    transition: visibility 0.3s, opacity 0.3s;
-}
-
-/* Tooltip arrow */
-.tooltiptext::after {
-    content: "";
-    position: absolute;
-    top:50%;
-    right: -.55rem;
-    transform: translateY(-50%) rotate(-90deg);
-    border-width: 5px;
-    border-style: solid;
-    border-color: var(--background-secondary-lm) transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* Content Sections Styling */
-main {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin: 1.5rem auto;
-    padding: 1rem;
-}
-
-todo, calendar, deadlines, career {
-    background-color: var(--background-secondary-lm);
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-}
-
-todo{
-    width: 75rem;
-    height: 20rem;
-}
-
-calendar {
-    height: 30rem;
-    width: 48.5rem;
-}
-
-deadlines {
-    height: 30rem;
-    width: 25rem;
-}
-
-cal-group {
-    display: flex;
-    gap: 1.5rem;
-}
-career{
-    height: 30rem;
-}
-
-/* Footer Section */
-footer {
-    text-align: center;
-    background-color: var(--background-secondary-lm);
-    color: var(--text-primary-lm);
-    padding: 1rem;
-    margin-top: auto;
+    deadlines {
+        max-width: 75rem;
+    }
 }
 

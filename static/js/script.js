@@ -1,6 +1,6 @@
-document.querySelector(".signin-btn").addEventListener("click", function () {
-    // Redirect to the Flask login route
-    window.location.href = "/login";
+document.querySelector(".logout-btn").addEventListener("click", function () {
+    // Redirect to the Flask logout route
+    window.location.href = "/logout";
 });
 
 document.querySelector('#theme-toggle').addEventListener('click', function(){ 

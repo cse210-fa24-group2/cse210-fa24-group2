@@ -12,17 +12,22 @@ Attributes:
 import functools
 import os
 import pathlib
-
+import json
+import json
 import cachecontrol
 from dotenv import load_dotenv
-from flask import Flask, abort, redirect, request, session, url_for, render_template
+from flask import Flask, abort, redirect, request, session, jsonify
+from flask import Flask, abort, redirect, request, session, jsonify
+from flask import url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
-from calendarGoogle import calendarGoogle
-
+from src.calendarGoogle import calendarGoogle
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableDict
+from datetime import datetime
 
 # Load environment variables from .env file
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -66,6 +71,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/calendar.events",
 ]
+
 
 class User(db.Model):
     """
@@ -119,7 +125,6 @@ def login():
     session["state"] = state
     return redirect(authorization_url)
 
-
 @app.route("/callback")
 def callback():
     """
@@ -162,11 +167,7 @@ def callback():
         # Invalid token
         abort(401)
 
-    # Store user information and credentials in the session
-    session["id_google"] = id_info.get("sub")
-    session["name"] = id_info.get("name")
-    session["access_token"] = credentials.token
-    session["refresh_token"] = credentials.refresh_token
+
 
     # Add user to the database if not exists
     user = User.query.filter_by(google_id=id_info.get("sub")).first()
@@ -174,8 +175,35 @@ def callback():
         user = User(google_id=id_info.get("sub"), name=id_info.get("name"))
         db.session.add(user)
         db.session.commit()
+    # Store user information and credentials in the session
+    session["user_id"] = user.id
+    session["id_google"] = id_info.get("sub")
+    session["name"] = id_info.get("name")
+    session["access_token"] = credentials.token
+    session["refresh_token"] = credentials.refresh_token
+    return redirect(url_for('dashboard', _external=True)) 
 
-    return redirect(url_for('dashboard', _external=True))
+
+# Add the endpoint for fetching today's internships (upcoming deadlines)
+@app.route('/api/internships/today', methods=['GET'])
+@login_required
+def get_todays_internships():
+    """
+    Fetch internships with follow-up dates matching today's date.
+    """
+    try:
+        user_id = session.get("user_id")  # Get the logged-in user's ID
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 401
+
+        today = datetime.now().date()  # Get today's date
+        internships = db.session.query(Internship).filter_by(
+            user_id=user_id).filter(Internship.follow_up_date == today).all()
+
+        internships_data = [internship.to_dict() for internship in internships]
+        return jsonify(internships_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/logout")
@@ -198,7 +226,18 @@ def home():
     Returns:
         str: HTML content with options.
     """
-    return render_template("signIn.html")
+    if "id_google" not in session:
+        return render_template("signIn.html")
+    else:
+        return render_template("index.html")
+  
+
+@app.route("/privacy")
+def privacy_policy():
+    """
+    Page containing privacy policy.
+    """
+    return render_template("privacy.html")
 
 
 @app.route("/dashboard")
@@ -211,16 +250,222 @@ def dashboard():
         Response: Renders the index.html template.
     """
     return render_template("index.html")
-
-@app.route("/internshipTracker")
-def internship_tracker():
+@app.route("/internshipTracker") 
+@login_required
+def internshipTracker():
     """
-    Internship tracker page.
+    Internship Tracker, accessible only to logged-in users.
 
     Returns:
-        Response: Renders the index.html template.
+        Response: Renders the InternshipTracker.html template with data from the internship table.
     """
-    return render_template("InternshipTracker.html")
+    # Get the logged-in user's ID from the session
+    google_id = session.get("id_google")
+    user_id = session.get("user_id")
+    # Fetch internship data for the logged-in user
+    internships = db.session.query(Internship).filter_by(user_id=user_id).all() # This variable has the object with all internships for the user
+    internship_data = [obj.to_dict() for obj in internships]
+    # Render the template with the internship data
+    return render_template("InternshipTracker.html",internship_data=internship_data)
+@app.route('/internshipData') 
+def send_data():
+    # Get the logged-in user's ID from the session
+    google_id = session.get("id_google")
+    user_id = session.get("user_id")
+    # Fetch internship data for the logged-in user
+    internships = db.session.query(Internship).filter_by(user_id=user_id).all() # This variable has the object with all internships for the user
+    internship_data = [obj.to_dict() for obj in internships]
+    print({"data": internship_data})
+    # Render the template with the internship data
+    return internship_data
+    # data = {'message': 'Hello from Flask!', 'status': 'success'}
+    # return jsonify(data) 
+# Define the Internship model (if not already defined in your models)
+class Internship(db.Model):
+    __tablename__ = "internship"
+
+    internship_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    company_name = db.Column(db.String(255), nullable=False)
+    position_title = db.Column(db.String(255), nullable=False)
+    application_status = db.Column(db.String(50), nullable=False)
+    date_applied = db.Column(db.Date)
+    follow_up_date = db.Column(db.Date)
+    application_link = db.Column(db.Text)
+    start_date = db.Column(db.Date)
+    contact_person = db.Column(db.String(255))
+    contact_email = db.Column(db.String(255))
+    referral = db.Column(db.Boolean)
+    offer_received = db.Column(db.Boolean)
+    offer_deadline = db.Column(db.Date)
+    notes = db.Column(db.Text)
+    location = db.Column(db.String(255))
+    salary = db.Column(db.Numeric(10, 2))
+    internship_duration = db.Column(db.String(50))
+    skills_required = str(db.Column(db.JSON))
+
+    # Establish the relationship with the User model
+    user = db.relationship("User", backref="internships")
+    def to_dict(self):
+        return {
+            "internshipId":str(self.internship_id),
+            "companyName": str(self.company_name),
+            "positionTitle": str(self.position_title),
+            "applicationStatus": str(self.application_status),
+            "dateApplied": str(self.date_applied),
+            "followUpDate": str(self.follow_up_date),
+            "applicationLink": str(self.application_link),
+            "startDate": str(self.start_date),
+            "contactPerson": str(self.contact_person),
+            "contactEmail": str(self.contact_email),
+            "referral": str(self.referral),
+            "offerReceived": str(self.offer_received),
+            "offerDeadline": str(self.offer_deadline),
+            "notes": str(self.notes),
+            "location": str(self.location),
+            "salary": str(self.salary),
+            "internshipDuration": str(self.internship_duration),
+            "skillsRequired": '["str(self.skills_required)"]', 
+        }
+
+@app.route("/api/internships", methods=["POST"])
+@login_required
+def add_internship():
+    """
+    API endpoint to add a new internship entry to the PostgreSQL table.
+
+    Accepts JSON data from the client and writes it to the `internship` table.
+
+    Returns:
+        Response: JSON response indicating success or failure.
+    """
+    user_id = session.get("user_id")  # Get the logged-in user's ID from the session
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 401
+
+    data = request.json  # Get the JSON payload from the request
+    processed_data = {
+        key: (None if value == "" else value)
+        for key, value in data.items()
+    }
+    if not data:
+        return jsonify({"error": "Invalid data"}), 400
+
+    try:
+        # Process skills_required from comma-separated string to JSON string
+        skills_required = data.get("skills_required", "")
+        if isinstance(skills_required, str):
+            skills_list = [skill.strip() for skill in skills_required.split(",") if skill.strip()]
+            skills_required = json.dumps(skills_list)  # Convert list to JSON string
+
+        # Create a new internship entry
+        new_internship = Internship(
+            user_id=user_id,
+            company_name=data.get("company_name"),
+            position_title=data.get("position_title"),
+            application_status=data.get("application_status", "Applied"),
+            date_applied=processed_data.get("date_applied"),
+            follow_up_date=processed_data.get("follow_up_date"),
+            application_link=data.get("application_link"),
+            start_date=processed_data.get("start_date"),
+            contact_person=data.get("contact_person"),
+            contact_email=data.get("contact_email"),
+            referral=data.get("referral", False),
+            offer_received=data.get("offer_received", False),
+            offer_deadline=processed_data.get("offer_deadline"),
+            notes=data.get("notes"),
+            location=data.get("location"),
+            salary=data.get("salary"),   
+            internship_duration=data.get("internship_duration"),
+            skills_required=skills_required,  # Store as JSON string
+        )
+        # Add to the database
+        db.session.add(new_internship)
+        db.session.commit()
+
+        return jsonify({"message": "Internship added successfully", "internship_id": new_internship.internship_id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to add internship: {str(e)}"}), 500
+
+
+@app.route('/api/internships/<int:internship_id>', methods=['PUT'])
+def update_internship(internship_id):
+    """
+    Update an internship by its ID.
+    """
+    data = request.json  # Get the JSON data from the request
+    internship = Internship.query.get(internship_id)  # Fetch the internship by ID
+
+    if not internship:
+        return jsonify({"error": "Internship not found"}), 404
+        # Dynamically update the fields in the internship record
+    for key, value in data.items():
+        if hasattr(internship, key):
+            if key in ['date_applied', 'follow_up_date', 'start_date', 'offer_deadline'] and not value:
+                # Set nullable date fields to None if they are empty
+                setattr(internship, key, None)
+            elif key in ['referral', 'offer_received']:
+                # Convert boolean-like values (if necessary)
+                setattr(internship, key, bool(value))
+            else:
+                setattr(internship, key, value)
+
+
+    try:
+        db.session.commit()  # Save changes to the database
+        return jsonify({"message": "Internship updated successfully!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/internships/<int:internship_id>', methods=['DELETE'])
+@login_required
+def delete_internship(internship_id):
+    """
+    Delete an internship entry by its ID.
+
+    Args:
+        internship_id (int): The ID of the internship to delete.
+
+    Returns:
+        Response: JSON response indicating success or failure.
+    """
+    user_id = session.get("user_id")  # Get the logged-in user's ID from the session
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 401
+
+    # Fetch the internship entry for the given ID and user
+    internship = Internship.query.filter_by(internship_id=internship_id, user_id=user_id).first()
+    
+    if not internship:
+        return jsonify({"error": "Internship not found"}), 404
+
+    try:
+        # Delete the internship from the database
+        db.session.delete(internship)
+        db.session.commit()
+        return jsonify({"message": "Internship deleted successfully!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to delete internship: {str(e)}"}), 500
+
+
+@app.route('/calendar.html')
+def serve_calendar():
+    """
+    Serve the calendar.html template.
+    """
+    return render_template('calendar.html')
+
+
+@app.route('/todoList.html')
+def serve_todo_list():
+    """
+    Serve the To-Do List HTML file.
+    """
+    return render_template('todoList.html')
+
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -231,6 +476,127 @@ def page_not_found(error):
         Response: Renders the error404.html template with a 404 status code.
     """
     return render_template("error404.html"), 404
+
+
+class Todo(db.Model):
+    """
+    Todo model to store tasks for the to-do list.
+    """
+    __tablename__ = 'todo'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    task_text = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(50), nullable=False)  # today, week, etc.
+    created_at = db.Column(db.DateTime, default=db.func.now())
+
+    user = db.relationship('User', backref='todos')
+
+
+@app.route("/api/todos", methods=["GET"])
+@login_required
+def get_todos():
+    """
+    Fetch all todos for the logged-in user.
+    """
+    user = User.query.filter_by(google_id=session["id_google"]).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    todos = Todo.query.filter_by(user_id=user.id).all()
+    return {
+        "todos": [
+            {"id": todo.id, "category": todo.category, "task": todo.task_text}
+            for todo in todos
+        ]
+    }
+
+
+@app.route("/api/todos", methods=["POST"])
+@login_required
+def add_todo():
+    """
+    Add a new todo for the logged-in user.
+    """
+    data = request.json
+    if not data or not data.get("category") or not data.get("task"):
+        return {"error": "Invalid data"}, 400
+
+    # Validate and normalize category
+    valid_categories = ["Today", "This Week", "This Month", "Next Month"]
+    category = data["category"].strip()
+    if category not in valid_categories:
+        return {"error": f"Invalid category: {category}"}, 400
+
+    user = User.query.filter_by(google_id=session["id_google"]).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    new_todo = Todo(user_id=user.id, category=category, task_text=data["task"])
+    try:
+        db.session.add(new_todo)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Failed to add todo: {str(e)}"}, 500
+
+    return {
+        "id": new_todo.id,
+        "category": new_todo.category,
+        "task": new_todo.task_text}
+
+
+@app.route("/api/todos/<int:todo_id>", methods=["DELETE"])
+@login_required
+def delete_todo(todo_id):
+    """
+    Delete a todo by ID for the logged-in user.
+    """
+    user = User.query.filter_by(google_id=session["id_google"]).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    todo = Todo.query.filter_by(id=todo_id, user_id=user.id).first()
+    if not todo:
+        return {"error": "Todo not found"}, 404
+
+    try:
+        db.session.delete(todo)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Failed to delete todo: {str(e)}"}, 500
+
+    return {"message": "Todo deleted"}
+
+
+@app.route("/api/todos/<int:todo_id>/category", methods=["PATCH"])
+@login_required
+def update_todo_category(todo_id):
+    """
+    Update the category of a todo by ID for the logged-in user.
+    """
+    user = User.query.filter_by(google_id=session["id_google"]).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    todo = Todo.query.filter_by(id=todo_id, user_id=user.id).first()
+    if not todo:
+        return {"error": "Todo not found"}, 404
+
+    data = request.json
+    new_category = data.get("category")
+    if new_category not in ["Today", "This Week", "This Month", "Next Month"]:
+        return {"error": f"Invalid category: {new_category}"}, 400
+
+    try:
+        todo.category = new_category
+        db.session.commit()
+        return {"message": "Category updated successfully"}
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Failed to update category: {str(e)}"}, 500
+
 
 if __name__ == "__main__":
     # Create tables in the database

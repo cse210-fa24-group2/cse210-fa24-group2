@@ -1,6 +1,5 @@
 /* Global variables as defined in Frontend-System-Design.md */
-/* lm variables should be used in light mode */
-/* dm variables should be used in dark mode */
+/* Use root variables in other css files. Dark mode class allows us to toggle theme */
 
 :root {
     --font-primary: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -12,11 +11,14 @@
     --text-primary-lm: #1A202C;
     --button-text-lm: #F7FAFC;
     --focus-outline-lm: #3182CE;
+}
 
-    --background-primary-dm: #1A202C;
-    --background-secondary-dm: #2D3748;
-    --button-background-dm: #63B3ED;
-    --button-hover-dm: #4A9AD4;
-    --text-primary-dm: #F7FAFC;
-    --focus-outline-dm: #63B3ED;
+.darkMode {
+    --background-primary-lm: #1A202C;
+    --background-secondary-lm: #2D3748;
+    --button-background-lm: #63B3ED;
+    --button-hover-lm: #4A9AD4;
+    --text-primary-lm: #F7FAFC;
+    --button-text-lm: #1A202C;
+    --focus-outline-lm: #63B3ED;
 }

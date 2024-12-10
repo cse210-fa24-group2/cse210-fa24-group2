@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline for FireStack
 
 on:
   push:
@@ -11,15 +11,16 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        continue-on-error: true
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.8'
+        continue-on-error: true
 
       - name: Install Dependencies
         run: |
@@ -27,6 +28,7 @@ jobs:
           pip install -r requirements.txt
           pip install black flake8 pylint coverage
           npm install -g jest jsdoc cypress eslint
+        continue-on-error: true
 
       - name: Set Environment Variables
         env:
@@ -39,71 +41,124 @@ jobs:
           echo "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}" >> $GITHUB_ENV
           echo "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}" >> $GITHUB_ENV
           echo "REDIRECT_URI=${REDIRECT_URI}" >> $GITHUB_ENV
+        continue-on-error: true
+
+  jsdocs:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Generate JSDocs
+        run: npx jsdoc -c jsdoc.json -d jsdocs/
+
+      - name: Push JSDocs to Docs Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+          # Fetch the latest state of the remote repository
+          git fetch origin
+
+          # Switch to or create the docs branch
+          git checkout -B docs
+
+          # Use a temporary directory to ensure safe copying
+          mkdir -p jsdocs_temp
+          cp -R jsdocs/* jsdocs_temp/
+          rm -rf jsdocs
+          mv jsdocs_temp jsdocs
+
+          # Stage and commit the updated documentation
+          git add jsdocs/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update JSDocs [skip ci]"
+
+            # Push the changes to the remote docs branch
+            git push --force --set-upstream origin docs
+
+          fi
 
   linting_and_code_quality:
     runs-on: ubuntu-latest
     needs: setup
-    continue-on-error: true
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        continue-on-error: true
 
       - name: Lint Python Code
-        continue-on-error: true
         run: |
           black --check .
           flake8 .
           pylint $(find . -name "*.py")
+        continue-on-error: true
 
       - name: Lint JavaScript Code
-        continue-on-error: true
         run: |
           eslint . .js,.jsx,.ts,.tsx
+        continue-on-error: true
+
+      - name: Codacy Analysis
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          curl -Ls https://coverage.codacy.com/get.sh | bash
+          codacy-analysis-cli analyze --tool pylint
+          codacy-analysis-cli analyze --tool eslint
+        continue-on-error: true
 
   static_analysis:
     runs-on: ubuntu-latest
     needs: setup
-    continue-on-error: true
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        continue-on-error: true
 
       - name: Install ESLint Locally
         run: |
           npm install eslint eslint-plugin-security eslint-plugin-jsdoc
+        continue-on-error: true
 
       - name: Perform Static Analysis
-        continue-on-error: true
         run: |
           npx eslint "**/*.{js,jsx,ts,tsx}" \
             --plugin security \
             --plugin jsdoc
+        continue-on-error: true
 
       - name: Upload Static Analysis Report
         uses: actions/upload-artifact@v3
         with:
           name: static-analysis-report
           path: ./eslint-report/
+        continue-on-error: true
 
   testing:
     runs-on: ubuntu-latest
     needs: setup
-    continue-on-error: true
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        continue-on-error: true
 
       - name: Run Python Unit Tests
-        continue-on-error: true
         run: coverage run -m unittest discover -s tests
+        continue-on-error: true
 
       - name: Jest for JavaScript Unit Testing
-        continue-on-error: true
         run: jest --coverage
+        continue-on-error: true
 
       - name: Cypress End-to-End Testing
-        continue-on-error: true
         run: cypress run
+        continue-on-error: true
 
       - name: Upload Coverage Reports
         uses: actions/upload-artifact@v3
@@ -112,26 +167,21 @@ jobs:
           path: coverage/
         continue-on-error: true
 
-  documentation:
-    runs-on: ubuntu-latest
-    needs: setup
-    continue-on-error: true
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Generate Documentation
+      - name: Upload Coverage to Codacy
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.xml
         continue-on-error: true
-        run: jsdoc -c jsdoc.json -r .
 
   deployment:
     runs-on: ubuntu-latest
     needs: [linting_and_code_quality, testing]
     if: github.ref == 'refs/heads/main'
-    continue-on-error: true
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        continue-on-error: true
 
       - name: Deploy to Render
         env:
@@ -147,14 +197,13 @@ jobs:
   optimization:
     runs-on: ubuntu-latest
     needs: setup
-    continue-on-error: true
     steps:
       - name: Minify CSS and JavaScript
-        continue-on-error: true
         run: |
           npm install -g terser clean-css-cli
           find static/css -name "*.css" -exec cleancss -o {} {} \;
           find static/js -name "*.js" -exec terser -o {} -- {} \;
+        continue-on-error: true
 
       - name: Upload Optimized Files
         uses: actions/upload-artifact@v3

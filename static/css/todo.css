@@ -1,0 +1,225 @@
+/* Styling document for the to-do list */
+
+@import "vars.css";
+
+.todo-container {
+    padding: 0.625rem;
+    border: 0.125rem solid var(--button-background-lm);
+    border-radius: 0.5rem;
+    background-color: var(--background-secondary-lm);
+    font-family: var(--font-primary);
+    font-size: 0.875rem;
+    color: var(--text-primary-lm);
+    display: flex;
+    gap: 1.25rem; /* Spacing between columns */
+    margin: 0.938rem; 
+    overflow-x: auto;
+    box-sizing: border-box;
+
+    max-width: 100%; 
+    max-height: 30rem; 
+    align-items: stretch; 
+}
+
+/* Individual columns */
+.to-do-column {
+    flex: 1; /* All columns get equal width */
+    max-width: 18.75rem; /* Restrict maximum width for each column */
+    border: 0.063rem solid #ccc;
+    border-radius: 0.5rem;
+    padding: 0.625rem;
+    background-color: var(--background-primary-lm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    max-height: 30rem; 
+    position: relative;
+    align-self: stretch; 
+}
+
+/* Content inside each column */
+.todo-content {
+    overflow-y: auto; /* Enables vertical scrolling */
+    flex-grow: 1;
+    margin-bottom: 3.125rem;
+    scroll-behavior: smooth;
+    border: 0.063rem dashed var(--background-secondary-lm);
+    border-radius: 0.313rem;
+    width:100%;
+    max-width: 100%;
+}
+
+/* Column headers */
+.to-do-column h3 {
+    text-align: center;
+    margin-bottom: -0.625rem;
+    margin-top: 0rem;
+    font-size: 1.2em;
+    align-items: center;
+    padding: 0.625rem;
+}
+
+/* Input and add button container */
+.todo-list-container {
+    position:absolute;
+    padding: 0.625rem 0;
+    gap: 0.625rem;
+    display: flex;
+    align-items: center;
+    bottom:0.625rem;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 90%;
+}
+
+input {
+    background-color: var(--background-primary-lm);
+    color: var(--text-primary-lm)
+}
+
+/* Individual to-do lists */
+.todo-list {
+    list-style-type: none;
+    padding: 0;
+    max-height: 20rem;
+    flex-grow: 1;
+    min-height: 3.125rem; 
+ 
+}
+
+/* To-Do List items */
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 0.063rem solid var(--background-secondary-lm);
+    border-radius: 0.25rem;
+    background-color: var(--background-primary-lm);
+    margin-bottom: 0.313rem;
+}
+
+
+.todo-item:last-child {
+    border-bottom: none;
+}
+
+.todo-item span {
+    flex-grow: 1;
+    margin-left: 0.625rem;
+}
+
+/* Input box */
+.todo-input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 0.063rem solid var(--background-secondary-lm);
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+    max-width: 85%;
+}
+
+/* Add button */
+.todo-add-btn {
+    padding: 0.5rem 0.75rem;
+    background-color: var(--button-background-lm);
+    color: var(--background-primary-lm);
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    flex-shrink: 0;
+
+}
+
+.todo-add-btn:hover {
+    background-color: var(--button-hover-lm);
+}
+
+
+/* Remove button */
+.remove-btn {
+    background: none;
+    border: none;
+    color: #f44336;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-right: 0.938rem;
+    padding: 0.188rem;
+}
+
+
+/* Drag-and-drop feedback */
+.todo-item.drag-over {
+    border: 125rem dashed var(--background-secondary-lm);
+    background-color: var(--button-background-lm);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.todo-list.drag-over {
+    background-color: var(--background-secondary-lm);
+    border-color: var(--button-background-lm);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.todo-item {
+    cursor: grab;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.todo-item:active {
+    cursor: grabbing;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1100px) {
+    
+    .todo-container {
+        display:flex;
+        flex-wrap: wrap;
+        height:auto;
+        box-sizing: border-box;
+        overflow-y: auto;
+        max-height: 100vh;
+        align-items: flex-start;
+        gap:0.625rem;
+        padding: 0.313rem;
+    }
+
+    .to-do-column {
+        max-width: 100%; 
+        min-width: 40%;
+        margin: 0 auto; 
+    }
+
+    .todo-input{
+        max-width: 85%;
+    }
+    
+    .todo-list-container {
+        position: bottom;        
+        flex-direction: row;
+        padding: 0.625rem 0;
+        gap: 0.625rem; 
+        width:100%;
+    }
+
+
+}
+
+/* 
+* my temporary hard-coded solution for modifying 
+* sizing of input bar + button
+*/
+@media(max-width: 850px){
+    .todo-input{
+        max-width: 80%;
+    }
+}
+
+@media(max-width: 700px){
+    .todo-input{
+        max-width: 70%;
+    }
+}
