@@ -123,24 +123,6 @@ def login():
     session["state"] = state
     return redirect(authorization_url)
 
-
-class Internship(db.Model):
-    __tablename__ = "internship"
-
-    internship_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    company_name = db.Column(db.String(255), nullable=False)
-    position_title = db.Column(db.String(255), nullable=False)
-    follow_up_date = db.Column(db.Date)
-
-    def to_dict(self):
-        return {
-            "companyName": self.company_name,
-            "positionTitle": self.position_title,
-            "followUpDate": str(self.follow_up_date),
-        }
-
-
 @app.route("/callback")
 def callback():
     """
@@ -484,22 +466,6 @@ def delete_internship(internship_id):
         db.session.rollback()
         return jsonify({"error": f"Failed to delete internship: {str(e)}"}), 500
 
-
-@app.route('/calendar.html')
-def serve_calendar():
-    """
-    Serve the calendar.html template.
-    """
-    return render_template('calendar.html')
-
-
-@app.route('/todoList.html')
-def serve_todo_list():
-    """
-    Serve the To-Do List HTML file.
-    """
-    return render_template('todoList.html')
- 
 
 @app.errorhandler(404)
 def page_not_found(error):
