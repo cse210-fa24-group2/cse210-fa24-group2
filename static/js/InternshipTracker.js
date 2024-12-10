@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     detailRows.unshift(
                         ['Application Status', item.applicationStatus],
                         ['Date Applied', item.dateApplied],
-                        ['Application Link', `<a href="${item.applicationLink}" target="_blank">Link</a>`],
+                        ['Application Link', item.applicationLink ? `<a href="${item.applicationLink}" target="_blank">Link</a>` : "N/A"],
                         ['Actions', `<button class="in-row-edit" onclick='editInternship(${JSON.stringify(item)})'>✎</button> <button class="in-row-delete" onclick='deleteInternship(${JSON.stringify(item)})'>❌</button>`]
                     );
                 }   
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         item.positionTitle,
                         item.applicationStatus,
                         item.dateApplied,
-                        `<a href="${item.applicationLink}" target="_blank">Link</a>`,
+                        item.applicationLink ? `<a href="${item.applicationLink}" target="_blank">Link</a>` : "N/A",
                         `<div class="edit" onclick='editInternship(${JSON.stringify(item)})'>✎</div>`,
                         `<div class="delete" onclick='deleteInternship(${JSON.stringify(item)})'>❌</div>`
                     ])
