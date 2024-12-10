@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
      * Custom HTML Element for the Internship Tracker table
      */
 
+    let internshipData = [];
     let dataTable;
 
     /**
