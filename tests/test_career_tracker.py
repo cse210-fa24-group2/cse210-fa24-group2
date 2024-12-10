@@ -16,10 +16,6 @@ class InternshipAPITestCase(unittest.TestCase):
         with self.client.session_transaction() as session:
             session['user_id'] = 1
 
-    def tearDown(self):
-        """Clean up after each test."""
-        pass  # Add any necessary cleanup logic here
-
     @patch('src.app.db.session.query')
     def test_get_todays_internships(self, mock_query):
         """Test fetching today's internships."""
