@@ -209,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     { select: 6, sortable: false }, // Edit button column
                     { select: 7, sortable: false } // Delete button column
                 ],
+                responsive: true,
                 data: {
                     headings: [
                         "", "Company Name", "Position Title", "Application Status",
