@@ -10,6 +10,7 @@
 # CI / CD Pipeline for FireStack
 
 This repository includes a comprehensive CI/CD pipeline designed to ensure the continuous integration and deployment of FireStack. The pipeline automates setup, code quality checks, testing, static analysis, and deployment workflows, enabling a robust development lifecycle.
+[Code for CI/CD](https://github.com/cse210-fa24-group2/cse210-fa24-group2/blob/main/.github/workflows/ci-cd.yml)
 
 ## CI / CD Pipeline
 
