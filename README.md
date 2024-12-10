@@ -1,11 +1,29 @@
 # cse210-fa24-group2
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5c719265d1dd4a93bfd5c0b9dddfc667)](https://app.codacy.com?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
+# Introduction
+
 [View our live site here.](https://cse210-fa24-group2.onrender.com/) Please note that because we are using a free version of Render to host, the site may take a few minutes to load if it has not been accessed for at least 15 minutes.
 
-# What does FireStack Do
+# Features
 
-# Setup
+## To-do List
+
+## Calendar
+
+## Upcoming Deadlines
+
+## Career Tracker
+
+# Usage
+
+# Tech Stack
+
+# Repo Organization
+
+# Setup & Installation
+
+# API Endpoints
 
 # CI / CD Pipeline for FireStack
 
@@ -57,9 +75,9 @@ Runs automated tests to ensure the integrity of the application:
 - JavaScript:
   - Runs unit tests using `jest` with coverage enabled.
 - End-to-End Tests:
-  - Executes end-to-end tests using `cypress`.
+  - Executes end-to-end tests using manual testing.
 - Uploads coverage reports as artifacts.
-- Optionally uploads coverage data to Codacy for detailed reporting.
+- Uploads coverage data to Codacy for detailed reporting here: [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5c719265d1dd4a93bfd5c0b9dddfc667)](https://app.codacy.com?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 #### 6. **Deployment**
 Handles deployment to Render:
@@ -90,3 +108,4 @@ Ensure these secrets are configured in the repository settings before running th
 
 For any questions or issues, please contact the repository maintainers.
 
+# Contributing
