@@ -60,22 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Predefined colors for skill pills
-    const pillColors = ["#072F5F", "#1261A0", "#3895D3", "#58CCED"];
-
-    /**
-     * Generate skill pills as HTML elements
-     * @param {string} skillsRequired - JSON string of required skills
-     * @returns {string} - HTML string for skill pills
-     */
-    const generateSkillPills = (skillsRequired) => {
-        const skills = JSON.parse(skillsRequired);
-        return skills.map((skill, index) => {
-            const color = pillColors[index % pillColors.length];
-            return `<span class="pill" style="background-color: ${color};">${skill}</span>`;
-        }).join(" ");
-    };
-
     /**
      * Attach row expansion logic to the table
      */
@@ -112,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     ['Important Dates', `Start: ${item.startDate} | Follow-up: ${item.followUpDate} | Deadline: ${item.offerDeadline || 'N/A'}`],
                     ['Status', `Referral: ${item.referral ? 'Yes' : 'No'} | Offer: ${item.offerReceived ? 'Yes' : 'No'}`],
                     ['Duration', item.internshipDuration],
-                    ['Skills', generateSkillPills(item.skillsRequired)],
                     ['Notes', item.notes]]
                     
                 if (isSmallScreen) {
@@ -250,13 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
             notes: document.getElementById("notes").value,
             location: document.getElementById("location").value,
             salary: parseFloat(document.getElementById("salary").value) || 0,
-            internship_duration: document.getElementById("internship_duration").value,
-            skills_required: JSON.stringify(
-                document
-                    .getElementById("skills_required")
-                    .value.split(",")
-                    .map((skill) => skill.trim())
-            )
+            internship_duration: document.getElementById("internship_duration").value
         };
 
         addInternship(newInternship);
@@ -301,7 +278,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("location").value = itemValues.location;
         document.getElementById("salary").value = parseFloat(itemValues.salary);
         document.getElementById("internship_duration").value = itemValues.internshipDuration;
-        document.getElementById("skills_required").value = JSON.parse(itemValues.skillsRequired).join(", ");
 
         // Save updated data
         const saveButton = document.querySelector(".save-btn");
@@ -322,13 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     notes: document.getElementById("notes").value,
                     location: document.getElementById("location").value,
                     salary: parseFloat(document.getElementById("salary").value) || 0,
-                    internship_duration: document.getElementById("internship_duration").value,
-                    skills_required: JSON.stringify(
-                        document
-                            .getElementById("skills_required")
-                            .value.split(",")
-                            .map((skill) => skill.trim())
-                    )
+                    internship_duration: document.getElementById("internship_duration").value
             };
 
             try {
