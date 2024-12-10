@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             console.log('Received:', data);
-            internshipData = data;
+            let internshipData = data;
 
             // Destroy the existing table if it exists
             if (dataTable) {
