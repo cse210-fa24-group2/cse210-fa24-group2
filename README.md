@@ -92,9 +92,28 @@ To use FireStack, follow these steps:
 6. **Save Your Progress**: All tasks, calendar events, and career tracker entries are automatically saved and synced with your Google account.
 
 # Tech Stack
-- **Languages**: Python, Javascript, CSS, HTML
-- **Database**: PostgreSQL (via SQLAlchemy)
-- **Backend Framework**: Flask
+FireStack is built using a well-structured tech stack that ensures performance, scalability, and maintainability. Below is a detailed breakdown of the technologies used:
+
+## **Languages**
+- **Python**: Primary language for backend logic and API integration.
+- **JavaScript**: Used for client-side interactivity and DOM manipulation.
+- **CSS**: For styling and layout of the application.
+- **HTML**: For structuring the frontend components.
+
+## **Backend Framework**
+- **Flask**: A lightweight and versatile web framework that powers the server-side logic and API endpoints.
+
+## **Database**
+- **PostgreSQL**: A powerful and reliable relational database, accessed via SQLAlchemy, for storing and managing application data.
+
+## **APIs**
+- **Google OAuth**: Used for secure user authentication.
+- **Google Calendar API**: Enables synchronization of events between FireStack and Google Calendar.
+
+## **Other Tools and Libraries**
+- **SQLAlchemy**: ORM (Object Relational Mapper) for interacting with the PostgreSQL database.
+- **Render**: Hosting platform for deploying the application.
+- **Codacy**: Integrated for static code analysis and maintaining code quality.
 
 # Repo Organization
 ```scss
