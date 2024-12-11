@@ -232,21 +232,3 @@ def get_todays_events():
         return jsonify(events), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-@calendarGoogle.route('/api/calendar/events/<event_id>', methods=['DELETE'])
-def delete_event(event_id):
-    """
-    Delete an existing Google Calendar event.
-    Args:
-        event_id (str): The ID of the event to be deleted.
-    Returns:
-        Response: JSON response indicating the result of the delete operation.
-    """
-    try:
-        service = get_calendar_service()
-        service.events().delete(
-            calendarId='primary', eventId=event_id).execute()
-
-        return jsonify({"message": "Event deleted successfully."}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
