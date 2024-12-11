@@ -37,7 +37,6 @@ def get_user_timezone(service):
         return "UTC"
 
 
-# Function to build Google Calendar service using user credentials
 def get_calendar_service():
     """
     Create and return a Google Calendar API service instance.
