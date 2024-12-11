@@ -1,5 +1,13 @@
 /**
- * @jest-environment jsdom
+ * Unit tests for the To-Do List functionality in the application.
+ * 
+ * This file contains Jest test cases for operations on the To-Do List, including:
+ * - Loading the To-Do List HTML and tasks.
+ * - Adding tasks to specific categories.
+ * - Handling invalid inputs during task addition.
+ * - Deleting tasks from the list.
+ * - Enter key functionality for adding tasks.
+ * 
  */
 
 import '@testing-library/jest-dom';
@@ -7,16 +15,24 @@ import { jest } from '@jest/globals';
 import { loadTodoList, addTask, loadTasks, deleteTask } from '../static/js/todoList.js';
 
 describe('TodoList Functionality', () => {
+    /**
+     * Set up the DOM and mock fetch API before each test.
+     */
     beforeEach(() => {
-        // Reset the DOM and mock fetch before each test
         document.body.innerHTML = `<div id="todo-container"></div>`;
         global.fetch = jest.fn();
     });
 
+    /**
+     * Reset mocks after each test.
+     */
     afterEach(() => {
         jest.resetAllMocks();
     });
 
+    /**
+     * Test loading the To-Do List HTML into the container and verifying tasks.
+     */
     test('loads the To-Do List HTML into the container', async () => {
         const mockHtml = `
             <div class="to-do-column">
@@ -54,13 +70,11 @@ describe('TodoList Functionality', () => {
             ],
         };
 
-        // Mocking fetch for '/todoList.html'
         fetch
             .mockResolvedValueOnce({
                 ok: true,
                 text: async () => mockHtml,
             })
-            // Mocking fetch for '/api/todos'
             .mockResolvedValueOnce({
                 ok: true,
                 json: async () => mockTasks,
@@ -73,13 +87,15 @@ describe('TodoList Functionality', () => {
         expect(fetch).toHaveBeenCalledWith('/todoList.html');
         expect(fetch).toHaveBeenCalledWith('/api/todos');
 
-        // Checking if tasks are loaded correctly
         expect(document.getElementById('todo-today').children.length).toBe(1);
         expect(document.getElementById('todo-week').children.length).toBe(1);
         expect(document.getElementById('todo-month').children.length).toBe(1);
         expect(document.getElementById('todo-next-month').children.length).toBe(1);
     });
 
+    /**
+     * Test fetching tasks and populating respective categories.
+     */
     test('fetches tasks and loads them into the respective lists', async () => {
         const mockTasks = {
             todos: [
@@ -90,7 +106,6 @@ describe('TodoList Functionality', () => {
             ],
         };
 
-        // Mocking fetch for '/api/todos'
         fetch.mockResolvedValueOnce({
             ok: true,
             json: async () => mockTasks,
@@ -121,6 +136,9 @@ describe('TodoList Functionality', () => {
         expect(document.getElementById('todo-next-month').children.length).toBe(1);
     });
 
+    /**
+     * Test adding a new task to the specified list.
+     */
     test('adds a task to the specified list', async () => {
         fetch.mockResolvedValueOnce({
             ok: true,
@@ -147,6 +165,9 @@ describe('TodoList Functionality', () => {
         expect(fetch).toHaveBeenCalledWith('/api/todos', expect.any(Object));
     });
 
+    /**
+     * Test handling invalid inputs during task addition.
+     */
     test('handles invalid inputs when adding a task', async () => {
         document.body.innerHTML = `
             <div class="to-do-column">
@@ -165,6 +186,9 @@ describe('TodoList Functionality', () => {
         expect(fetch).not.toHaveBeenCalled();
     });
 
+    /**
+     * Test deleting a task from the list.
+     */
     test('deletes a task from the list', async () => {
         fetch.mockResolvedValueOnce({
             ok: true,
@@ -197,6 +221,9 @@ describe('TodoList Functionality', () => {
         expect(fetch).toHaveBeenCalledWith('/api/todos/1', { method: 'DELETE' });
     });
 
+    /**
+     * Test Enter key functionality for adding tasks.
+     */
     test('handles Enter key functionality for adding tasks', async () => {
         fetch.mockResolvedValueOnce({
             ok: true,
@@ -213,7 +240,6 @@ describe('TodoList Functionality', () => {
         const input = document.getElementById('input-today');
         input.value = 'Task via Enter';
 
-        // Simulation of pressing the Enter key
         const event = new KeyboardEvent('keypress', { key: 'Enter' });
         input.dispatchEvent(event);
 

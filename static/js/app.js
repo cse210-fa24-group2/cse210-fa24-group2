@@ -1,8 +1,27 @@
+/**
+ * Utility functions for date operations.
+ * @module dateUtils
+ */
 import { getDaysInMonth, formatDate } from './dateUtils.js';
 
+/**
+ * Current year.
+ * @type {number}
+ */
 let currentYear = new Date().getFullYear();
+
+/**
+ * Current month (0-indexed).
+ * @type {number}
+ */
 let currentMonth = new Date().getMonth();
 
+/**
+ * Renders the calendar for the specified year and month.
+ * @async
+ * @param {number} year - The year to render.
+ * @param {number} month - The month (0-indexed) to render.
+ */
 async function renderCalendar(year, month) {
   const root = document.getElementById('calendar-root');
   const header = document.getElementById('current-month');
@@ -26,6 +45,9 @@ async function renderCalendar(year, month) {
     root.appendChild(emptyCell);
   }
 
+  /**
+   * @type {Array<Object>} events - Array of calendar events.
+   */
   let events = [];
   try {
     const response = await axios.get('/api/calendar/events');
@@ -50,6 +72,13 @@ async function renderCalendar(year, month) {
   });
 }
 
+/**
+ * Creates an HTML element for a calendar event.
+ * @param {Object} event - The event object.
+ * @param {string} event.summary - The title of the event.
+ * @param {string} event.id - The unique identifier of the event.
+ * @returns {HTMLDivElement} The event element.
+ */
 function createEventElement(event) {
   const eventDiv = document.createElement('div');
   eventDiv.className = 'event';
@@ -77,42 +106,73 @@ function createEventElement(event) {
   return eventDiv;
 }
 
+/**
+ * Adds a new event to the calendar.
+ * @async
+ * @param {string} title - Title of the event.
+ * @param {string} date - Date of the event in YYYY-MM-DD format.
+ * @param {string} startTime - Start time of the event in HH:MM format.
+ * @param {string} endTime - End time of the event in HH:MM format.
+ * @param {string} location - Location of the event.
+ * @param {string} description - Description of the event.
+ */
 async function addEvent(title, date, startTime, endTime, location, description) {
   try {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const payload = {
       summary: title,
-      start: `${date}T${startTime}:00Z`,
-      end: `${date}T${endTime}:00Z`,
-      timeZone: 'UTC',
+      start: `${date}T${startTime}:00`,
+      end: `${date}T${endTime}:00`,
+      timeZone: timeZone,
       location: location,
       description: description,
     };
 
     await axios.post('/api/calendar/events', payload);
+    window.fetchAndRenderDeadlines(); 
     await renderCalendar(currentYear, currentMonth);
   } catch (error) {
     console.error('Error adding event:', error.response?.data || error.message);
   }
 }
 
+/**
+ * Deletes an event from the calendar.
+ * @async
+ * @param {string} eventId - The unique identifier of the event to delete.
+ */
 async function deleteEvent(eventId) {
   try {
     await axios.delete(`/api/calendar/events/${eventId}`);
+    window.fetchAndRenderDeadlines(); 
     await renderCalendar(currentYear, currentMonth);
   } catch (error) {
     console.error('Error deleting event:', error);
   }
 }
 
+/**
+ * Updates an existing calendar event.
+ * @async
+ * @param {string} eventId - The unique identifier of the event to update.
+ * @param {Object} updatedData - The updated event data.
+ */
 async function updateEvent(eventId, updatedData) {
   try {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    updatedData.timeZone = timeZone;
     await axios.put(`/api/calendar/events/${eventId}`, updatedData);
+    window.fetchAndRenderDeadlines(); 
     await renderCalendar(currentYear, currentMonth);
   } catch (error) {
     console.error('Error updating event:', error);
   }
 }
 
+/**
+ * Sets up the event update form with the specified event's data.
+ * @param {Object} event - The event object.
+ */
 function setupEventUpdateForm(event) {
   document.getElementById('event-title').value = event.summary || '';
   document.getElementById('event-date').value = event.start.dateTime.split('T')[0];
@@ -120,12 +180,11 @@ function setupEventUpdateForm(event) {
   document.getElementById('event-end-time').value = event.end.dateTime.split('T')[1].slice(0, 5);
   document.getElementById('event-location').value = event.location || '';
   document.getElementById('event-description').value = event.description || '';
-
   const updateButton = document.getElementById('update-event');
   updateButton.dataset.eventId = event.id;
 
-  updateButton.disabled = false; // Enable Update button
-  document.getElementById('add-event').disabled = true; // Disable Add button
+  updateButton.disabled = false;
+  document.getElementById('add-event').disabled = true; 
 }
 
 document.getElementById('add-event').addEventListener('click', async (e) => {
@@ -140,9 +199,9 @@ document.getElementById('add-event').addEventListener('click', async (e) => {
 
   await addEvent(title, date, startTime, endTime, location, description);
 
-  document.getElementById('event-form').reset(); // Clear form after submission
-  document.getElementById('update-event').disabled = true; // Disable Update button
-  document.getElementById('add-event').disabled = false; // Enable Add button
+  document.getElementById('event-form').reset();
+  document.getElementById('update-event').disabled = true;
+  document.getElementById('add-event').disabled = false;
 });
 
 document.getElementById('update-event').addEventListener('click', async (e) => {
@@ -162,10 +221,10 @@ document.getElementById('update-event').addEventListener('click', async (e) => {
 
   await updateEvent(eventId, updatedEvent);
 
-  document.getElementById('event-form').reset(); // Clear form after submission
-  e.target.dataset.eventId = ''; // Clear event ID
-  document.getElementById('update-event').disabled = true; // Disable Update button
-  document.getElementById('add-event').disabled = false; // Enable Add button
+  document.getElementById('event-form').reset();
+  e.target.dataset.eventId = '';
+  document.getElementById('update-event').disabled = true;
+  document.getElementById('add-event').disabled = false;
 });
 
 document.getElementById('prev-month').addEventListener('click', async () => {
