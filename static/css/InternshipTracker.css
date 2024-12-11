@@ -19,11 +19,10 @@
     padding: 1rem;
     white-space: nowrap;
     min-width: fit-content;
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
+    background-color: var(--background-primary-lm);
+    border-bottom: 2px solid var(--background-secondary-lm);
     font-weight: 600;
     font-size: 0.9rem;
-    color: #495057;
 }
 
 /* Ensure table container allows horizontal scroll if needed */
@@ -46,7 +45,7 @@
 
 .datatable-wrapper tbody td {
     padding: 0.75rem 1rem;
-    vertical-align: middle;
+    /* vertical-align: middle; */
     border-bottom: 1px solid var(--background-secondary-lm);
 }
 
@@ -87,6 +86,41 @@
     background-color: rgba(226, 232, 240, 0.5);
     cursor: pointer;
 }
+
+.datatable-input {
+    background-color: var(--background-primary-lm);
+    border: 1px solid #dee2e6;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+.datatable-pagination {
+    background-color: var(--background-primary-lm);
+}
+
+.datatable-selector {
+    background-color: var(--background-primary-lm);
+    border: var(--text-primary-lm);
+    color: var(--text-primary-lm)
+}
+
+/* Horizontal overflow for certain sections */
+.datatable-wrapper .datatable-top,
+.datatable-wrapper .datatable-container {
+    overflow-x: auto;
+}
+
+/* Cell alignment in table */
+.datatable-wrapper td,
+.datatable-wrapper th {
+    vertical-align: middle;
+    text-align: left;
+}
+
+.datatable-sorter::before,
+.datatable-sorter::after {
+    opacity: 0.8;
+}
+
 
 /* ============================================
    Skill Pills Styling
@@ -142,16 +176,14 @@
 
 /* Floating add button */
 .add-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    position: relative;
     background-color: var(--button-background-lm);
     color: var(--button-text-lm);
     border: none;
-    font-size: 24px;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
@@ -183,7 +215,7 @@
 /* Modal content styling */
 .modal-content {
     position: relative;
-    background-color: #fff;
+    background-color: var(--background-secondary-lm);
     margin: 5% auto;
     padding: 20px;
     width: 80%;
@@ -254,6 +286,8 @@
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    background-color: var(--background-primary-lm);
+    color: var(--text-primary-lm);
 }
 
 /* Textarea adjustments */
@@ -266,13 +300,13 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    color: var(--text-primary-lm);
 }
 
 /* Labels inside input groups */
 .input-group label {
     margin-bottom: 5px;
     font-size: 14px;
-    color: #666;
 }
 
 /* Date input fields */
@@ -288,19 +322,31 @@
     gap: 20px;
 }
 
-/* ============================================
-   Miscellaneous
-   ============================================ */
+@media (max-width: 950px) {
+    .datatable-wrapper th:nth-child(4),
+    .datatable-wrapper th:nth-child(5),
+    .datatable-wrapper th:nth-child(6),
+    .datatable-wrapper td:nth-child(4),
+    .datatable-wrapper td:nth-child(5),
+    .datatable-wrapper td:nth-child(6) {
+        display: none;
+    }
 
-/* Horizontal overflow for certain sections */
-.datatable-wrapper .datatable-top,
-.datatable-wrapper .datatable-container {
-    overflow-x: auto;
-}
+    .pill {
+        display: block;
+        max-width: fit-content;
+    }
 
-/* Cell alignment in table */
-.datatable-wrapper td,
-.datatable-wrapper th {
-    vertical-align: middle !important;
-    text-align: center;
+    .detail-value {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        display: block;
+        text-align: left;
+    }
+
+    .datatable-wrapper .edit,
+    .datatable-wrapper .delete {
+        display: none;
+    }
 }
