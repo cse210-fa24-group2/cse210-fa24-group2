@@ -33,7 +33,7 @@ class TestCalendar(unittest.TestCase):
             session['access_token'] = 'mock_access_token'
             session['refresh_token'] = 'mock_refresh_token'
 
-    @patch('src.calendarGoogle.get_calendar_service')
+    @patch('calendarGoogle.get_calendar_service')
     def test_calendar_blueprint(self, mock_get_service):
         """
         Test if the calendar blueprint is registered and accessible.
@@ -53,7 +53,7 @@ class TestCalendar(unittest.TestCase):
         response = self.client.get('/api/calendar/events')
         self.assertEqual(response.status_code, 200)
 
-    @patch('src.calendarGoogle.get_calendar_service')
+    @patch('calendarGoogle.get_calendar_service')
     def test_calendar_event_creation(self, mock_get_service):
         """
         Test creating a new calendar event.
@@ -83,7 +83,7 @@ class TestCalendar(unittest.TestCase):
         response = self.client.post('/api/calendar/events', json=event_data)
         self.assertEqual(response.status_code, 201)
 
-    @patch('src.calendarGoogle.get_calendar_service')
+    @patch('calendarGoogle.get_calendar_service')
     def test_calendar_event_deletion(self, mock_get_service):
         """
         Test deleting an existing calendar event.
@@ -103,7 +103,7 @@ class TestCalendar(unittest.TestCase):
         response = self.client.delete(f'/api/calendar/events/{event_id}')
         self.assertEqual(response.status_code, 200)
 
-    @patch('src.calendarGoogle.get_calendar_service')
+    @patch('calendarGoogle.get_calendar_service')
     def test_calendar_events_fetch(self, mock_get_service):
         """
         Test fetching events from the Google Calendar API.

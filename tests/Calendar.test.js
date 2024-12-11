@@ -84,14 +84,13 @@ describe('Event Operations Tests (Add, Read, Update, Delete)', () => {
 
     await app.addEvent(title, date, startTime, endTime, location, description);
 
-    // Checking if axios.post was called with correct parameters
     expect(mock.history.post.length).toBe(1);
     expect(mock.history.post[0].url).toBe('/api/calendar/events');
     expect(JSON.parse(mock.history.post[0].data)).toEqual({
       summary: title,
-      start: `${date}T${startTime}:00Z`,
-      end: `${date}T${endTime}:00Z`,
-      timeZone: 'UTC',
+      start: `${date}T${startTime}:00`,
+      end: `${date}T${endTime}:00`,
+      timeZone: 'America/Los_Angeles',
       location: location,
       description: description,
     });
