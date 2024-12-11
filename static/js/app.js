@@ -79,11 +79,12 @@ function createEventElement(event) {
 
 async function addEvent(title, date, startTime, endTime, location, description) {
   try {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const payload = {
       summary: title,
-      start: `${date}T${startTime}:00Z`,
-      end: `${date}T${endTime}:00Z`,
-      timeZone: 'UTC',
+      start: `${date}T${startTime}:00`, // No 'Z', as we include timeZone
+      end: `${date}T${endTime}:00`,
+      timeZone: timeZone, // Dynamic timezone
       location: location,
       description: description,
     };
@@ -106,6 +107,8 @@ async function deleteEvent(eventId) {
 
 async function updateEvent(eventId, updatedData) {
   try {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    updatedData.timeZone = timeZone;
     await axios.put(`/api/calendar/events/${eventId}`, updatedData);
     await renderCalendar(currentYear, currentMonth);
   } catch (error) {
@@ -120,7 +123,7 @@ function setupEventUpdateForm(event) {
   document.getElementById('event-end-time').value = event.end.dateTime.split('T')[1].slice(0, 5);
   document.getElementById('event-location').value = event.location || '';
   document.getElementById('event-description').value = event.description || '';
-
+  const timeZone = event.start.timeZone || 'UTC';
   const updateButton = document.getElementById('update-event');
   updateButton.dataset.eventId = event.id;
 
