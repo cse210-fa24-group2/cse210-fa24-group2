@@ -8,12 +8,11 @@ As described in our project pitch, our final dashboard will include a to-do list
 
 ## Decision
 We decided to give the to-do list a drag and drop functionality. How it works is:
-- a user can drag and drop to-do list items within a column
 - a user can drag and drop to-do list items between columns
 
 We discussed this additional functionality amongst ourselves and consulted others and ultimately came to this decision because:
-- it would make it easier to re-organize/re-prioritize tasks throughout the day
-- if a task is not finished, it can be moved to a different column (i.e. from the 'today' column to the 'this week' column) or if a task becomes more urgent, it can be pushed forward to the 'today' column 
+- if a task is not finished, it can be moved to a different column (i.e. from the 'today' column to the 'this week' column) 
+- or if a task becomes more urgent, it can be pushed forward to the 'today' column 
 
 
 ## Consequences
