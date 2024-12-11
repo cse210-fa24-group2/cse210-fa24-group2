@@ -1,9 +1,9 @@
 """
 app.py
 
-This module implements a Flask web application that integrates Google 
-OAuth 2.0 authentication, PostgreSQL database management using SQLAlchemy, 
-and provides API routes for managing user data, internships, and to-do lists.
+This module implements a Flask web application that integrates Google OAuth 2.0
+authentication, PostgreSQL database management using SQLAlchemy, and provides
+API routes for managing user data, internships, and to-do lists.
 
 Features:
 - Google OAuth 2.0 login and logout functionality.

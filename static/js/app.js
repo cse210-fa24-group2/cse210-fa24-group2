@@ -29,11 +29,11 @@ async function renderCalendar(year, month) {
 
   const days = getDaysInMonth(year, month);
 
-  const shortMonth = new Date(year, month).toLocaleString('en-US', { month: 'short' }).toUpperCase();
-  header.textContent = shortMonth;
+  const longMonth = new Date(year, month).toLocaleString('en-US', { month: 'long' });
+  header.textContent = longMonth;
 
   if (yearInput) {
-    yearInput.placeholder = currentYear.toString();
+    yearInput.value = currentYear.toString();
   }
 
   root.innerHTML = '';
@@ -52,6 +52,8 @@ async function renderCalendar(year, month) {
   try {
     const response = await axios.get('/api/calendar/events');
     events = response.data;
+    console.log('Events fetched successfully:', events);
+    
   } catch (error) {
     console.error('Error fetching events:', error);
   }
@@ -63,12 +65,71 @@ async function renderCalendar(year, month) {
     const dateStr = formatDate(day);
 
     const dayEvents = events.filter((e) => e.start && e.start.dateTime && e.start.dateTime.startsWith(dateStr));
-    dayEvents.forEach((event) => {
-      const eventElement = createEventElement(event);
-      cell.appendChild(eventElement);
-    });
+if (dayEvents.length > 0) {
+    const eventsSummary = document.createElement('div');
+    eventsSummary.className = 'events-summary';
+    
+    const eventsLabel = document.createElement('div');
+    eventsLabel.className = 'events-label';
+    eventsLabel.innerHTML = `Events <span class="events-count">${dayEvents.length}</span>`;
+    
+    const tooltip = document.createElement('div');
+    tooltip.className = 'events-tooltip';
+    
+    const tooltipContent = document.createElement('div');
+    tooltipContent.className = 'tooltip-content';
+    
+    dayEvents.forEach(event => {
+        const eventItem = document.createElement('div');
+        eventItem.className = 'event-item';
+        
+        const startTime = new Date(event.start.dateTime).toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+        
+        const endTime = new Date(event.end.dateTime).toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+        
+        eventItem.innerHTML = `
+            <div class="event-time">${startTime} - ${endTime}</div>
+            <div class="event-title">${event.summary}</div>
+            <div class="event-description">${event.description || ''}</div>
+            <div class="event-actions">
+                <button class="edit-btn" title="Edit event">✎</button>
+                <button class="delete-btn" title="Delete event">X</button>
+            </div>
+        `;
 
-    root.appendChild(cell);
+        // Add event listeners after setting innerHTML
+const editButton = eventItem.querySelector('.edit-btn');
+const deleteButton = eventItem.querySelector('.delete-btn');
+
+  editButton.addEventListener('click', () => {
+      setupEventUpdateForm(event);
+  });
+
+  deleteButton.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const confirmDelete = confirm("Are you sure you want to delete this event?");
+    if (confirmDelete) {
+        await deleteEvent(event.id);
+    }
+});
+        
+    tooltipContent.appendChild(eventItem);
+  });  
+    tooltip.appendChild(tooltipContent);
+    eventsSummary.appendChild(eventsLabel);
+    eventsSummary.appendChild(tooltip);
+    cell.appendChild(eventsSummary);
+}
+
+root.appendChild(cell);
   });
 }
 
@@ -118,12 +179,10 @@ function createEventElement(event) {
  */
 async function addEvent(title, date, startTime, endTime, location, description) {
   try {
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const payload = {
       summary: title,
       start: `${date}T${startTime}:00`,
       end: `${date}T${endTime}:00`,
-      timeZone: timeZone,
       location: location,
       description: description,
     };
@@ -159,8 +218,6 @@ async function deleteEvent(eventId) {
  */
 async function updateEvent(eventId, updatedData) {
   try {
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    updatedData.timeZone = timeZone;
     await axios.put(`/api/calendar/events/${eventId}`, updatedData);
     window.fetchAndRenderDeadlines(); 
     await renderCalendar(currentYear, currentMonth);
@@ -214,7 +271,6 @@ document.getElementById('update-event').addEventListener('click', async (e) => {
     summary: document.getElementById('event-title').value,
     start: `${document.getElementById('event-date').value}T${document.getElementById('event-start-time').value}:00Z`,
     end: `${document.getElementById('event-date').value}T${document.getElementById('event-end-time').value}:00Z`,
-    timeZone: 'UTC',
     location: document.getElementById('event-location').value,
     description: document.getElementById('event-description').value,
   };
