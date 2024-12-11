@@ -129,6 +129,7 @@ async function addEvent(title, date, startTime, endTime, location, description) 
     };
 
     await axios.post('/api/calendar/events', payload);
+    window.fetchAndRenderDeadlines(); 
     await renderCalendar(currentYear, currentMonth);
   } catch (error) {
     console.error('Error adding event:', error.response?.data || error.message);
@@ -143,6 +144,7 @@ async function addEvent(title, date, startTime, endTime, location, description) 
 async function deleteEvent(eventId) {
   try {
     await axios.delete(`/api/calendar/events/${eventId}`);
+    window.fetchAndRenderDeadlines(); 
     await renderCalendar(currentYear, currentMonth);
   } catch (error) {
     console.error('Error deleting event:', error);
@@ -160,6 +162,7 @@ async function updateEvent(eventId, updatedData) {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     updatedData.timeZone = timeZone;
     await axios.put(`/api/calendar/events/${eventId}`, updatedData);
+    window.fetchAndRenderDeadlines(); 
     await renderCalendar(currentYear, currentMonth);
   } catch (error) {
     console.error('Error updating event:', error);
@@ -177,7 +180,6 @@ function setupEventUpdateForm(event) {
   document.getElementById('event-end-time').value = event.end.dateTime.split('T')[1].slice(0, 5);
   document.getElementById('event-location').value = event.location || '';
   document.getElementById('event-description').value = event.description || '';
-  const timeZone = event.start.timeZone || 'UTC';
   const updateButton = document.getElementById('update-event');
   updateButton.dataset.eventId = event.id;
 

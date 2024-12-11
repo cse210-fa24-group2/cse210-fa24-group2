@@ -127,4 +127,6 @@ function renderDeadlines(deadlines) {
     }
 }
 
+window.fetchAndRenderDeadlines = fetchAndRenderDeadlines;
+
 window.addEventListener('load', fetchAndRenderDeadlines);

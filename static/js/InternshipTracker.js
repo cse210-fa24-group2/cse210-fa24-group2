@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 console.log("Internship added successfully:", result);
                 internshipDataFetch(); // Refresh data after successful addition
+                window.fetchAndRenderDeadlines();
             } else {
                 console.error("Error adding internship:", result.error);
             }
@@ -277,6 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     console.log("Internship updated successfully.");
                     internshipDataFetch(); // Refresh the data
+                    window.fetchAndRenderDeadlines();
                 } else {
                     const errorData = await response.json();
                     console.error("Error updating internship:", errorData.error);
@@ -306,6 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 console.log(`Internship at ${itemValues.companyName} deleted successfully.`);
                 internshipDataFetch(); // Refresh the table data
+                window.fetchAndRenderDeadlines();
             } else {
                 const errorData = await response.json();
                 console.error("Error deleting internship:", errorData.error);
