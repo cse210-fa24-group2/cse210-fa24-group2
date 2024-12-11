@@ -1,3 +1,7 @@
+/**
+ * Utility functions for date operations.
+ * @module dateUtils
+ */
 import { getDaysInMonth, formatDate } from './dateUtils.js';
 
 /**
@@ -10,6 +14,9 @@ async function Calendar() {
   const today = new Date();
   const days = getDaysInMonth(today.getFullYear(), today.getMonth());
 
+  /**
+   * @type {Array<Object>} events - Array of calendar events.
+   */
   let events = [];
   try {
     const response = await axios.get('/api/calendar/events');
@@ -18,7 +25,10 @@ async function Calendar() {
     console.error('Error fetching events:', error);
   }
 
-  // Generate calendar grid with events
+  /**
+   * Generate calendar grid with events.
+   * @type {string}
+   */
   const calendarHTML = days
     .map((day) => {
       const formattedDate = formatDate(day);
@@ -36,8 +46,6 @@ async function Calendar() {
   return `<div class="calendar">${calendarHTML}</div>`;
 }
 
-// export default Calendar;
-
 /**
  * Load the calendar HTML content into the container on the index page.
  * @async
@@ -46,20 +54,18 @@ async function Calendar() {
  */
 export async function loadCalendar() {
   try {
-    // Fetch the calendar HTML file
     const response = await fetch('/calendar.html');
     if (!response.ok) {
       console.error('Failed to load calendar:', response.statusText);
       return;
     }
 
-    // Inject the fetched calendar HTML into the container
     const calendarHTML = await response.text();
     const container = document.getElementById('calendar-container');
     if (container) {
       container.innerHTML = calendarHTML;
-      container.style.overflow = 'hidden'; // Prevents overflow
-      container.style.maxHeight = '100%'; // Restricts height to container
+      container.style.overflow = 'hidden';
+      container.style.maxHeight = '100%';
       console.log('Calendar loaded successfully.');
 
       await loadCalendarScripts();

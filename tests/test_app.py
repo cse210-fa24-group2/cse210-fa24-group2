@@ -2,6 +2,11 @@
 test_app.py
 
 Unit tests for the Flask application.
+
+This file contains unit tests to verify the functionality of the Flask
+application, including routes, authentication, and session handling. All tests
+are isolated using mocks where necessary to ensure they do not depend on
+external systems.
 """
 
 import unittest
@@ -19,7 +24,6 @@ from src.app import app  # noqa: E402
 os.environ["FLASK_SECRET_KEY"] = "test_secret_key"
 os.environ["GOOGLE_CLIENT_ID"] = "test_google_client_id"
 os.environ["GOOGLE_CLIENT_SECRET"] = "test_google_client_secret"
-os.environ["REDIRECT_URI"] = "http://127.0.0.1:5000/callback"
 
 
 class FlaskAppTestCase(unittest.TestCase):
@@ -80,26 +84,22 @@ class FlaskAppTestCase(unittest.TestCase):
     def test_callback_route(self, mock_user_query,
                             mock_id_token_module, mock_flow_class):
         """Test the callback route and simulate successful authentication."""
-        # Mock the OAuth flow
         mock_flow_instance = MagicMock()
         mock_flow_class.from_client_secrets_file.return_value = (
             mock_flow_instance
             )
         mock_flow_instance.fetch_token.return_value = None
 
-        # Mock the credentials object
         mock_credentials = MagicMock()
         mock_credentials.token = "mocked_access_token"
         mock_credentials.refresh_token = "mocked_refresh_token"
         mock_flow_instance.credentials = mock_credentials
 
-        # Mock id_token.verify_oauth2_token
         mock_id_token_module.verify_oauth2_token.return_value = {
             "sub": "mocked_sub_id",
             "name": "Mocked User",
         }
 
-        # Mock the database query for User
         mock_user_query.filter_by.return_value.first.return_value = (
             self.mock_user
             )
@@ -114,7 +114,6 @@ class FlaskAppTestCase(unittest.TestCase):
         self.assertEqual(response.headers["Location"],
                          "http://localhost/dashboard")
 
-        # Check if session is updated correctly
         with self.client.session_transaction() as sess:
             self.assertEqual(sess["id_google"], "mocked_sub_id")
             self.assertEqual(sess["name"], "Mocked User")
@@ -138,7 +137,6 @@ class FlaskAppTestCase(unittest.TestCase):
     @patch("src.app.User.query")
     def test_dashboard_route_logged_in(self, mock_user_query):
         """Test accessing the dashboard when the user is logged in."""
-        # Mock the database query for User
         mock_user_query.filter_by.return_value.first.return_value = (
             self.mock_user
             )

@@ -32,9 +32,9 @@ def get_user_timezone(service):
     """
     try:
         settings = service.settings().get(setting="timezone").execute()
-        return settings.get("value", "UTC")  # Default to UTC if unavailable
-    except Exception as e:
-        return "UTC"  # Fallback to UTC
+        return settings.get("value", "UTC")
+    except Exception:
+        return "UTC"
 
 
 # Function to build Google Calendar service using user credentials
@@ -46,7 +46,7 @@ def get_calendar_service():
         Resource: Google Calendar API service.
     """
     if 'access_token' not in session or 'refresh_token' not in session:
-        abort(401)  # Unauthorized if tokens are not present
+        abort(401)
 
     credentials = Credentials(
         token=session.get('access_token'),
@@ -60,7 +60,6 @@ def get_calendar_service():
         ],
     )
 
-    # Refresh the token if expired
     if credentials.expired:
         credentials.refresh(google.auth.transport.requests.Request())
         # Update session tokens
@@ -69,8 +68,6 @@ def get_calendar_service():
 
     service = build('calendar', 'v3', credentials=credentials)
     return service
-
-# API endpoint to get user's calendar events
 
 
 @calendarGoogle.route('/api/calendar/events', methods=['GET'])
@@ -116,14 +113,6 @@ def create_event():
         if not start or not end:
             return jsonify({"error": "Start and End time are required"}), 400
 
-        # Ensure proper formatting of dateTime
-        try:
-            start_datetime = datetime.fromisoformat(start).astimezone()
-            end_datetime = datetime.fromisoformat(end).astimezone()
-        except ValueError:
-            return jsonify({"error": "Invalid ISO format for start or end"}), 400
-
-        # Construct the event payload
         event = {
             'summary': event_data.get('summary', 'No Title'),
             'location': event_data.get('location', ''),
@@ -147,35 +136,46 @@ def create_event():
         return jsonify({"error": str(e)}), 500
 
 
-# API endpoint to update an existing calendar event
 @calendarGoogle.route('/api/calendar/events/<event_id>', methods=['PUT'])
 def update_event(event_id):
     """
     Update an existing Google Calendar event.
+
+    Args:
+        event_id (str): The ID of the event to update.
+
+    Returns:
+        Response: JSON response with updated event details.
     """
     try:
         event_data = request.json
         service = get_calendar_service()
-        event = service.events().get(calendarId='primary', eventId=event_id).execute()
+        event = service.events().get(calendarId='primary',
+                                     eventId=event_id).execute()
         user_timezone = get_user_timezone(service)
 
-        start_datetime = event_data['start'].replace('Z', '')  # Remove 'Z'
-        end_datetime = event_data['end'].replace('Z', '')      # Remove 'Z'
+        start_datetime = event_data['start'].replace('Z', '')
+        end_datetime = event_data['end'].replace('Z', '')
 
-        # Update event fields
         event['summary'] = event_data.get('summary', event['summary'])
-        event['location'] = event_data.get('location', event.get('location', ''))
-        event['description'] = event_data.get('description', event.get('description', ''))
+        event['location'] = event_data.get('location',
+                                           event.get('location', ''))
+        event['description'] = event_data.get('description',
+                                              event.get('description', ''))
         event['start'] = {
             'dateTime': start_datetime,
-            'timeZone': event_data.get('timeZone', event['start'].get('timeZone', user_timezone)),
+            'timeZone': event_data.get(
+                'timeZone', event['start'].get('timeZone', user_timezone)),
         }
         event['end'] = {
             'dateTime': end_datetime,
-            'timeZone': event_data.get('timeZone', event['end'].get('timeZone', user_timezone)),
+            'timeZone': event_data.get(
+                'timeZone', event['end'].get('timeZone', user_timezone)),
         }
 
-        updated_event = service.events().update(calendarId='primary', eventId=event_id, body=event).execute()
+        updated_event = service.events().update(calendarId='primary',
+                                                eventId=event_id,
+                                                body=event).execute()
         return jsonify(updated_event), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -206,14 +206,17 @@ def delete_event(event_id):
 def get_todays_events():
     """
     Fetch Google Calendar events for the current day in the user's time zone.
+
+    Returns:
+        Response: JSON response with event details.
     """
     try:
         service = get_calendar_service()
         user_timezone = get_user_timezone(service)
-        now = datetime.now().astimezone().replace(hour=0, minute=0, second=0, microsecond=0)
+        now = datetime.now().astimezone().replace(hour=0, minute=0,
+                                                  second=0, microsecond=0)
         end_of_day = now + timedelta(hours=23, minutes=59, seconds=59)
 
-        # Convert to ISO format
         time_min = now.isoformat()
         time_max = end_of_day.isoformat()
 

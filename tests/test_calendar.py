@@ -2,6 +2,10 @@
 test_calendar.py
 
 Unit tests for calendar-related functionality in the Flask application.
+
+This file contains tests to validate the Google Calendar integration in the
+Flask application, ensuring the functionality of event fetching, creation, and
+deletion through the Google Calendar API.
 """
 
 import unittest
@@ -39,17 +43,13 @@ class TestCalendar(unittest.TestCase):
         Test if the calendar blueprint is registered and accessible.
         Simulates fetching events from the Google Calendar API.
         """
-        # Mock the Google Calendar API service
         mock_service = MagicMock()
         mock_get_service.return_value = mock_service
 
-        # Mock the events.list() response
         mock_events_list = mock_service.events.return_value.list
         mock_events_execute = mock_events_list.return_value.execute
         mock_events_execute.return_value = {'items': []}
-        # Simulates an empty calendar
 
-        # Perform the GET request to the events endpoint
         response = self.client.get('/api/calendar/events')
         self.assertEqual(response.status_code, 200)
 
@@ -59,11 +59,9 @@ class TestCalendar(unittest.TestCase):
         Test creating a new calendar event.
         Simulates inserting a new event into the Google Calendar API.
         """
-        # Mock the Google Calendar API service
         mock_service = MagicMock()
         mock_get_service.return_value = mock_service
 
-        # Mock the events.insert() response
         mock_events_insert = mock_service.events.return_value.insert
         mock_events_insert_execute = mock_events_insert.return_value.execute
         mock_events_insert_execute.return_value = {
@@ -71,7 +69,6 @@ class TestCalendar(unittest.TestCase):
             'summary': 'Test Event'
         }
 
-        # Define the event data for the POST request
         event_data = {
             'summary': 'Test Event',
             'start': '2024-01-01T10:00:00Z',
@@ -79,7 +76,6 @@ class TestCalendar(unittest.TestCase):
             'timeZone': 'UTC'
         }
 
-        # Perform the POST request to create an event
         response = self.client.post('/api/calendar/events', json=event_data)
         self.assertEqual(response.status_code, 201)
 
@@ -89,16 +85,13 @@ class TestCalendar(unittest.TestCase):
         Test deleting an existing calendar event.
         Simulates deleting an event using the Google Calendar API.
         """
-        # Mock the Google Calendar API service
         mock_service = MagicMock()
         mock_get_service.return_value = mock_service
 
-        # Mock the events.delete() response
         mock_events_delete = mock_service.events.return_value.delete
         mock_events_delete_execute = mock_events_delete.return_value.execute
         mock_events_delete_execute.return_value = {}
 
-        # Simulate deleting an event
         event_id = 'mock_event_id'
         response = self.client.delete(f'/api/calendar/events/{event_id}')
         self.assertEqual(response.status_code, 200)
@@ -109,11 +102,9 @@ class TestCalendar(unittest.TestCase):
         Test fetching events from the Google Calendar API.
         Simulates retrieving events using the Google Calendar API.
         """
-        # Mock the Google Calendar API service
         mock_service = MagicMock()
         mock_get_service.return_value = mock_service
 
-        # Mock the events.list() response
         mock_events_list = mock_service.events.return_value.list
         mock_events_list_execute = mock_events_list.return_value.execute
         mock_events_list_execute.return_value = {
@@ -127,7 +118,6 @@ class TestCalendar(unittest.TestCase):
             ]
         }
 
-        # Perform the GET request to fetch events
         response = self.client.get('/api/calendar/events')
         self.assertEqual(response.status_code, 200)
 

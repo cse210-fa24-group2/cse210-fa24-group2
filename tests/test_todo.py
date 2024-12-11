@@ -2,6 +2,10 @@
 test_todo.py
 
 Unit tests for the to-do list functionality in the Flask application.
+
+This file contains unit tests for the to-do list endpoints, validating the
+ability to fetch, add, update, and delete tasks. Mocking is used to simulate
+database operations and ensure tests are isolated from external dependencies.
 """
 
 import unittest
@@ -86,7 +90,6 @@ class TestTodoList(unittest.TestCase):
         """
         self.login()
 
-        # Mock the to-do to delete
         mock_todo_query.get.return_value = self.mock_todo
 
         response = self.client.delete(f"/api/todos/{self.mock_todo.id}")
@@ -100,7 +103,6 @@ class TestTodoList(unittest.TestCase):
         """
         self.login()
 
-        # Mock the to-do to update
         mock_todo_query.get.return_value = self.mock_todo
 
         update_data = {"category": "This Week"}

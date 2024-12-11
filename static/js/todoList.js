@@ -24,7 +24,6 @@ async function loadTodoList() {
             await loadTasks();
             attachDragAndDropHandlers();
 
-            // Attach "Enter" key handler to input fields
             document.querySelectorAll('.todo-input').forEach((input) => {
                 input.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
@@ -67,7 +66,7 @@ async function loadTasks() {
         Object.keys(categoryMap).forEach((category) => {
             const list = document.getElementById(categoryMap[category]);
             if (list) {
-                list.innerHTML = ''; // Clear list before loading
+                list.innerHTML = '';
                 todos
                     .filter((todo) => todo.category === category)
                     .forEach((todo) => {
@@ -270,7 +269,6 @@ async function updateTaskCategory(taskId, newCategory) {
     }
 }
 
-// Automatically load the To-Do List when the page loads
 window.addEventListener('load', loadTodoList);
 window.addTask = addTask;
 

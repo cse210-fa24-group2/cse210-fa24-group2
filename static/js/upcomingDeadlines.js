@@ -1,5 +1,8 @@
 /**
  * Fetch today's Google Calendar events from the backend.
+ * @async
+ * @function fetchTodaysEvents
+ * @returns {Promise<Array>} - A promise that resolves to an array of today's events.
  */
 async function fetchTodaysEvents() {
     try {
@@ -20,6 +23,9 @@ async function fetchTodaysEvents() {
 
 /**
  * Fetch today's internship follow-ups from the backend.
+ * @async
+ * @function fetchTodaysInternships
+ * @returns {Promise<Array>} - A promise that resolves to an array of today's internships.
  */
 async function fetchTodaysInternships() {
     try {
@@ -40,6 +46,7 @@ async function fetchTodaysInternships() {
 
 /**
  * Converts the event's dateTime to a user's local 12-hour time format.
+ * @function formatEventTime
  * @param {string} dateTime - The event's dateTime string.
  * @param {string} timeZone - The event's time zone.
  * @returns {string} - Formatted 12-hour time string with AM/PM.
@@ -57,18 +64,19 @@ function formatEventTime(dateTime, timeZone) {
 
 /**
  * Fetch and display all today's deadlines, including calendar events and internships.
+ * @async
+ * @function fetchAndRenderDeadlines
+ * @returns {Promise<void>} - A promise that resolves once deadlines are rendered.
  */
 async function fetchAndRenderDeadlines() {
     try {
         console.log("Fetching all deadlines...");
 
-        // Fetch Google Calendar events and internships
         const [events, internships] = await Promise.all([
             fetchTodaysEvents(),
             fetchTodaysInternships()
         ]);
 
-        // Combine events and internships
         const combinedDeadlines = [
             ...events.map(event => ({
                 type: 'event',
@@ -89,6 +97,8 @@ async function fetchAndRenderDeadlines() {
 
 /**
  * Render the combined deadlines in the "Upcoming Deadlines" section.
+ * @function renderDeadlines
+ * @param {Array} deadlines - Array of deadline objects to render.
  */
 function renderDeadlines(deadlines) {
     console.log("Rendering deadlines...");
@@ -117,5 +127,4 @@ function renderDeadlines(deadlines) {
     }
 }
 
-// Fetch all deadlines when the page loads
 window.addEventListener('load', fetchAndRenderDeadlines);
