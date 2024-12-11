@@ -3,8 +3,7 @@
 @import "vars.css";
 
 .todo-container {
-    padding: 0.625rem;
-    border: 0.125rem solid var(--button-background-lm);
+    padding: 0rem;
     border-radius: 0.5rem;
     background-color: var(--background-secondary-lm);
     font-family: var(--font-primary);
@@ -151,12 +150,6 @@ input {
 
 
 /* Drag-and-drop feedback */
-.todo-item.drag-over {
-    border: 125rem dashed var(--background-secondary-lm);
-    background-color: var(--button-background-lm);
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
 .todo-list.drag-over {
     background-color: var(--background-secondary-lm);
     border-color: var(--button-background-lm);
@@ -209,7 +202,7 @@ input {
 }
 
 /* 
-* my temporary hard-coded solution for modifying 
+* temporary hard-coded solution for modifying 
 * sizing of input bar + button
 */
 @media(max-width: 850px){
