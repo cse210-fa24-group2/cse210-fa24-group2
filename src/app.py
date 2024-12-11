@@ -54,7 +54,7 @@ GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 REDIRECT_URI = os.environ.get("REDIRECT_URI")
 
 CLIENT_SECRETS_FILE = os.path.join(
-    pathlib.Path(__file__).parent, "client_secret.json"
+    pathlib.Path(__file__).parent, "/etc/secrets/client_secret.json"
     )
 
 SCOPES = [

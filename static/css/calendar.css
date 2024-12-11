@@ -193,7 +193,7 @@ input::-webkit-inner-spin-button {
     z-index: 1000;
     left: 0;
     top: 100%;
-    margin-top: 0.5rem;
+    margin-top: 0.2rem;
     color: var(--text-primary-lm);
     max-width: 300px;
     left: 50%;
