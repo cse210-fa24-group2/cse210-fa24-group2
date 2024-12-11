@@ -177,7 +177,7 @@
 /* Floating add button */
 .add-button {
     padding: 10px 20px;
-    font-size: 0.85rem;
+    font-size: 14px;
     border: none;
     border-radius: 5px;
     position: relative;
@@ -219,16 +219,16 @@
     margin: 5% auto;
     padding: 20px;
     width: 80%;
-    max-width: 50rem;
+    max-width: 800px;
     border-radius: 5px;
 }
 
 /* Modal close button */
 .close {
     position: absolute;
-    right: 1.25rem;
-    top: 0.625rem;
-    font-size: 1.75rem;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
     cursor: pointer;
 }
 
@@ -254,7 +254,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-left: 0.625rem;
+    margin-left: 10px;
 }
 
 /* Cancel button */
@@ -292,7 +292,7 @@
 
 /* Textarea adjustments */
 .form-row textarea {
-    min-height: 6.25rem;
+    min-height: 100px;
 }
 
 /* Input group with labels */
@@ -305,13 +305,13 @@
 
 /* Labels inside input groups */
 .input-group label {
-    margin-bottom: 0.3rem;
-    font-size: 0.875px;
+    margin-bottom: 5px;
+    font-size: 14px;
 }
 
 /* Date input fields */
 .input-group input[type="date"] {
-    padding: 0.5rem;
+    padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
