@@ -57,12 +57,53 @@ This section serves to organize and track internship/job applications.
 
 - **To change the number of entries viewed** on the page, the user can select a desired number from the drop down button in the upper left corner, next to where it says `entries per page`. *We currently offer users to view 5, 10, 15, 20, and 25 entries per page.* 
 
+## Additional Functionality
+- This application is compatible with large screens as well as smallers screens (such as those on mobile devices).
+
+- To accomodate for different user tastes in site colors, we incorporated both a light mode and dark mode, which can be switched into by clicking the `Toggle Theme` button on the top right corner of the webpage.
+
+- Additionally, the navigation bar allows users to jump to a particular section in the webpage.
+
 
 # Usage
 
+
 # Tech Stack
+- **Languages**: Python, Javascript, CSS, HTML
+- **Database**: PostgreSQL (via SQLAlchemy)
+- **Backend Framework**: Flask
 
 # Repo Organization
+```scss
+cse210-fa24-group2/
+├── static/
+│   ├── assets/       
+│   │   ├── icons/    # logo and symbols for features
+│   │   ├── images/   # miscellaneous images for readme, etc.
+│   │   ├── navbar/   # used for navigation bar when screen shrinks
+│   ├── css/
+│   │   ├── 404.css                 # error message formatting
+│   │   ├── InternshipTracker.css   # career tracking feature formatting
+│   │   ├── calendar.css            # calendar feature formatting
+│   │   ├── signIn.css              # login formatting
+│   │   ├── styles.css              # overall dashboard formatting
+│   │   ├── todo.css                # todo list formatting
+│   │   ├── vars.css                # global vars for color formatting
+│   ├── js/                         # javascripts for all the features functionalities and more
+│       ├── Calendar.js
+│       ├── InternshipTracker.js
+│       ├── app.js
+│       ├── dateUtils.js
+│       ├── privacy.js              # script for theme toggle button        
+│       ├── script.js               # script for logout and theme toggle buttons
+│       ├── signIn.js
+│       ├── todoList.js
+│       ├── upcomingDeadlines.js
+├── src/
+│   ├── app.py
+│   ├── calendarGoogle.py
+│   ├── client_secret.json
+```
 
 # Setup & Installation
 
