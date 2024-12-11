@@ -9,10 +9,19 @@
 </head>
 <body>
     <div class="calendar-header">
-      <button id="prev-month">&lt; </button>
+      <button id="prev-month"></button>
       <span id="current-month"></span>
-      <button id="next-month"> &gt;</button>
       <input type="number" id="year-input" min="1900" max="2100" placeholder="Year" />
+      <button id="next-month"></button>
+    </div>
+    <div class="weekdays">
+      <div>Sun</div>
+      <div>Mon</div>
+      <div>Tue</div>
+      <div>Wed</div>
+      <div>Thu</div>
+      <div>Fri</div>
+      <div>Sat</div>
     </div>
     <div class="calendar-grid" id="calendar-root"></div>
   
