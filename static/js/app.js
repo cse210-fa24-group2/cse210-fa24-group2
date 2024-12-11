@@ -179,12 +179,10 @@ function createEventElement(event) {
  */
 async function addEvent(title, date, startTime, endTime, location, description) {
   try {
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const payload = {
       summary: title,
       start: `${date}T${startTime}:00`,
       end: `${date}T${endTime}:00`,
-      timeZone: timeZone,
       location: location,
       description: description,
     };
@@ -220,8 +218,6 @@ async function deleteEvent(eventId) {
  */
 async function updateEvent(eventId, updatedData) {
   try {
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    updatedData.timeZone = timeZone;
     await axios.put(`/api/calendar/events/${eventId}`, updatedData);
     window.fetchAndRenderDeadlines(); 
     await renderCalendar(currentYear, currentMonth);
@@ -275,7 +271,6 @@ document.getElementById('update-event').addEventListener('click', async (e) => {
     summary: document.getElementById('event-title').value,
     start: `${document.getElementById('event-date').value}T${document.getElementById('event-start-time').value}:00Z`,
     end: `${document.getElementById('event-date').value}T${document.getElementById('event-end-time').value}:00Z`,
-    timeZone: 'UTC',
     location: document.getElementById('event-location').value,
     description: document.getElementById('event-description').value,
   };
