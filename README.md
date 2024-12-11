@@ -3,10 +3,23 @@
 
 # Introduction
 
-[View our live site here.](https://cse210-fa24-group2.onrender.com/) Please note that because we are using a free version of Render to host, the site may take a few minutes to load if it has not been accessed for at least 15 minutes.
+[View our live site here.](https://cse210-fa24-group2.onrender.com/)
+*Please note that the site is hosted on a free version of Render, so it may take a few minutes to load if it hasn’t been accessed in the last 15 minutes.*
+
+FireStack is a robust and user-friendly productivity application integrating task management, calendar synchronization, and job tracking into a seamless interface. The app connects with Google Calendar to provide a unified experience for managing schedules and deadlines, making it ideal for CS students seeking success in their courses, personal projects, and internship search.
 
 ![FireStack Dashboard View](static/assets/images/webpageView.png)
 *This is a sample view of our dashboard.*
+
+## **Table of Contents**
+1. [Features](#features)  
+2. [Usage](#usage)  
+3. [Tech Stack](#tech-stack)  
+4. [Repo Organization](#repo-organization)  
+5. [Setup & Installation](#setup--installation)  
+6. [API Endpoints](#api-endpoints)  
+7. [Contributing](#contributing)  
+8. [CI / CD Pipeline for FireStack](#ci--cd-pipeline-for-firestack)  
 
 # Features
 
@@ -66,7 +79,17 @@ This section serves to organize and track internship/job applications.
 
 
 # Usage
-
+To use FireStack, follow these steps:
+1. **Visit the Application**: Open [FireStack](https://cse210-fa24-group2.onrender.com/) in your browser. Allow some time for the app to load if it has been inactive.
+2. **Sign In**: Use Google OAuth to securely sign in with your Google account. Once authenticated, you will be redirected to the dashboard.
+3. **Explore Features**:
+   - **To-Do List**: Organize tasks by urgency (Today, This Week, This Month, Next Month). Add, edit, move, or delete tasks with ease. 
+   - **Calendar**: Add or modify events that sync directly with your Google Calendar. Navigate through months and years with simple controls. 
+   - **Upcoming Deadlines**: View deadlines for tasks and events scheduled for today.
+   - **Career Tracker**: Add and track internship or job applications, edit details, and search or filter entries.
+4. **Switch Themes**: Toggle between light and dark mode using the `Toggle Theme` button in the top-right corner.
+5. **Navigation**: Use the navigation bar to jump to specific sections of the app (e.g., To-Do List, Calendar, Career Tracker).
+6. **Save Your Progress**: All tasks, calendar events, and career tracker entries are automatically saved and synced with your Google account.
 
 # Tech Stack
 - **Languages**: Python, Javascript, CSS, HTML
@@ -108,6 +131,16 @@ cse210-fa24-group2/
 # Setup & Installation
 
 # API Endpoints
+
+# Contributing
+Contributions are welcome! Before contibuting, please take a look at our documentation on best practices, paying close attention to our [Code Alignment Documentation](admin/bestPractices/codeArchitecture.md) and our [Frontend Design System](admin/bestPractices/frontendDesignSystem.md). Please follow the steps below to contribute:
+1. Fork the repository.
+2. Create a new branch `git checkout -b feature-name`.
+3. Commit your changes `git commit -m 'Add feature-name'`.
+4. Push to the branch `git push origin feature-name`.
+5. Create a pull request, following the instructions in our pull request process document [here](admin/bestPractices/pullRequestProcess.md), and use our pull request template [here](admin/templates/githubPullRequestTemplate.md).
+
+If you see any errors, please let us know. To add an issue, use our template [here](admin/templates/githubIssueTemplate.md).
 
 # CI / CD Pipeline for FireStack
 
@@ -191,5 +224,3 @@ Ensure these secrets are configured in the repository settings before running th
 - The pipeline ensures modular and reusable workflows, optimizing development efficiency.
 
 For any questions or issues, please contact the repository maintainers.
-
-# Contributing
