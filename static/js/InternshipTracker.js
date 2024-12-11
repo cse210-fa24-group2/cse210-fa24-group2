@@ -61,12 +61,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 e.target.textContent = '▶';
             } else {
                 // Expand row to show details
+                let referral = (item.referral==='true');
+                let offer = (item.offerReceived==='true');
                 const detailRows = [
                     ['Salary', `$${parseFloat(item.salary).toFixed(2)}`],
                     ['Location', item.location],
                     ['Contact', `${item.contactPerson} (${item.contactEmail})`],
                     ['Important Dates', `Start: ${item.startDate} | Follow-up: ${item.followUpDate} | Deadline: ${item.offerDeadline || 'N/A'}`],
-                    ['Status', `Referral: ${item.referral ? 'Yes' : 'No'} | Offer: ${item.offerReceived ? 'Yes' : 'No'}`],
+                    ['Status', `Referral: ${referral ? 'Yes' : 'No'} | Offer: ${offer ? 'Yes' : 'No'}`],
                     ['Duration', item.internshipDuration],
                     ['Notes', item.notes]]
                     
