@@ -127,7 +127,7 @@ jobs:
 
       - name: Lint JavaScript Code
         run: |
-          eslint . .js,.jsx,.ts,.tsx
+          npx eslint . .js,.jsx,.ts,.tsx
         continue-on-error: true
 
   testing:
@@ -142,7 +142,11 @@ jobs:
           pip install coverage
 
       - name: Run Python Unit Tests
-        run: coverage run -m unittest discover -s tests xml -o coverage.xml
+        run: coverage run -m unittest discover -s tests
+        continue-on-error: true
+        
+      - name: Generate Coverage XML Report
+        run: coverage xml -o coverage.xml
         continue-on-error: true
 
       - name: Install Node.js Tools
@@ -150,11 +154,11 @@ jobs:
           npm install jest cypress eslint
 
       - name: Jest for JavaScript Unit Testing
-        run: jest --coverage --coverageReporters=lcov
+        run: npx jest --coverage --coverageReporters=lcov
         continue-on-error: true
 
       - name: Cypress End-to-End Testing
-        run: cypress run
+        run: npx cypress run
         continue-on-error: true
 
       - name: Codacy Analysis
