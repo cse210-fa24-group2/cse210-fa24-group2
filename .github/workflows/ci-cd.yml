@@ -80,34 +80,6 @@ jobs:
 
           fi
 
-  linting_and_code_quality:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Lint Python Code
-        run: |
-          black --check .
-          flake8 .
-          pylint $(find . -name "*.py")
-        continue-on-error: true
-
-      - name: Lint JavaScript Code
-        run: |
-          eslint . .js,.jsx,.ts,.tsx
-        continue-on-error: true
-
-      - name: Codacy Analysis
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        run: |
-          curl -Ls https://coverage.codacy.com/get.sh | bash
-          codacy-analysis-cli analyze --tool pylint
-          codacy-analysis-cli analyze --tool eslint
-        continue-on-error: true
-
   static_analysis:
     runs-on: ubuntu-latest
     needs: setup
@@ -131,6 +103,25 @@ jobs:
           name: static-analysis-report
           path: ./eslint-report/
 
+  linting_and_code_quality:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Lint Python Code
+        run: |
+          black --check .
+          flake8 .
+          pylint $(find . -name "*.py")
+        continue-on-error: true
+
+      - name: Lint JavaScript Code
+        run: |
+          eslint . .js,.jsx,.ts,.tsx
+        continue-on-error: true
+
   testing:
     runs-on: ubuntu-latest
     needs: setup
@@ -139,22 +130,24 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run Python Unit Tests
-        run: coverage run -m unittest discover -s tests
+        run: coverage run -m unittest discover -s tests xml -o coverage.xml
         continue-on-error: true
 
       - name: Jest for JavaScript Unit Testing
-        run: jest --coverage
+        run: jest --coverage --coverageReporters=lcov
         continue-on-error: true
 
       - name: Cypress End-to-End Testing
         run: cypress run
         continue-on-error: true
 
-      - name: Upload Coverage to Codacy
+      - name: Codacy Analysis
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.xml
+          # Run Codacy Coverage Reporter
+          curl -Ls https://coverage.codacy.com/get.sh | bash -s report -r coverage.xml
+          curl -Ls https://coverage.codacy.com/get.sh | bash -s report -r coverage/lcov.info
         continue-on-error: true
 
   deployment:
