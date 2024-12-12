@@ -214,28 +214,6 @@ jobs:
             echo "JavaScript reports uploaded to Codacy..."
           }
 
-  deployment:
-    runs-on: ubuntu-latest
-    needs: [linting_and_code_quality, testing]
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Deploy to Render
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-        run: |
-          {
-            curl -X POST \
-            -H "Authorization: Bearer $RENDER_API_KEY" \
-            -H "Content-Type: application/json" \
-            --data '{"serviceId": "YOUR_RENDER_SERVICE_ID"}' \
-            "https://api.render.com/v1/services/YOUR_SERVICE_ID/deploys"
-          } || {
-            echo "Application hosted separately..."
-          }
-
   optimization:
     runs-on: ubuntu-latest
     needs: setup
