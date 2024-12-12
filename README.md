@@ -1,11 +1,165 @@
 # cse210-fa24-group2
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5c719265d1dd4a93bfd5c0b9dddfc667)](https://app.codacy.com?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
-[View our live site here.](https://cse210-fa24-group2.onrender.com/) Please note that because we are using a free version of Render to host, the site may take a few minutes to load if it has not been accessed for at least 15 minutes.
+# Introduction
 
-# What does FireStack Do
+[View our live site here.](https://cse210-fa24-group2.onrender.com/)
+*Please note that the site is hosted on a free version of Render, so it may take a few minutes to load if it hasn’t been accessed in the last 15 minutes.*
 
-# Setup
+FireStack is a robust and user-friendly productivity application integrating task management, calendar synchronization, and job tracking into a seamless interface. The app connects with Google Calendar to provide a unified experience for managing schedules and deadlines, making it ideal for CS students seeking success in their courses, personal projects, and internship search.
+
+![FireStack Dashboard View](static/assets/images/webpageView.png)
+*This is a sample view of our dashboard.*
+
+## **Table of Contents**
+1. [Features](#features)  
+2. [Usage](#usage)  
+3. [Tech Stack](#tech-stack)  
+4. [Repo Organization](#repo-organization)  
+5. [Setup & Installation](#setup--installation)  
+6. [API Endpoints](#api-endpoints)  
+7. [Contributing](#contributing)  
+8. [CI / CD Pipeline for FireStack](#ci--cd-pipeline-for-firestack)  
+
+# Features
+
+## To-do List
+The first feature that appears on the dashboard is to the to-do list. This is a space to outline and organize tasks by urgency of completion. We offer 4 bins to separate tasks into:
+1. Today's Tasks
+2. This Week's Tasks
+3. This Month's Tasks
+4. Next Month's Tasks
+
+- **To add tasks into each respective bin**, type a task into the space that says `Add a task...` and then either click the blue `+` button or press the `return` key on the keyboard.
+
+- **To remove tasks**, press the red `x` button on the right side of the task. 
+
+- **To move a task from one bin to another**, drag the task and drop it in the desired bin when a faint blue background appears on hover. Tasks added to another bin will always be appended. 
+
+*If many tasks (7+) are added to a single bin, scroll within the bin to see all the tasks.* 
+
+
+## Calendar
+The calendar is a tracking tool that allows for clear visualization of deadlines, meetings, or any other entered events.
+
+Events on this calendar are shared with a user's Google Calendar. Any event from Google Calendar will appear here, and any event added here will also appear on Google Calendar. 
+
+- **To add an event**, fill out the key information (i.e. event title and date/time) located at the bottom of this feature and press the `+` button if this is a new event or `update` button if this is an existing task. 
+
+- **To change the month view**, press either the `<` or `>` button to go back or forward one month, respectively. **To change the year view**, enter the desired year in the box on the top right corner that stores the current year. 
+
+- **To edit an event**, press the `edit` button on the event. If it needs to be deleted, press the red `x` button. *This will remove the event both from this calendar view as well as the user's Google Calendar.* 
+
+
+## Upcoming Deadlines
+Anything with a deadline set as today will be displayed here. This section fetches today's events from the:
+- calendar section
+- career tracker section
+
+ 
+## Career Tracker
+This section serves to organize and track internship/job applications. 
+
+- **To add a job to track**, click the `Add Job` button to fill out a form with relevant info on a job application (i.e. company name, position, date applied) and click `Save` to add the details to the tracker. 
+
+- **To edit job app details**, click the **pencil** icon that appears on the right side of the job application in the tracker. 
+
+- **To remove a job app from the tracker**, click the big red `x` button the appears besides the pencil icon for that job application - *user will be asked to confirm whether this job application's details are to be removed.* 
+
+- **To search for a job app**, enter desired keyword (can be related to company name, position title, application status, date applied or application link) in the search bar that appears on the right upper corner of this feature. The search will reveal any relevant applications.
+
+- **To change the number of entries viewed** on the page, the user can select a desired number from the drop down button in the upper left corner, next to where it says `entries per page`. *We currently offer users to view 5, 10, 15, 20, and 25 entries per page.* 
+
+## Additional Functionality
+- This application is compatible with large screens as well as smallers screens (such as those on mobile devices).
+
+- To accomodate for different user tastes in site colors, we incorporated both a light mode and dark mode, which can be switched into by clicking the `Toggle Theme` button on the top right corner of the webpage.
+
+- Additionally, the navigation bar allows users to jump to a particular section in the webpage.
+
+
+# Usage
+To use FireStack, follow these steps:
+1. **Visit the Application**: Open [FireStack](https://cse210-fa24-group2.onrender.com/) in your browser. Allow some time for the app to load if it has been inactive.
+2. **Sign In**: Use Google OAuth to securely sign in with your Google account. Once authenticated, you will be redirected to the dashboard.
+3. **Explore Features**:
+   - **To-Do List**: Organize tasks by urgency (Today, This Week, This Month, Next Month). Add, edit, move, or delete tasks with ease. 
+   - **Calendar**: Add or modify events that sync directly with your Google Calendar. Navigate through months and years with simple controls. 
+   - **Upcoming Deadlines**: View deadlines for tasks and events scheduled for today.
+   - **Career Tracker**: Add and track internship or job applications, edit details, and search or filter entries.
+4. **Switch Themes**: Toggle between light and dark mode using the `Toggle Theme` button in the top-right corner.
+5. **Navigation**: Use the navigation bar to jump to specific sections of the app (e.g., To-Do List, Calendar, Career Tracker).
+6. **Save Your Progress**: All tasks, calendar events, and career tracker entries are automatically saved and synced with your Google account.
+
+# Tech Stack
+FireStack is built using a well-structured tech stack that ensures performance, scalability, and maintainability. Below is a detailed breakdown of the technologies used:
+
+## **Languages**
+- **Python**: Primary language for backend logic and API integration.
+- **JavaScript**: Used for client-side interactivity and DOM manipulation.
+- **CSS**: For styling and layout of the application.
+- **HTML**: For structuring the frontend components.
+
+## **Backend Framework**
+- **Flask**: A lightweight and versatile web framework that powers the server-side logic and API endpoints.
+
+## **Database**
+- **PostgreSQL**: A powerful and reliable relational database, accessed via SQLAlchemy, for storing and managing application data.
+
+## **APIs**
+- **Google OAuth**: Used for secure user authentication.
+- **Google Calendar API**: Enables synchronization of events between FireStack and Google Calendar.
+
+## **Other Tools and Libraries**
+- **SQLAlchemy**: ORM (Object Relational Mapper) for interacting with the PostgreSQL database.
+- **Render**: Hosting platform for deploying the application.
+- **Codacy**: Integrated for static code analysis and maintaining code quality.
+
+# Repo Organization
+```scss
+cse210-fa24-group2/
+├── static/
+│   ├── assets/       
+│   │   ├── icons/    # logo and symbols for features
+│   │   ├── images/   # miscellaneous images for readme, etc.
+│   │   ├── navbar/   # used for navigation bar when screen shrinks
+│   ├── css/
+│   │   ├── 404.css                 # error message formatting
+│   │   ├── InternshipTracker.css   # career tracking feature formatting
+│   │   ├── calendar.css            # calendar feature formatting
+│   │   ├── signIn.css              # login formatting
+│   │   ├── styles.css              # overall dashboard formatting
+│   │   ├── todo.css                # todo list formatting
+│   │   ├── vars.css                # global vars for color formatting
+│   ├── js/                         # javascripts for all the features functionalities and more
+│       ├── Calendar.js
+│       ├── InternshipTracker.js
+│       ├── app.js
+│       ├── dateUtils.js
+│       ├── privacy.js              # script for theme toggle button        
+│       ├── script.js               # script for logout and theme toggle buttons
+│       ├── signIn.js
+│       ├── todoList.js
+│       ├── upcomingDeadlines.js
+├── src/
+│   ├── app.py
+│   ├── calendarGoogle.py
+│   ├── client_secret.json
+```
+
+# Setup & Installation
+
+# API Endpoints
+
+# Contributing
+Contributions are welcome! Before contibuting, please take a look at our documentation on best practices, paying close attention to our [Code Alignment Documentation](admin/bestPractices/codeArchitecture.md) and our [Frontend Design System](admin/bestPractices/frontendDesignSystem.md). Please follow the steps below to contribute:
+1. Fork the repository.
+2. Create a new branch `git checkout -b feature-name`.
+3. Commit your changes `git commit -m 'Add feature-name'`.
+4. Push to the branch `git push origin feature-name`.
+5. Create a pull request, following the instructions in our pull request process document [here](admin/bestPractices/pullRequestProcess.md), and use our pull request template [here](admin/templates/githubPullRequestTemplate.md).
+
+If you see any errors, please let us know. To add an issue, use our template [here](admin/templates/githubIssueTemplate.md).
 
 # CI / CD Pipeline for FireStack
 
@@ -57,9 +211,9 @@ Runs automated tests to ensure the integrity of the application:
 - JavaScript:
   - Runs unit tests using `jest` with coverage enabled.
 - End-to-End Tests:
-  - Executes end-to-end tests using `cypress`.
+  - Executes end-to-end tests using manual testing.
 - Uploads coverage reports as artifacts.
-- Optionally uploads coverage data to Codacy for detailed reporting.
+- Uploads coverage data to Codacy for detailed reporting here: [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5c719265d1dd4a93bfd5c0b9dddfc667)](https://app.codacy.com?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 #### 6. **Deployment**
 Handles deployment to Render:
@@ -89,4 +243,3 @@ Ensure these secrets are configured in the repository settings before running th
 - The pipeline ensures modular and reusable workflows, optimizing development efficiency.
 
 For any questions or issues, please contact the repository maintainers.
-

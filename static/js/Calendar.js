@@ -10,6 +10,12 @@ import { getDaysInMonth, formatDate } from './dateUtils.js';
  * @function Calendar
  * @returns {Promise<string>} - The HTML string representation of the calendar.
  */
+const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function generateWeekdays() {
+  return weekdays.map(day => `<div class="weekday">${day}</div>`).join('');
+}
+
 async function Calendar() {
   const today = new Date();
   const days = getDaysInMonth(today.getFullYear(), today.getMonth());
@@ -18,6 +24,7 @@ async function Calendar() {
    * @type {Array<Object>} events - Array of calendar events.
    */
   let events = [];
+
   try {
     const response = await axios.get('/api/calendar/events');
     events = response.data;
@@ -25,25 +32,22 @@ async function Calendar() {
     console.error('Error fetching events:', error);
   }
 
-  /**
-   * Generate calendar grid with events.
-   * @type {string}
-   */
-  const calendarHTML = days
-    .map((day) => {
-      const formattedDate = formatDate(day);
-      const dayEvents = events.filter((e) => e.start.dateTime.startsWith(formattedDate));
+  const weekdaysHTML = `<div class="calendar-grid weekdays">${generateWeekdays()}</div>`;
+  const calendarHTML = days.map(day => {
+    const formattedDate = formatDate(day);
+    const dayEvents = events.filter(e => e.start.dateTime.startsWith(formattedDate));
+    console.log('Day events:', dayEvents);
+    
 
-      return `
+    return `
       <div class="calendar-cell">
-        ${day.getDate()}
-        ${dayEvents.map((event) => `<div class="event">${event.summary}</div>`).join('')}
-      </div>
-    `;
-    })
-    .join('');
+        <span class="date">${day.getDate()}</span>
+        
+        ${dayEvents.map(event => `<div class="event">${event.summary}</div>`).join('')}
+      </div>`;
+  }).join('');
 
-  return `<div class="calendar">${calendarHTML}</div>`;
+  return weekdaysHTML + `<div class="calendar-grid">${calendarHTML}</div>`;
 }
 
 /**
