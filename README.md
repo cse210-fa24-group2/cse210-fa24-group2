@@ -149,7 +149,171 @@ cse210-fa24-group2/
 
 # Setup & Installation
 
-# API Endpoints
+# API Overview
+
+This document provides an overview of the API endpoints available in our application. The API is built using Flask and integrates with Google OAuth 2.0 for authentication, PostgreSQL for data storage, and Google Calendar API for event management.
+
+## Authentication
+
+### Login
+- **URL**: `/login`
+- **Method**: `GET`
+- **Description**: Initiates the Google OAuth 2.0 login process.
+- **Response**: Redirects the user to Google's OAuth 2.0 authorization URL.
+
+### Callback
+- **URL**: `/callback`
+- **Method**: `GET`
+- **Description**: Handles the Google OAuth 2.0 callback, verifies the user, and stores session details.
+- **Response**: Redirects to the dashboard upon successful login.
+
+### Logout
+- **URL**: `/logout`
+- **Method**: `GET`
+- **Description**: Logs out the user and clears the session.
+- **Response**: Redirects to the home page.
+
+---
+
+## Internship Management
+
+### Add Internship
+- **URL**: `/api/internships`
+- **Method**: `POST`
+- **Description**: Adds a new internship entry to the database.
+- **Authentication**: Required
+- **Request Body**: JSON object with internship details
+- **Response**:
+  - **Success**: JSON object with message and internship ID (Status 201)
+  - **Error**: JSON object with error message (Status 400 or 500)
+
+### Update Internship
+- **URL**: `/api/internships/<internship_id>`
+- **Method**: `PUT`
+- **Description**: Updates an existing internship entry.
+- **Authentication**: Required
+- **Parameters**: `internship_id` (integer)
+- **Request Body**: JSON object with updated internship details
+- **Response**:
+  - **Success**: JSON object with success message (Status 200)
+  - **Error**: JSON object with error message (Status 404 or 500)
+
+### Delete Internship
+- **URL**: `/api/internships/<internship_id>`
+- **Method**: `DELETE`
+- **Description**: Deletes an internship entry.
+- **Authentication**: Required
+- **Parameters**: `internship_id` (integer)
+- **Response**:
+  - **Success**: JSON object with success message (Status 200)
+  - **Error**: JSON object with error message (Status 404 or 500)
+
+### Get Today's Internships
+- **URL**: `/api/internships/today`
+- **Method**: `GET`
+- **Description**: Fetches internships with follow-up dates matching today's date.
+- **Authentication**: Required
+- **Response**:
+  - **Success**: JSON array of internship objects (Status 200)
+  - **Error**: JSON object with error message (Status 500)
+
+---
+
+## Todo List Management
+
+### Get Todos
+- **URL**: `/api/todos`
+- **Method**: `GET`
+- **Description**: Fetches all todos for the logged-in user.
+- **Authentication**: Required
+- **Response**:
+  - **Success**: JSON object with an array of todo items (Status 200)
+  - **Error**: JSON object with error message (Status 404)
+
+### Add Todo
+- **URL**: `/api/todos`
+- **Method**: `POST`
+- **Description**: Adds a new todo for the logged-in user.
+- **Authentication**: Required
+- **Request Body**: JSON object with category and task
+- **Response**:
+  - **Success**: JSON object with the added todo details (Status 200)
+  - **Error**: JSON object with error message (Status 400 or 500)
+
+### Delete Todo
+- **URL**: `/api/todos/<todo_id>`
+- **Method**: `DELETE`
+- **Description**: Deletes a todo by ID for the logged-in user.
+- **Authentication**: Required
+- **Parameters**: `todo_id` (integer)
+- **Response**:
+  - **Success**: JSON object with success message (Status 200)
+  - **Error**: JSON object with error message (Status 404 or 500)
+
+### Update Todo Category
+- **URL**: `/api/todos/<todo_id>/category`
+- **Method**: `PATCH`
+- **Description**: Updates the category of a todo by ID for the logged-in user.
+- **Authentication**: Required
+- **Parameters**: `todo_id` (integer)
+- **Request Body**: JSON object with category
+- **Response**:
+  - **Success**: JSON object with success message (Status 200)
+  - **Error**: JSON object with error message (Status 400 or 500)
+
+---
+
+## Calendar Management
+
+### Get Events
+- **URL**: `/api/calendar/events`
+- **Method**: `GET`
+- **Description**: Fetches Google Calendar events for the user.
+- **Authentication**: Required
+- **Response**:
+  - **Success**: JSON array of event objects (Status 200)
+  - **Error**: JSON object with error message (Status 500)
+
+### Create Event
+- **URL**: `/api/calendar/events`
+- **Method**: `POST`
+- **Description**: Creates a new Google Calendar event.
+- **Authentication**: Required
+- **Request Body**: JSON object with event details
+- **Response**:
+  - **Success**: JSON object with created event details (Status 201)
+  - **Error**: JSON object with error message (Status 400 or 500)
+
+### Update Event
+- **URL**: `/api/calendar/events/<event_id>`
+- **Method**: `PUT`
+- **Description**: Updates an existing Google Calendar event.
+- **Authentication**: Required
+- **Parameters**: `event_id` (string)
+- **Request Body**: JSON object with updated event details
+- **Response**:
+  - **Success**: JSON object with updated event details (Status 200)
+  - **Error**: JSON object with error message (Status 500)
+
+### Delete Event
+- **URL**: `/api/calendar/events/<event_id>`
+- **Method**: `DELETE`
+- **Description**: Deletes an existing Google Calendar event.
+- **Authentication**: Required
+- **Parameters**: `event_id` (string)
+- **Response**:
+  - **Success**: JSON object with success message (Status 200)
+  - **Error**: JSON object with error message (Status 500)
+
+### Get Today's Events
+- **URL**: `/api/calendar/events/today`
+- **Method**: `GET`
+- **Description**: Fetches Google Calendar events for the current day in the user's time zone.
+- **Authentication**: Required
+- **Response**:
+  - **Success**: JSON array of event objects (Status 200)
+  - **Error**: JSON object with error message (Status 500)
+
 
 # Contributing
 Contributions are welcome! Before contibuting, please take a look at our documentation on best practices, paying close attention to our [Code Alignment Documentation](admin/bestPractices/codeArchitecture.md) and our [Frontend Design System](admin/bestPractices/frontendDesignSystem.md). Please follow the steps below to contribute:
@@ -215,13 +379,7 @@ Runs automated tests to ensure the integrity of the application:
 - Uploads coverage reports as artifacts.
 - Uploads coverage data to Codacy for detailed reporting here: [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5c719265d1dd4a93bfd5c0b9dddfc667)](https://app.codacy.com?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
-#### 6. **Deployment**
-Handles deployment to Render:
-- Deploys changes to the live environment using Render's API.
-- Ensures this job only runs after successful completion of the `linting_and_code_quality` and `testing` jobs.
-- Executes only on the `main` branch.
-
-#### 7. **Optimization**
+#### 6. **Optimization**
 Minimizes CSS and JavaScript files for improved performance:
 - Minifies files in the `static/css` and `static/js` directories using `clean-css-cli` and `terser`.
 - Uploads the optimized files as artifacts.
