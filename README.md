@@ -149,6 +149,88 @@ cse210-fa24-group2/
 
 # Setup & Installation
 
+## Follow these steps to set up and run the FireStack application on your local machine:
+
+### 1. Clone the Repository
+Start by cloning the GitHub repository to your local machine:
+
+```bash
+git clone https://github.com/cse210-fa24-group2/cse210-fa24-group2.git
+cd cse210-fa24-group2
+```
+
+### 2. Set Up a Virtual Environment
+Create a Python virtual environment to isolate dependencies for this project:
+
+```bash
+python -m venv venv
+source venv/bin/activate  # For macOS/Linux
+venv\Scripts\activate     # For Windows
+```
+
+### 3. Install Required Dependencies
+Install the necessary Python packages using the `requirements.txt` file:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure Environment Variables
+Create a `.env` file in the project’s root directory to store environment-specific configuration and secrets:
+
+#### Create the `.env` file:
+```bash
+touch .env
+```
+
+#### Add the following keys to the `.env` file (replace placeholders with actual values):
+```env
+FLASK_SECRET_KEY='your_flask_secret_key'
+GOOGLE_CLIENT_ID='your_google_client_id'
+GOOGLE_CLIENT_SECRET='your_google_client_secret'
+REDIRECT_URI='your_redirect_uri'
+DATABASE_URL='your_database_url'
+```
+
+**Note:** Ensure the `REDIRECT_URI` matches the one registered in your Google Cloud Console.
+
+### 5. Obtain `client_secret.json`
+Download the `client_secret.json` file from your Google Cloud Console. Place it in the `src/` directory:
+
+```bash
+mv client_secret.json src/
+```
+
+### 6. Set Up the Database
+Ensure you have PostgreSQL installed and running on your local system. Create a new database for the application. Update the `DATABASE_URL` key in the `.env` file with your database connection string.
+
+To initialize the database, run:
+```bash
+python src/app.py
+```
+
+### 7. Run the Application
+Start the Flask server to run the application:
+
+```bash
+python src/app.py
+```
+
+Open the application in your browser by navigating to:
+
+```text
+http://127.0.0.1:5000
+```
+
+### 8. Interact with the Application
+- **Authentication:** Sign in using Google OAuth.
+- **Features:**
+  - Add tasks to the To-Do List.
+  - Create, edit, or delete events in the Calendar.
+  - Add and manage internship applications in the Career Tracker.
+- **Theme Toggle:** Switch between light and dark mode using the toggle button.
+
+
 # API Endpoints
 
 This document provides an overview of the API endpoints available in our application. The API is built using Flask and integrates with Google OAuth 2.0 for authentication, PostgreSQL for data storage, and Google Calendar API for event management.
