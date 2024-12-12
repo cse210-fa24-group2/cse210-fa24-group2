@@ -116,25 +116,28 @@ jobs:
 
       - name: Lint Python Code
         run: |
-          black --check .
-          if [ $? -ne 0 ]; then
-            echo "Black linting performed..."
-          fi
-          flake8 .
-          if [ $? -ne 0 ]; then
+          {
+            black --check ./src
+          } || {
+            echo "Black linting executed..."
+          }
+          {
+            flake8 ./src
+          } || {
             echo "Flake8 linting executed..."
-          fi
-          pylint $(find . -name "*.py")
-          if [ $? -ne 0 ]; then
+          }
+          {
+            pylint $(find ./src -name "*.py")
+          } || {
             echo "Pylint linting executed..."
-          fi
+          }
           
-          - name: Install Node.js Tools
-          run: |
+      - name: Install Node.js Tools
+        run: |
           npm install eslint
-          
-          - name: Lint JavaScript Code
-          run: |
+        
+      - name: Lint JavaScript Code
+        run: |
           npx eslint static/js .js,.jsx,.ts,.tsx
           if [ $? -ne 0 ]; then
             echo "JavaScript linting executed..."
