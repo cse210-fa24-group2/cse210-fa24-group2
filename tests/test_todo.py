@@ -2,18 +2,22 @@
 test_todo.py
 
 Unit tests for the to-do list functionality in the Flask application.
+
+This file contains unit tests for the to-do list endpoints, validating the
+ability to fetch, add, update, and delete tasks. Mocking is used to simulate
+database operations and ensure tests are isolated from external dependencies.
 """
 
 import unittest
-import sys
+from unittest.mock import patch, MagicMock
 import os
-
+import sys
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../src"))
-    )
+)
 
-from src.app import app, db, Todo, User  # noqa: E402
+from src.app import app  # noqa: E402
 
 
 class TestTodoList(unittest.TestCase):
@@ -23,27 +27,22 @@ class TestTodoList(unittest.TestCase):
 
     def setUp(self):
         """
-        Set up the test client and in-memory database.
+        Set up the Flask test client with a mocked database session.
         """
         app.config["TESTING"] = True
-        # In-memory database for testing
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
         self.client = app.test_client()
 
-        # Initialize the database
-        with app.app_context():
-            db.create_all()
-            user = User(google_id="test_google_id", name="Test User")
-            db.session.add(user)
-            db.session.commit()
+        # Mock the database session and models
+        self.mock_db_session = patch("src.app.db.session").start()
+        self.mock_todo = MagicMock(id=1, category="Today",
+                                   task_text="Test Task")
+        self.mock_user = MagicMock(id=1, google_id="test_google_id")
 
     def tearDown(self):
         """
-        Tear down the in-memory database after each test.
+        Stop all active patches.
         """
-        with app.app_context():
-            db.session.remove()
-            db.drop_all()
+        patch.stopall()
 
     def login(self):
         """
@@ -52,11 +51,18 @@ class TestTodoList(unittest.TestCase):
         with self.client.session_transaction() as sess:
             sess["id_google"] = "test_google_id"
 
-    def test_get_todos(self):
+    @patch("src.app.User.query")
+    def test_get_todos(self, mock_user_query):
         """
         Test fetching all to-dos for the logged-in user.
         """
         self.login()
+
+        # Mock the user's todos
+        mock_user_query.filter_by.return_value.first.return_value.todos = [
+            self.mock_todo
+        ]
+
         response = self.client.get("/api/todos")
         self.assertEqual(response.status_code, 200)
         self.assertIn("todos", response.json)
@@ -66,46 +72,45 @@ class TestTodoList(unittest.TestCase):
         Test adding a new to-do for the logged-in user.
         """
         self.login()
+
+        # Mock adding a new to-do
+        self.mock_db_session.add.return_value = self.mock_todo
+        self.mock_todo.id = 1
+
         todo_data = {"category": "Today", "task": "Test Task"}
         response = self.client.post("/api/todos", json=todo_data)
+
         self.assertEqual(response.status_code, 200)
         self.assertIn("id", response.json)
 
-    def test_delete_todo(self):
+    @patch("src.app.Todo.query")
+    def test_delete_todo(self, mock_todo_query):
         """
         Test deleting a to-do by ID.
         """
         self.login()
-        with app.app_context():
-            user = User.query.filter_by(google_id="test_google_id").first()
-            todo = Todo(
-                user_id=user.id,
-                category="Today",
-                task_text="Test Task")
-            db.session.add(todo)
-            db.session.commit()
 
-            response = self.client.delete(f"/api/todos/{todo.id}")
-            self.assertEqual(response.status_code, 200)
-            self.assertIn("message", response.json)
+        mock_todo_query.get.return_value = self.mock_todo
 
-    def test_update_todo_category(self):
+        response = self.client.delete(f"/api/todos/{self.mock_todo.id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("message", response.json)
+
+    @patch("src.app.Todo.query")
+    def test_update_todo_category(self, mock_todo_query):
         """
         Test updating the category of a to-do.
         """
         self.login()
-        with app.app_context():
-            user = User.query.filter_by(google_id="test_google_id").first()
-            todo = Todo(user_id=user.id, category="Today",
-                        task_text="Test Task")
-            db.session.add(todo)
-            db.session.commit()
 
-            update_data = {"category": "This Week"}
-            response = self.client.patch(f"/api/todos/{todo.id}/category",
-                                         json=update_data)
-            self.assertEqual(response.status_code, 200)
-            self.assertIn("message", response.json)
+        mock_todo_query.get.return_value = self.mock_todo
+
+        update_data = {"category": "This Week"}
+        response = self.client.patch(
+            f"/api/todos/{self.mock_todo.id}/category", json=update_data
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("message", response.json)
 
 
 if __name__ == "__main__":
