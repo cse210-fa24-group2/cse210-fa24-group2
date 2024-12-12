@@ -1,16 +1,21 @@
 // Wait until the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
+    /**
+     * Array to store internship data fetched from the backend
+     * @type {Array<Object>}
+     */
+    let internshipData = [];
 
     /**
-     * Custom HTML Element for the Internship Tracker table
+     * Reference to the DataTable instance
+     * @type {Object|null}
      */
-
-    let internshipData = [];
     let dataTable;
 
     /**
      * Add a new internship entry to the database
      * @param {Object} internshipData - Data for the new internship
+     * @returns {Promise<void>}
      */
     async function addInternship(internshipData) {
         try {
@@ -24,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 console.log("Internship added successfully:", result);
                 internshipDataFetch(); // Refresh data after successful addition
-                window.fetchAndRenderDeadlines();
+                window.fetchAndRenderDeadlines(); // Update deadlines
             } else {
                 console.error("Error adding internship:", result.error);
             }
@@ -34,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * Attach row expansion logic to the table
+     * Attach row expansion logic to the internship tracker table
      */
     function attachRowExpansionLogic() {
         const tableBody = document.querySelector('#InternshipTrackerTable tbody');
@@ -62,8 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 e.target.textContent = '▶';
             } else {
                 // Expand row to show details
-                let referral = (item.referral==='true');
-                let offer = (item.offerReceived==='true');
+                const referral = item.referral === 'true';
+                const offer = item.offerReceived === 'true';
                 const detailRows = [
                     ['Salary', `$${parseFloat(item.salary).toFixed(2)}`],
                     ['Location', item.location],
@@ -71,8 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     ['Important Dates', `Start: ${item.startDate} | Follow-up: ${item.followUpDate} | Deadline: ${item.offerDeadline || 'N/A'}`],
                     ['Status', `Referral: ${referral ? 'Yes' : 'No'} | Offer: ${offer ? 'Yes' : 'No'}`],
                     ['Duration', item.internshipDuration],
-                    ['Notes', item.notes]]
-                    
+                    ['Notes', item.notes],
+                ];
+
                 if (isSmallScreen) {
                     detailRows.unshift(
                         ['Application Status', item.applicationStatus],
@@ -80,15 +86,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         ['Application Link', item.applicationLink ? `<a href="${item.applicationLink}" target="_blank">Link</a>` : "N/A"],
                         ['Actions', `<button class="in-row-edit" onclick='editInternship(${JSON.stringify(item)})'>✎</button> <button class="in-row-delete" onclick='deleteInternship(${JSON.stringify(item)})'>❌</button>`]
                     );
-                }   
-                    
-                const detailHtml = detailRows.map(([label, value]) => `
-                <tr class="expanded-details">
-                    <td></td>
-                    <td class="detail-label">${label}</td>
-                    <td colspan="5" class="detail-value">${value}</td>
-                </tr>
-                `).join('');
+                }
+
+                const detailHtml = detailRows.map(([label, value]) =>
+                    `<tr class="expanded-details">
+                        <td></td>
+                        <td class="detail-label">${label}</td>
+                        <td colspan="5" class="detail-value">${value}</td>
+                    </tr>`
+                ).join('');
 
                 tr.insertAdjacentHTML('afterend', detailHtml);
                 e.target.textContent = '▼';
@@ -97,7 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * Fetch internship data and render the table
+     * Fetch internship data from the server and render the table
+     * @returns {Promise<void>}
      */
     async function internshipDataFetch() {
         try {
@@ -128,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 columns: [
                     { select: 0, sortable: false }, // Expand/collapse column
                     { select: 6, sortable: false }, // Edit button column
-                    { select: 7, sortable: false } // Delete button column
+                    { select: 7, sortable: false }, // Delete button column
                 ],
                 data: {
                     headings: [
@@ -155,6 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Fetch data initially
     internshipDataFetch();
 
     // Modal logic for adding/editing internships
@@ -164,13 +172,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const cancelButton = document.querySelector(".cancel-btn");
     const saveButton = document.getElementById("saveInternship");
 
-    // Show the modal
+    // Show the modal for adding a new internship
     addButton.onclick = () => {
         modal.style.display = "block";
         document.querySelector('.modal-header h2').textContent = 'Add New Internship';
     };
 
-    // Close the modal
+    /**
+     * Close the modal and reset the form
+     */
     const closeModal = () => {
         modal.style.display = "none";
         document.getElementById("internshipForm").reset();
@@ -184,7 +194,8 @@ document.addEventListener("DOMContentLoaded", () => {
             closeModal();
         }
     };
-    /*
+
+    /**
      * Save form data when the modal is submitted
      */
     saveButton.onclick = () => {
@@ -212,64 +223,55 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     /**
-     * Edit an internship entry
-     * @param {object} item - Internship details
+     * Edit an existing internship entry
+     * @param {Object} item - Internship details
      */
-    window.editInternship = function(item) {
+    window.editInternship = function (item) {
         const itemValues = typeof item === 'string' ? JSON.parse(item) : item;
         modal.style.display = "block";
         document.querySelector('.modal-header h2').textContent = 'Edit Internship';
 
         // Pre-fill form fields
-        const formatDate = (dateString) => {
-            if (!dateString || typeof dateString !== 'string') return '';
-            const parts = dateString.split('-');
-            if (parts.length !== 3) return '';
-            const [year, month, day] = parts;
-            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-        };
-
         document.getElementById("company_name").value = itemValues.companyName;
         document.getElementById("position_title").value = itemValues.positionTitle;
         document.getElementById("application_status").value = itemValues.applicationStatus;
-        document.getElementById("date_applied").value = formatDate(itemValues.dateApplied);
-        document.getElementById("follow_up_date").value = formatDate(itemValues.followUpDate);
+        document.getElementById("date_applied").value = itemValues.dateApplied;
+        document.getElementById("follow_up_date").value = itemValues.followUpDate;
         document.getElementById("application_link").value = itemValues.applicationLink;
-        document.getElementById("start_date").value = formatDate(itemValues.startDate);
+        document.getElementById("start_date").value = itemValues.startDate;
         document.getElementById("contact_person").value = itemValues.contactPerson;
         document.getElementById("contact_email").value = itemValues.contactEmail;
         document.getElementById("referral").checked = itemValues.referral;
         document.getElementById("offer_received").checked = itemValues.offerReceived;
-        document.getElementById("offer_deadline").value = formatDate(itemValues.offerDeadline);
+        document.getElementById("offer_deadline").value = itemValues.offerDeadline;
         document.getElementById("notes").value = itemValues.notes;
         document.getElementById("location").value = itemValues.location;
         document.getElementById("salary").value = parseFloat(itemValues.salary);
         document.getElementById("internship_duration").value = itemValues.internshipDuration;
 
         // Save updated data
-        const saveButton = document.querySelector(".save-btn");
         saveButton.onclick = async () => {
             const updatedInternship = {
-                    company_name: document.getElementById("company_name").value,
-                    position_title: document.getElementById("position_title").value,
-                    application_status: document.getElementById("application_status").value,
-                    date_applied: document.getElementById("date_applied").value,
-                    follow_up_date: document.getElementById("follow_up_date").value,
-                    application_link: document.getElementById("application_link").value,
-                    start_date: document.getElementById("start_date").value,
-                    contact_person: document.getElementById("contact_person").value,
-                    contact_email: document.getElementById("contact_email").value,
-                    referral: document.getElementById("referral").checked,
-                    offer_deadline: document.getElementById("offer_deadline").value,
-                    offer_received: document.getElementById("offer_received").checked,
-                    notes: document.getElementById("notes").value,
-                    location: document.getElementById("location").value,
-                    salary: parseFloat(document.getElementById("salary").value) || 0,
-                    internship_duration: document.getElementById("internship_duration").value,
+                company_name: document.getElementById("company_name").value,
+                position_title: document.getElementById("position_title").value,
+                application_status: document.getElementById("application_status").value,
+                date_applied: document.getElementById("date_applied").value,
+                follow_up_date: document.getElementById("follow_up_date").value,
+                application_link: document.getElementById("application_link").value,
+                start_date: document.getElementById("start_date").value,
+                contact_person: document.getElementById("contact_person").value,
+                contact_email: document.getElementById("contact_email").value,
+                referral: document.getElementById("referral").checked,
+                offer_deadline: document.getElementById("offer_deadline").value,
+                offer_received: document.getElementById("offer_received").checked,
+                notes: document.getElementById("notes").value,
+                location: document.getElementById("location").value,
+                salary: parseFloat(document.getElementById("salary").value) || 0,
+                internship_duration: document.getElementById("internship_duration").value
             };
 
             try {
-                const response = await fetch(`/api/internships/${item.internshipId}`, {
+                const response = await fetch(`/api/internships/${itemValues.internshipId}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(updatedInternship),
@@ -293,18 +295,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /**
      * Delete an internship entry
-     * @param {object} item - Internship details
+     * @param {Object} item - Internship details
      */
-    window.deleteInternship = async function(item) {
+    window.deleteInternship = async function (item) {
         const itemValues = typeof item === 'string' ? JSON.parse(item) : item;
         const confirmDelete = confirm(`Are you sure you want to delete the internship at ${itemValues.companyName}?`);
         if (!confirmDelete) return;
-    
+
         try {
             const response = await fetch(`/api/internships/${itemValues.internshipId}`, {
                 method: "DELETE",
             });
-    
+
             if (response.ok) {
                 console.log(`Internship at ${itemValues.companyName} deleted successfully.`);
                 internshipDataFetch(); // Refresh the table data
