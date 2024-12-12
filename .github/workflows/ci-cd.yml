@@ -193,6 +193,12 @@ jobs:
       - name: Print Working Directory
         run: pwd
 
+      - name: Print Directory Contents
+        run: ls -a
+
+      - name: Print static Directory Contents
+        run: ls static/
+
       - name: Debug Environment Variables
         run: printenv
 
