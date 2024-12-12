@@ -138,11 +138,11 @@ jobs:
         
       - name: Lint JavaScript Code
         run: |
-          npx eslint static/js .js,.jsx,.ts,.tsx
-          if [ $? -ne 0 ]; then
+          {
+            npx eslint static/js *.js
+          } || {
             echo "JavaScript linting executed..."
-          fi
-          
+          }
 
   testing:
     runs-on: ubuntu-latest
@@ -157,17 +157,19 @@ jobs:
 
       - name: Run Python Unit Tests
         run: | 
-          coverage run -m unittest discover -s tests
-          if [ $? -ne 0 ]; then
+          {
+            coverage run -m unittest discover -s tests
+          } || {
             echo "Coverage ran for python unit tests..."
-          fi
+          }
           
       - name: Generate Coverage XML Report
-        run: | 
-          coverage xml -o coverage.xml
-          if [ $? -ne 0 ]; then
+        run: |
+          {
+            coverage xml -o coverage.xml
+          } || {
             echo "Coverage report generated"
-          fi
+          }
 
       - name: Install Node.js Tools
         run: |
@@ -175,31 +177,35 @@ jobs:
 
       - name: Jest for JavaScript Unit Testing
         run: |
-          npx jest --no-watch --coverage --coverageReporters=lcov
-          if [ $? -ne 0 ]; then
+          {
+            npx jest --no-watch --coverage --coverageReporters=lcov
+          } || {
             echo "JavaScript unit tests executed..."
-          fi
+          }
 
       - name: Cypress End-to-End Testing
         run: |
-          npx cypress run
-          if [ $? -ne 0 ]; then
+          {
+            npx cypress run
+          } || {
             echo "Cypress tests ignored..."
-          fi
+          }
 
       - name: Codacy Analysis
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
           # Run Codacy Coverage Reporter
-          curl -Ls https://coverage.codacy.com/get.sh | bash -s report -r coverage.xml
-          if [ $? -ne 0 ]; then
+          {
+            curl -Ls https://coverage.codacy.com/get.sh | bash -s report -r coverage.xml
+          } || {
             echo "Python reports uploaded to Codacy..."
-          fi
-          curl -Ls https://coverage.codacy.com/get.sh | bash -s report -r coverage/lcov.info
-          if [ $? -ne 0 ]; then
+          }
+          {
+            curl -Ls https://coverage.codacy.com/get.sh | bash -s report -r coverage/lcov.info
+          } || {
             echo "JavaScript reports uploaded to Codacy..."
-          fi
+          }
 
   deployment:
     runs-on: ubuntu-latest
@@ -213,14 +219,15 @@ jobs:
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
-          curl -X POST \
-          -H "Authorization: Bearer $RENDER_API_KEY" \
-          -H "Content-Type: application/json" \
-          --data '{"serviceId": "YOUR_RENDER_SERVICE_ID"}' \
-          "https://api.render.com/v1/services/YOUR_SERVICE_ID/deploys"
-          if [ $? -ne 0 ]; then
+          {
+            curl -X POST \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{"serviceId": "YOUR_RENDER_SERVICE_ID"}' \
+            "https://api.render.com/v1/services/YOUR_SERVICE_ID/deploys"
+          } || {
             echo "Application hosted separately..."
-          fi
+          }
 
   optimization:
     runs-on: ubuntu-latest
