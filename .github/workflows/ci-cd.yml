@@ -39,10 +39,6 @@ jobs:
           echo "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}" >> $GITHUB_ENV
           echo "REDIRECT_URI=${REDIRECT_URI}" >> $GITHUB_ENV
 
-      - name: Verify Installed Packages and PATH
-        run: |
-          pip list
-
   jsdocs:
     runs-on: ubuntu-latest
     needs: setup
@@ -93,9 +89,9 @@ jobs:
 
       - name: Lint Python Code
         run: |
-          python -m black --check .
-          python -m flake8 .
-          python -m pylint $(find . -name "*.py")
+          black --check .
+          flake8 .
+          pylint $(find . -name "*.py")
 
       - name: Lint JavaScript Code
         run: |
@@ -139,18 +135,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-
       - name: Run Python Unit Tests
-        run: python -m coverage run -m unittest discover -s tests
-
+        run: coverage run -m unittest discover -s tests
 
       - name: Jest for JavaScript Unit Testing
         run: jest --coverage
 
-
       - name: Cypress End-to-End Testing
         run: cypress run
-
 
       - name: Upload Coverage Reports
         uses: actions/upload-artifact@v3
@@ -158,13 +150,11 @@ jobs:
           name: coverage-report
           path: coverage/
 
-
       - name: Upload Coverage to Codacy
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
           bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.xml
-
 
   deployment:
     runs-on: ubuntu-latest
@@ -173,7 +163,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
 
       - name: Deploy to Render
         env:
@@ -185,22 +174,12 @@ jobs:
           --data '{"serviceId": "YOUR_RENDER_SERVICE_ID"}' \
           "https://api.render.com/v1/services/YOUR_SERVICE_ID/deploys"
 
-
   optimization:
     runs-on: ubuntu-latest
     needs: setup
     steps:
-      - name: Print Working Directory
-        run: pwd
-
-      - name: Print Directory Contents
-        run: ls -a
-
-      - name: Print static Directory Contents
-        run: ls static/
-
-      - name: Debug Environment Variables
-        run: printenv
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
       - name: Minify CSS and JavaScript
         run: |
@@ -208,10 +187,8 @@ jobs:
           find static/css -name "*.css" -exec cleancss -o {} {} \;
           find static/js -name "*.js" -exec terser -o {} -- {} \;
 
-
       - name: Upload Optimized Files
         uses: actions/upload-artifact@v3
         with:
           name: optimized-files
           path: static/
-
