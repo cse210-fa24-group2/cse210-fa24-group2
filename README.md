@@ -149,7 +149,7 @@ cse210-fa24-group2/
 
 # Setup & Installation
 
-# API Overview
+# API Endpoints
 
 This document provides an overview of the API endpoints available in our application. The API is built using Flask and integrates with Google OAuth 2.0 for authentication, PostgreSQL for data storage, and Google Calendar API for event management.
 
