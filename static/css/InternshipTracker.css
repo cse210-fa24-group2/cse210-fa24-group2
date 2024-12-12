@@ -20,7 +20,7 @@
     white-space: nowrap;
     min-width: fit-content;
     background-color: var(--background-primary-lm);
-    border-bottom: 2px solid var(--background-secondary-lm);
+    border-bottom: 0.125rem solid var(--background-secondary-lm);
     font-weight: 600;
     font-size: 0.9rem;
 }
@@ -46,7 +46,7 @@
 .datatable-wrapper tbody td {
     padding: 0.75rem 1rem;
     /* vertical-align: middle; */
-    border-bottom: 1px solid var(--background-secondary-lm);
+    border-bottom: 0.06rem solid var(--background-secondary-lm);
 }
 
 
@@ -66,7 +66,7 @@
 .status-dropdown {
     width: 80%;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--background-secondary-lm);
+    border: 0.06rem solid var(--background-secondary-lm);
     border-radius: 0.25rem;
     background: transparent;
     font-size: 0.875rem;
@@ -89,9 +89,9 @@
 
 .datatable-input {
     background-color: var(--background-primary-lm);
-    border: 1px solid #dee2e6;
+    border: 0.06rem solid #dee2e6;
     padding: 0.5rem;
-    border-radius: 4px;
+    border-radius: 0.25rem;
 }
 .datatable-pagination {
     background-color: var(--background-primary-lm);
@@ -129,9 +129,9 @@
 /* Pill styling for skills */
 .pill {
     display: inline-block;
-    padding: 5px 10px;
-    margin: 1px; /* Add spacing between pills */
-    border-radius: 12px;
+    padding: 0.3rem 0.625rem;
+    margin: 0.06rem; /* Add spacing between pills */
+    border-radius: 0.75rem;
     font-size: 0.9em;
     color: white;
 }
@@ -150,9 +150,9 @@
 /* Dropdown for status selection */
 .status-dropdown {
     width: 80%; /* Adjust dropdown width */
-    padding: 5px;
+    padding: 0.3rem;
     border: none;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     background: transparent;
     cursor: pointer;
     color: inherit;
@@ -176,16 +176,16 @@
 
 /* Floating add button */
 .add-button {
-    padding: 10px 20px;
+    padding: 0.625rem 1.25rem;
     font-size: 0.85rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 0.3rem;
     position: relative;
     background-color: var(--button-background-lm);
     color: var(--button-text-lm);
     border: none;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0.125rem 0.3rem rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
 }
 
@@ -217,10 +217,10 @@
     position: relative;
     background-color: var(--background-secondary-lm);
     margin: 5% auto;
-    padding: 20px;
+    padding: 1.25rem;
     width: 80%;
     max-width: 50rem;
-    border-radius: 5px;
+    border-radius: 0.3rem;
 }
 
 /* Modal close button */
@@ -234,15 +234,15 @@
 
 /* Modal header */
 .modal-header {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    border-bottom: 0.06rem solid #ddd;
+    padding-bottom: 0.625rem;
+    margin-bottom: 1.25rem;
 }
 
 /* Modal footer with action buttons */
 .modal-footer {
-    border-top: 1px solid #ddd;
-    padding-top: 15px;
+    border-top: 0.06rem solid #ddd;
+    padding-top: 0.9rem;
     text-align: right;
 }
 
@@ -250,9 +250,9 @@
 .save-btn {
     background-color: #4CAF50;
     color: white;
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     cursor: pointer;
     margin-left: 0.625rem;
 }
@@ -261,9 +261,9 @@
 .cancel-btn {
     background-color: #f44336;
     color: white;
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     cursor: pointer;
 }
 
@@ -274,8 +274,8 @@
 /* Form row for layout */
 .form-row {
     display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: 0.625rem;
+    margin-bottom: 0.9rem;
 }
 
 /* Inputs and textareas in the form */
@@ -283,9 +283,9 @@
 .form-row select,
 .form-row textarea {
     flex: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 0.5rem;
+    border: 0.06rem solid #ddd;
+    border-radius: 0.25rem;
     background-color: var(--background-primary-lm);
     color: var(--text-primary-lm);
 }
@@ -312,14 +312,14 @@
 /* Date input fields */
 .input-group input[type="date"] {
     padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 0.06rem solid #ddd;
+    border-radius: 0.25rem;
 }
 
 /* Checkbox group */
 .checkbox-group {
     display: flex;
-    gap: 20px;
+    gap: 1.25rem;
 }
 
 @media (max-width: 950px) {
