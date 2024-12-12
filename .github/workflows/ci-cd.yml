@@ -110,12 +110,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Install Python Tools
+        run: |
+          pip install black flake8 pylint
+
       - name: Lint Python Code
         run: |
           black --check .
           flake8 .
           pylint $(find . -name "*.py")
         continue-on-error: true
+
+      - name: Install Node.js Tools
+        run: |
+          npm install jest cypress eslint
 
       - name: Lint JavaScript Code
         run: |
@@ -129,9 +137,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Install Python Tools
+        run: |
+          pip install coverage
+
       - name: Run Python Unit Tests
         run: coverage run -m unittest discover -s tests xml -o coverage.xml
         continue-on-error: true
+
+      - name: Install Node.js Tools
+        run: |
+          npm install jest cypress eslint
 
       - name: Jest for JavaScript Unit Testing
         run: jest --coverage --coverageReporters=lcov
