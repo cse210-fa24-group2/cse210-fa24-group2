@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: upcomingDeadlines.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: upcomingDeadlines.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Fetch today's Google Calendar events from the backend.
+ * @async
+ * @function fetchTodaysEvents
+ * @returns {Promise&lt;Array>} - A promise that resolves to an array of today's events.
+ */
+async function fetchTodaysEvents() {
+    try {
+        console.log("Fetching today's events...");
+        const response = await fetch('/api/calendar/events/today');
+        if (!response.ok) {
+            console.error("Failed to fetch today's events:", response.statusText);
+            return [];
+        }
+
+        const events = await response.json();
+        return Array.isArray(events) ? events : [];
+    } catch (error) {
+        console.error("Error fetching today's events:", error);
+        return [];
+    }
+}
+
+/**
+ * Fetch today's internship follow-ups from the backend.
+ * @async
+ * @function fetchTodaysInternships
+ * @returns {Promise&lt;Array>} - A promise that resolves to an array of today's internships.
+ */
+async function fetchTodaysInternships() {
+    try {
+        console.log("Fetching today's internships...");
+        const response = await fetch('/api/internships/today');
+        if (!response.ok) {
+            console.error("Failed to fetch today's internships:", response.statusText);
+            return [];
+        }
+
+        const internships = await response.json();
+        return Array.isArray(internships) ? internships : [];
+    } catch (error) {
+        console.error("Error fetching today's internships:", error);
+        return [];
+    }
+}
+
+/**
+ * Converts the event's dateTime to a user's local 12-hour time format.
+ * @function formatEventTime
+ * @param {string} dateTime - The event's dateTime string.
+ * @param {string} timeZone - The event's time zone.
+ * @returns {string} - Formatted 12-hour time string with AM/PM.
+ */
+function formatEventTime(dateTime, timeZone) {
+    const date = new Date(dateTime);
+    const formatter = new Intl.DateTimeFormat(undefined, {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+        timeZone: timeZone,
+    });
+    return formatter.format(date);
+}
+
+/**
+ * Fetch and display all today's deadlines, including calendar events and internships.
+ * @async
+ * @function fetchAndRenderDeadlines
+ * @returns {Promise&lt;void>} - A promise that resolves once deadlines are rendered.
+ */
+async function fetchAndRenderDeadlines() {
+    try {
+        console.log("Fetching all deadlines...");
+
+        const [events, internships] = await Promise.all([
+            fetchTodaysEvents(),
+            fetchTodaysInternships()
+        ]);
+
+        const combinedDeadlines = [
+            ...events.map(event => ({
+                type: 'event',
+                summary: event.summary,
+                time: event.start &amp;&amp; event.start.dateTime ? formatEventTime(event.start.dateTime, event.start.timeZone) : "Time not specified"
+            })),
+            ...internships.map(internship => ({
+                type: 'internship',
+                summary: `${internship.companyName} (${internship.positionTitle})`
+            }))
+        ];
+
+        renderDeadlines(combinedDeadlines);
+    } catch (error) {
+        console.error("Error fetching and rendering deadlines:", error);
+    }
+}
+
+/**
+ * Render the combined deadlines in the "Upcoming Deadlines" section.
+ * @function renderDeadlines
+ * @param {Array} deadlines - Array of deadline objects to render.
+ */
+function renderDeadlines(deadlines) {
+    console.log("Rendering deadlines...");
+    const deadlinesList = document.getElementById('upcomingDeadlinesList');
+    if (!deadlinesList) {
+        console.error("Could not find element with ID 'upcomingDeadlinesList'");
+        return;
+    }
+
+    deadlinesList.innerHTML = '';
+
+    if (deadlines.length === 0) {
+        const noDeadlinesItem = document.createElement('li');
+        noDeadlinesItem.textContent = 'No upcoming deadlines today.';
+        deadlinesList.appendChild(noDeadlinesItem);
+    } else {
+        deadlines.forEach(deadline => {
+            const listItem = document.createElement('li');
+            if (deadline.type === 'event') {
+                listItem.textContent = `${deadline.summary} (${deadline.time})`;
+            } else {
+                listItem.textContent = deadline.summary;
+            }
+            deadlinesList.appendChild(listItem);
+        });
+    }
+}
+
+window.fetchAndRenderDeadlines = fetchAndRenderDeadlines;
+
+window.addEventListener('load', fetchAndRenderDeadlines);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-dateUtils.html">dateUtils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTask">addTask</a></li><li><a href="global.html#attachDragAndDropHandlers">attachDragAndDropHandlers</a></li><li><a href="global.html#createTodoElement">createTodoElement</a></li><li><a href="global.html#deleteTask">deleteTask</a></li><li><a href="global.html#draggedItem">draggedItem</a></li><li><a href="global.html#fetchAndRenderDeadlines">fetchAndRenderDeadlines</a></li><li><a href="global.html#fetchTodaysEvents">fetchTodaysEvents</a></li><li><a href="global.html#fetchTodaysInternships">fetchTodaysInternships</a></li><li><a href="global.html#formatDate">formatDate</a></li><li><a href="global.html#formatEventTime">formatEventTime</a></li><li><a href="global.html#getDaysInMonth">getDaysInMonth</a></li><li><a href="global.html#handleDragEnd">handleDragEnd</a></li><li><a href="global.html#handleDragStart">handleDragStart</a></li><li><a href="global.html#handleDrop">handleDrop</a></li><li><a href="global.html#loadTasks">loadTasks</a></li><li><a href="global.html#loadTodoList">loadTodoList</a></li><li><a href="global.html#renderDeadlines">renderDeadlines</a></li><li><a href="global.html#updateTaskCategory">updateTaskCategory</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 13 2024 19:18:08 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
