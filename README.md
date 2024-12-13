@@ -104,7 +104,66 @@ FireStack is built using a well-structured tech stack that ensures performance, 
 - **Flask**: A lightweight and versatile web framework that powers the server-side logic and API endpoints.
 
 ## **Database**
-- **PostgreSQL**: A powerful and reliable relational database, accessed via SQLAlchemy, for storing and managing application data.
+
+The FireStack application uses **PostgreSQL** as its database, hosted on **Render** for reliable and scalable management of data. The database consists of three key tables:
+
+1. **User Table**: 
+   - Stores user information including unique Google IDs and names.
+   - This table is essential for user authentication and session management.
+
+2. **Todo Table**:
+   - Tracks tasks added by users in the To-Do List feature.
+   - Columns include `id`, `user_id`, `task_text`, `category` (e.g., Today, This Week), and `created_at`.
+
+3. **Internship Table**:
+   - Maintains data for the Career Tracker, including company name, position title, application status, follow-up dates, and additional metadata such as salary and offer deadlines.
+
+### Database Hosting and Access
+
+The database is hosted on **Render**, and connection details are securely managed through environment variables in the `.env` file.
+
+### Tables Overview
+
+#### 1. User Table
+
+**Columns**:
+- `id`: Primary key (integer)
+- `google_id`: Unique Google account ID (string)
+- `name`: User's full name (string)
+
+#### 2. Todo Table
+
+**Columns**:
+- `id`: Primary key (integer)
+- `user_id`: Foreign key linking to User table (integer)
+- `task_text`: Text of the task (string)
+- `category`: Task urgency (Today, This Week, etc.) (string)
+- `created_at`: Timestamp for task creation (datetime)
+
+#### 3. Internship Table
+
+**Columns**:
+- `internship_id`: Primary key (integer)
+- `user_id`: Foreign key linking to User table (integer)
+- `company_name`: Name of the company (string)
+- `position_title`: Title of the position (string)
+- `application_status`: Status of the application (e.g., Applied, Interview) (string)
+- `date_applied`: Date of application (date)
+- `follow_up_date`: Date for follow-up (date)
+- **Additional Fields**: Include contact email, salary, offer deadline, and other metadata.
+
+### Setup Instructions
+
+To initialize the database locally:
+1. Ensure PostgreSQL is installed and running.
+2. Update the `DATABASE_URL` in your `.env` file with the connection string for your local database.
+3. Run the application (`python src/app.py`) to automatically initialize the database schema.
+
+### Security Notes
+
+- The `DATABASE_URL` is stored securely in the `.env` file and is not hard-coded in the application.
+- Access credentials for the production database are restricted and not included in the repository. This ensures the database is protected from unauthorized access.
+
 
 ## **APIs**
 - **Google OAuth**: Used for secure user authentication.
